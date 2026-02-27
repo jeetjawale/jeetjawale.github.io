@@ -11,7 +11,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Jeet Jawale">
 <meta name="twitter:description" content="Fresh Computer Engineering graduate (July 2025) specializing in backend development, full-stack applications, and scalable systems.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👨‍💻</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👽</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -573,7 +573,7 @@ section:last-child { border: none; }
 
 /* Skill level badges */
 .chip.hi::after {
-  content: 'Advanced';
+  /* content: 'Intermediate';*/
   position: absolute;
   top: -22px;
   left: 50%;
@@ -744,6 +744,23 @@ section:last-child { border: none; }
   font-size: .92rem; color: var(--muted);
   line-height: 1.8; font-weight: 300;
   max-width: 440px; margin-bottom: 1rem;
+}
+.proj-achievements {
+  list-style: none;
+  padding-left: 0;
+}
+.proj-achievements li {
+  font-size: .88rem; color: var(--muted);
+  line-height: 1.8; font-weight: 300;
+  padding-left: 1.2rem;
+  position: relative;
+  margin-bottom: .5rem;
+}
+.proj-achievements li::before {
+  content: '▹';
+  position: absolute; left: 0;
+  color: var(--border2);
+  font-size: .9rem;
 }
 .proj-stack { display: flex; flex-wrap: wrap; gap: .35rem; }
 .stag {
@@ -1217,31 +1234,38 @@ footer {
 <!-- TICKER -->
 <div class="ticker">
   <div class="ticker-inner">
-    <span class="ticker-item">TypeScript</span><span class="ticker-dot">·</span>
     <span class="ticker-item">Python</span><span class="ticker-dot">·</span>
-    <span class="ticker-item">Go</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">Bash</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">SQL</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">JavaScript</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">C/C++</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">Dart</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">PyQt</span><span class="ticker-dot">·</span>
     <span class="ticker-item">React</span><span class="ticker-dot">·</span>
     <span class="ticker-item">Node.js</span><span class="ticker-dot">·</span>
-    <span class="ticker-item">PostgreSQL</span><span class="ticker-dot">·</span>
-    <span class="ticker-item">AWS</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">Firebase</span><span class="ticker-dot">·</span>
     <span class="ticker-item">Docker</span><span class="ticker-dot">·</span>
-    <span class="ticker-item">Kubernetes</span><span class="ticker-dot">·</span>
-    <span class="ticker-item">Next.js</span><span class="ticker-dot">·</span>
-    <span class="ticker-item">Redis</span><span class="ticker-dot">·</span>
-    <span class="ticker-item">GraphQL</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">GCP</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">AWS</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">Git</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">Linux</span><span class="ticker-dot">·</span>
     <!-- duplicate for seamless loop -->
-    <span class="ticker-item">TypeScript</span><span class="ticker-dot">·</span>
-    <span class="ticker-item">Python</span><span class="ticker-dot">·</span>
-    <span class="ticker-item">Go</span><span class="ticker-dot">·</span>
+     <span class="ticker-item">Python</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">Bash</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">SQL</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">JavaScript</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">C/C++</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">Dart</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">PyQt</span><span class="ticker-dot">·</span>
     <span class="ticker-item">React</span><span class="ticker-dot">·</span>
     <span class="ticker-item">Node.js</span><span class="ticker-dot">·</span>
-    <span class="ticker-item">PostgreSQL</span><span class="ticker-dot">·</span>
-    <span class="ticker-item">AWS</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">Firebase</span><span class="ticker-dot">·</span>
     <span class="ticker-item">Docker</span><span class="ticker-dot">·</span>
-    <span class="ticker-item">Kubernetes</span><span class="ticker-dot">·</span>
-    <span class="ticker-item">Next.js</span><span class="ticker-dot">·</span>
-    <span class="ticker-item">Redis</span><span class="ticker-dot">·</span>
-    <span class="ticker-item">GraphQL</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">GCP</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">AWS</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">Git</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">Linux</span><span class="ticker-dot">·</span>
+
   </div>
 </div>
 
@@ -1250,14 +1274,14 @@ footer {
   <div class="page-col">
     <div class="sec-label" data-num="01">About</div>
     <div class="about-bio fu">
-      <p>I'm a recent Computer Engineering graduate (July 2025) passionate about building scalable backend systems and full-stack applications. I love solving complex problems with clean, efficient code.</p>
-      <p>Through internships and academic projects, I've gained hands-on experience with modern tech stacks, cloud infrastructure, and agile development. I'm always learning and eager to contribute to impactful products.</p>
-      <p>Outside of code — I explore new technologies, contribute to open source, and share what I learn through technical writing.</p>
+      <p>I'm a Computer Engineering graduate focused on building reliable, efficient systems — preferably on Linux, where I do most of my development.</p>
+      <p>I'm currently working with Cloud, DevOps practices, and Python to strengthen my cloud and automation skillset.</p>
+      <p>Outside of code — I explore new technologies, enjoy traveling, play games and occasionally unwinding with movies or tv shows.</p>
     </div>
     <div class="about-facts">
       <div class="fact"><span class="fk">Location</span><span class="fv">Navi Mumbai, India</span></div>
       <div class="fact"><span class="fk">Education</span><span class="fv">B.Tech. Computer Engineering (2025)</span></div>
-      <div class="fact"><span class="fk">Focus</span><span class="fv">Backend · Full Stack</span></div>
+      <div class="fact"><span class="fk">Focus</span><span class="fv">DevOps · Linux & Cloud</span></div>
       <div class="fact"><span class="fk">Status</span><span class="fv"><span class="badge-open">Open to work</span></span></div>
     </div>
   </div>
@@ -1269,64 +1293,22 @@ footer {
     <div class="sec-label" data-num="02">Experience</div>
     <div class="experience-list">
       <div class="exp-item">
-        <div class="exp-period">Jan — Jun 2025</div>
+        <div class="exp-period">Jun — Aug 2025</div>
         <div>
-          <h3 class="exp-company">Tech Innovations Ltd.</h3>
-          <div class="exp-role">Software Engineering Intern</div>
-          <p class="exp-desc">Contributed to backend development for a cloud-based project management platform.</p>
+          <h3 class="exp-company">Bhabha Atomic Research Centre (BARC), Trombay</h3>
+          <div class="exp-role">Project Trainee — Radiation Safety Systems Division</div>
+          <p class="exp-desc">Contributed to a project titled “QGIS-Based Decision Support for Implementing Counter Measures</p>
           <ul class="exp-achievements">
-            <li>Built REST APIs using Node.js and Express serving 10K+ daily requests</li>
-            <li>Implemented user authentication and authorization with JWT and OAuth2</li>
-            <li>Optimized database queries reducing response time by 35%</li>
-            <li>Collaborated with cross-functional teams in agile sprints</li>
+            <li>Developed modules for spatial data analysis & visualization</li>
+            <li>Built a QGIS-based decision-support workflow improving exercise analysis efficiency</li>
+            <li>Automated spatial data processes using Python & PyQGIS, reducing manual handling time</li>
           </ul>
           <div class="exp-tech">
-            <span class="exp-tag">Node.js</span>
-            <span class="exp-tag">TypeScript</span>
-            <span class="exp-tag">PostgreSQL</span>
-            <span class="exp-tag">Docker</span>
-            <span class="exp-tag">AWS</span>
-          </div>
-        </div>
-      </div>
-      <div class="exp-item">
-        <div class="exp-period">Jun — Aug 2024</div>
-        <div>
-          <h3 class="exp-company">CodeCraft Solutions</h3>
-          <div class="exp-role">Full Stack Development Intern</div>
-          <p class="exp-desc">Developed features for an e-learning platform used by 5K+ students.</p>
-          <ul class="exp-achievements">
-            <li>Built interactive course modules using React and Next.js</li>
-            <li>Integrated payment gateway (Razorpay) for course subscriptions</li>
-            <li>Created admin dashboard for content management and analytics</li>
-            <li>Wrote unit and integration tests achieving 80% code coverage</li>
-          </ul>
-          <div class="exp-tech">
-            <span class="exp-tag">React</span>
-            <span class="exp-tag">Next.js</span>
             <span class="exp-tag">Python</span>
-            <span class="exp-tag">MongoDB</span>
-            <span class="exp-tag">Tailwind</span>
-          </div>
-        </div>
-      </div>
-      <div class="exp-item">
-        <div class="exp-period">May — Jul 2023</div>
-        <div>
-          <h3 class="exp-company">WebDev Agency</h3>
-          <div class="exp-role">Web Development Intern</div>
-          <p class="exp-desc">Assisted in building responsive websites and landing pages for local businesses.</p>
-          <ul class="exp-achievements">
-            <li>Developed 8+ responsive websites using HTML, CSS, and JavaScript</li>
-            <li>Improved website performance scores by 40% through optimization</li>
-            <li>Implemented SEO best practices increasing organic traffic by 25%</li>
-            <li>Collaborated with design team to ensure pixel-perfect implementations</li>
-          </ul>
-          <div class="exp-tech">
-            <span class="exp-tag">HTML/CSS</span>
-            <span class="exp-tag">JavaScript</span>
-            <span class="exp-tag">React</span>
-            <span class="exp-tag">Git</span>
+            <span class="exp-tag">PyQt</span>
+            <span class="exp-tag">QGIS</span>
+            <span class="exp-tag">PyQGIS</span>
+
           </div>
         </div>
       </div>
@@ -1340,33 +1322,46 @@ footer {
     <div class="sec-label" data-num="03">Projects</div>
     <div class="projects-list">
       <div class="proj-item">
-        <div class="proj-image">📊</div>
+        <div class="proj-image">📍</div>
         <div>
           <div class="proj-num">// 001</div>
-          <div class="proj-name">Neural Dashboard</div>
-          <p class="proj-desc">Real-time analytics platform serving 50K+ daily active users. Reduced load time by 65%, increased data throughput 3x with WebSocket streaming and optimized multi-tenant PostgreSQL architecture.</p>
+          <div class="proj-name">Heritage Places Map & Recommendation Engine</div>
+          <p class="proj-desc">Aug 2024 - Jun 2025</p>
+          <p class="proj-desc">Interactive web mapping application showcasing Maharashtra's cultural and heritage sites.</p>
+          <ul class="proj-achievements">
+            <li>Real-time place recommendations based on location, filters & reviews</li>
+            <li>Firebase Auth + profile management for secure login & personalized reviews</li>
+            <li>Live weather and directions via OpenRouteService / Google Maps</li>
+            <li>Fetched & visualized multiple GeoJSON layers with dynamic updates</li>
+          </ul>
           <div class="proj-stack">
-            <span class="stag">React</span><span class="stag">Node.js</span><span class="stag">PostgreSQL</span><span class="stag">WebSocket</span><span class="stag">AWS</span>
+            <span class="stag">React</span><span class="stag">Node.js</span><span class="stag">MapLibre</span><span class="stag">Firebase</span><span class="stag">QGIS</span><span class="stag">Python</span>
           </div>
         </div>
         <div class="proj-links">
-          <a href="#" class="plink">Live</a>
-          <a href="#" class="plink">GitHub</a>
+          <a href="https://maharashtra-heritage-explorer.vercel.app/" target="_blank" rel="noopener noreferrer" class="plink">Live</a>
+          <a href="https://github.com/jeetjawale/maharashtra-heritage-explorer" target="_blank" rel="noopener noreferrer" class="plink">GitHub</a>
+
         </div>
       </div>
       <div class="proj-item">
-        <div class="proj-image">⚡</div>
+        <div class="proj-image">📝</div>
         <div>
           <div class="proj-num">// 002</div>
-          <div class="proj-name">DevFlow CLI</div>
-          <p class="proj-desc">Developer productivity tool automating PR workflows and changelog generation. Saved engineering teams 10+ hours/week, 2K+ downloads, 95% user satisfaction from GitHub Marketplace reviews.</p>
+          <div class="proj-name">Course Exit Survey</div>
+          <p class="proj-desc">Feb 2024 - Jun 2024</p>
+          <p class="proj-desc">Realtime feedback system for course evaluations and reporting.</p>
+          <ul class="proj-achievements">
+            <li>Realtime feedback collection with Firebase backend</li>
+            <li>Chart.js visualizations and XLSX export for analysis</li>
+            <li>Digitized feedback workflows to speed academic evaluations</li>
+          </ul>
           <div class="proj-stack">
-            <span class="stag">Go</span><span class="stag">GitHub API</span><span class="stag">Cobra</span><span class="stag">OpenAI</span>
+            <span class="stag">React</span><span class="stag">JavaScript</span><span class="stag">Node.js</span><span class="stag">Firebase</span>
           </div>
         </div>
         <div class="proj-links">
-          <a href="#" class="plink">Docs</a>
-          <a href="#" class="plink">GitHub</a>
+          <a href="https://github.com/jeetjawale/Course-Exit-Survey" target="_blank" rel="noopener noreferrer" class="plink">GitHub</a>
         </div>
       </div>
       <div class="proj-item">
@@ -1396,31 +1391,37 @@ footer {
       <div class="skill-row">
         <div class="sk-cat">Languages</div>
         <div class="chips">
-          <span class="chip hi">TypeScript</span><span class="chip hi">Python</span><span class="chip hi">Go</span>
-          <span class="chip">Java</span><span class="chip">SQL</span><span class="chip">Bash</span>
+          <span class="chip hi">Python</span><span class="chip hi">Bash</span><span class="chip hi">SQL</span>
+          <span class="chip">JavaScript</span><span class="chip">C/C++</span><span class="chip">Dart</span>
         </div>
       </div>
       <div class="skill-row">
         <div class="sk-cat">Frontend</div>
         <div class="chips">
-          <span class="chip hi">React</span><span class="chip hi">Next.js</span>
-          <span class="chip">Vue</span><span class="chip">Tailwind</span><span class="chip">Figma</span>
+          <span class="chip hi">PyQt</span><span class="chip hi">React</span>
+          <span class="chip">HTML5</span><span class="chip">CSS</span>
         </div>
       </div>
       <div class="skill-row">
         <div class="sk-cat">Backend</div>
         <div class="chips">
-          <span class="chip hi">Node.js</span><span class="chip hi">FastAPI</span><span class="chip hi">PostgreSQL</span>
-          <span class="chip">Redis</span><span class="chip">GraphQL</span><span class="chip">REST</span>
+          <span class="chip hi">Node.js</span><span class="chip hi">Firebase</span>
+          <span class="chip">Nginx</span>
         </div>
       </div>
       <div class="skill-row">
-        <div class="sk-cat">Infrastructure</div>
+        <div class="sk-cat">Devops</div>
         <div class="chips">
-          <span class="chip hi">AWS</span><span class="chip hi">Docker</span>
-          <span class="chip">Kubernetes</span><span class="chip">Terraform</span><span class="chip">CI/CD</span>
+          <span class="chip hi">Docker</span><span class="chip hi">GCP</span>
+          <span class="chip">AWS</span>
         </div>
       </div>
+      <div class="skill-row">
+        <div class="sk-cat">Other</div>
+        <div class="chips">
+          <span class="chip hi">Git</span><span class="chip hi">Linux</span>
+          <span class="chip">QGIS</span>
+        </div>
     </div>
   </div>
 </section>
