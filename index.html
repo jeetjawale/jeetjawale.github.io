@@ -1011,37 +1011,98 @@ section:last-child { border: none; }
 /* ─── FOOTER ─── */
 footer {
   border-top: 1px solid var(--border);
-  padding: 2.5rem clamp(2rem, 8vw, 10rem);
-  display: flex; justify-content: space-between; align-items: center;
-  flex-wrap: wrap; gap: 1.5rem;
+  padding: 4rem clamp(2rem, 8vw, 10rem);
+  background: var(--bg2);
 }
-.footer-name { font-weight: 600; font-size: .85rem; letter-spacing: -.02em; }
-.footer-copy { font-size: .72rem; color: var(--muted); }
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.footer-name {
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: -.02em;
+  color: var(--text);
+}
+
+.footer-desc {
+  color: var(--muted);
+  font-size: .9rem;
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+.footer-heading {
+  font-size: .85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--text);
+  margin-bottom: .5rem;
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.footer-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: .9rem;
+  transition: color .2s;
+}
+
+.footer-links a:hover {
+  color: var(--text);
+}
+
 .footer-socials {
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
 }
+
 .footer-social {
-  width: 36px;
-  height: 36px;
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
   color: var(--muted);
-  font-size: .8rem;
-  transition: all .25s;
+  text-decoration: none;
+  font-size: .85rem;
+  padding: .5rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  transition: all .2s;
+  background: transparent;
 }
+
 .footer-social:hover {
-  background: var(--ink);
-  border-color: var(--ink);
+  background: var(--text);
+  border-color: var(--text);
   color: var(--bg);
   transform: translateY(-2px);
 }
-.footer-social:focus {
-  outline: 2px solid var(--ink);
-  outline-offset: 2px;
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  color: var(--muted);
+  font-size: .85rem;
 }
 
 /* ─── BLOCK REVEAL WIPE ─── */
@@ -1430,23 +1491,8 @@ footer {
 <section id="blog">
   <div class="page-col">
     <div class="sec-label" data-num="05">Writing</div>
-    <div class="blog-list">
-      <a href="#" class="blog-item">
-        <div><div class="blog-cat">Architecture</div><div class="blog-title">How I reduced API response time by 80% using Redis caching strategies</div></div>
-        <div class="blog-arr">↗</div>
-      </a>
-      <a href="#" class="blog-item">
-        <div><div class="blog-cat">Go</div><div class="blog-title">Building a production-ready CLI tool in Go from scratch</div></div>
-        <div class="blog-arr">↗</div>
-      </a>
-      <a href="#" class="blog-item">
-        <div><div class="blog-cat">System Design</div><div class="blog-title">Multi-tenant SaaS databases: mistakes I made and how I fixed them</div></div>
-        <div class="blog-arr">↗</div>
-      </a>
-      <a href="#" class="blog-item">
-        <div><div class="blog-cat">DevOps</div><div class="blog-title">Zero-downtime deployments with Kubernetes and GitHub Actions</div></div>
-        <div class="blog-arr">↗</div>
-      </a>
+    <div class="blog-list" id="blog-list">
+      <!-- Dynamically populated by JavaScript -->
     </div>
   </div>
 </section>
@@ -1542,17 +1588,70 @@ footer {
 <button class="back-to-top" id="back-to-top" aria-label="Back to top">↑</button>
 
 <footer>
-  <div class="footer-name">Jeet Jawale.</div>
-  <div class="footer-socials">
-    <a href="https://github.com/jeetjawale" target="_blank" rel="noopener noreferrer" class="footer-social" title="GitHub">gh</a>
-    <a href="https://www.linkedin.com/in/jeetjawale" target="_blank" rel="noopener noreferrer" class="footer-social" title="LinkedIn">in</a>
-    <a href="https://x.com/jeet_jawale" target="_blank" rel="noopener noreferrer" class="footer-social" title="Twitter/X">𝕏</a>
-    <a href="mailto:jeetjawale@zohomail.in" class="footer-social" title="Email">✉</a>
+  <div class="footer-content">
+    <div class="footer-col">
+      <div class="footer-name">Jeet Jawale.</div>
+      <p class="footer-desc">Backend engineer. Coffee enthusiast. Always learning.</p>
+    </div>
+    
+    <div class="footer-col">
+      <h3 class="footer-heading">Navigate</h3>
+      <ul class="footer-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#blog">Blog</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    
+    <div class="footer-col">
+      <h3 class="footer-heading">Connect</h3>
+      <div class="footer-socials">
+        <a href="https://github.com/jeetjawale" target="_blank" rel="noopener noreferrer" class="footer-social" title="GitHub">GitHub</a>
+        <a href="https://www.linkedin.com/in/jeetjawale" target="_blank" rel="noopener noreferrer" class="footer-social" title="LinkedIn">LinkedIn</a>
+        <a href="https://x.com/jeet_jawale" target="_blank" rel="noopener noreferrer" class="footer-social" title="Twitter/X">Twitter</a>
+        <a href="mailto:jeetjawale@zohomail.in" class="footer-social" title="Email">Email</a>
+      </div>
+    </div>
   </div>
-  <!--<div class="footer-copy">© 2026 — Designed & built with care</div>-->
+  
+  <div class="footer-bottom">
+    <p>&copy; 2026 Jeet Jawale. All rights reserved.</p>
+  </div>
 </footer>
 
+<script src="blog/posts.js"></script>
 <script>
+/* ── POPULATE BLOG LIST ── */
+(function() {
+  const blogList = document.getElementById('blog-list');
+  if (blogList && typeof blogPosts !== 'undefined') {
+    // Take only the first 3 posts and add the "View all" link
+    const displayPosts = blogPosts.slice(0, 3);
+    
+    displayPosts.forEach(post => {
+      const blogItem = document.createElement('a');
+      blogItem.href = `blog/${post.id}.html`;
+      blogItem.className = 'blog-item';
+      blogItem.innerHTML = `
+        <div><div class="blog-cat">${post.category}</div><div class="blog-title">${post.title}</div></div>
+        <div class="blog-arr">↗</div>
+      `;
+      blogList.appendChild(blogItem);
+    });
+    
+    // Add "View all" link
+    const viewAllItem = document.createElement('a');
+    viewAllItem.href = 'blog/blog.html';
+    viewAllItem.className = 'blog-item';
+    viewAllItem.innerHTML = `
+      <div><div class="blog-cat">Blog</div><div class="blog-title">View all blog posts →</div></div>
+      <div class="blog-arr">↗</div>
+    `;
+    blogList.appendChild(viewAllItem);
+  }
+})();
+
 /* ── CURSOR ── */
 if (window.matchMedia('(pointer: fine)').matches) {
   let mx = -200, my = -200, rx = -200, ry = -200;

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 - Page Not Found</title>
+<meta name="description" content="The page you're looking for doesn't exist.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👽</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #ffffff;
+  --bg2: #f7f7f7;
+  --border: #e8e8e8;
+  --border2: #d0d0d0;
+  --text: #0a0a0a;
+  --muted: #777;
+  --mid: #444;
+}
+
+[data-theme="dark"] {
+  --bg: #0a0a0a;
+  --bg2: #1a1a1a;
+  --border: #2a2a2a;
+  --border2: #404040;
+  --text: #f0f0f0;
+  --muted: #999;
+  --mid: #bbb;
+  --ink: #f0f0f0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Fira Code', monospace;
+  background: var(--bg);
+  color: var(--text);
+  transition: background .3s, color .3s;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 600px;
+  text-align: center;
+}
+
+.code {
+  font-size: clamp(5rem, 20vw, 15rem);
+  font-weight: 800;
+  letter-spacing: -.05em;
+  color: var(--mid);
+  margin-bottom: 1rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+h1 {
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+
+p {
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  font-weight: 300;
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 3rem;
+}
+
+a {
+  font-size: .85rem;
+  text-decoration: none;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  transition: color .2s;
+}
+
+a:hover {
+  color: var(--text);
+}
+
+.btn {
+  padding: .75rem 1.6rem;
+  background: var(--text);
+  color: var(--bg);
+  font-weight: 600;
+  letter-spacing: .05em;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Fira Code', monospace;
+  transition: all .2s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+
+.message {
+  font-size: .9rem;
+  color: var(--muted);
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: var(--text);
+  transition: all .25s;
+  border-radius: 4px;
+}
+
+.theme-toggle:hover {
+  border-color: var(--text);
+  transform: scale(1.05);
+}
+
+@media (max-width: 680px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .code {
+    font-size: 4rem;
+  }
+  
+  .nav {
+    flex-direction: column;
+    gap: .5rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☾</button>
+
+<div class="container">
+  <div class="code">404</div>
+  <h1>Page Not Found</h1>
+  <p>The page you're looking for has wandered off into the digital void. It might have been moved, deleted, or never existed.</p>
+  
+  <div class="nav">
+    <a href="./index.html" class="btn">← Back Home</a>
+    <a href="./blog/blog.html">Read Blog</a>
+  </div>
+  
+  <div class="message">
+    <p>If you think this is a mistake, feel free to reach out via the contact form on my <a href="./index.html#contact">portfolio</a>.</p>
+  </div>
+</div>
+
+<script>
+// Dark mode
+const themeToggle = document.getElementById('theme-toggle');
+const savedTheme = localStorage.getItem('theme') || 'light';
+document.documentElement.setAttribute('data-theme', savedTheme);
+themeToggle.textContent = savedTheme === 'dark' ? '☀' : '☾';
+
+themeToggle.addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  themeToggle.textContent = next === 'dark' ? '☀' : '☾';
+});
+
+// Redirect to home if accessed via GitHub Pages
+if (window.location.pathname === '/404.html') {
+  // GitHub Pages will serve this for 404s
+  // No need to redirect - just display the page
+}
+</script>
+
+</body>
+</html>
