@@ -1805,6 +1805,40 @@ backToTop?.addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
+/* ── EMAIL VALIDATION & SPAM PREVENTION ── */
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const commonSpamDomains = ['spam', 'test', 'fake', 'invalid'];
+let lastSubmitTime = 0;
+const SUBMIT_COOLDOWN = 3000; // 3 seconds between submissions
+
+function isValidEmail(email) {
+  // Check basic email format
+  if (!emailRegex.test(email)) return false;
+  
+  // Check email length (prevent excessively long emails)
+  if (email.length > 254) return false;
+  
+  // Check for suspicious patterns
+  if (email.includes('..')) return false;
+  if (email.startsWith('.') || email.endsWith('.')) return false;
+  
+  // Check for common spam domain patterns
+  const domain = email.split('@')[1].toLowerCase();
+  if (commonSpamDomains.some(spam => domain.includes(spam))) return false;
+  
+  return true;
+}
+
+function isValidMessage(message) {
+  // Check message length (reasonable bounds)
+  return message.length > 5 && message.length < 5000;
+}
+
+function isValidName(name) {
+  // Check name length and format
+  return name.length > 2 && name.length < 100 && /^[a-zA-Z\s'-]+$/.test(name);
+}
+
 /* ── SUBMIT ── */
 const contactForm = document.getElementById('contact-form');
 const subBtn = document.getElementById('sub-btn');
@@ -1815,6 +1849,7 @@ if (contactForm) {
     const email = contactForm.querySelector('#f-email').value.trim();
     const message = contactForm.querySelector('#f-message').value.trim();
     
+    // Check for empty fields
     if (!name || !email || !message) {
       subBtn.textContent = 'Please fill all fields';
       subBtn.classList.add('error');
@@ -1825,6 +1860,52 @@ if (contactForm) {
       return;
     }
     
+    // Rate limiting - prevent spam submissions
+    const now = Date.now();
+    if (now - lastSubmitTime < SUBMIT_COOLDOWN) {
+      subBtn.textContent = 'Please wait before sending again';
+      subBtn.classList.add('error');
+      setTimeout(() => {
+        subBtn.textContent = 'Send Message';
+        subBtn.classList.remove('error');
+      }, 2000);
+      return;
+    }
+    
+    // Validate name
+    if (!isValidName(name)) {
+      subBtn.textContent = 'Invalid name format';
+      subBtn.classList.add('error');
+      setTimeout(() => {
+        subBtn.textContent = 'Send Message';
+        subBtn.classList.remove('error');
+      }, 2000);
+      return;
+    }
+    
+    // Validate email
+    if (!isValidEmail(email)) {
+      subBtn.textContent = 'Invalid email address';
+      subBtn.classList.add('error');
+      setTimeout(() => {
+        subBtn.textContent = 'Send Message';
+        subBtn.classList.remove('error');
+      }, 2000);
+      return;
+    }
+    
+    // Validate message
+    if (!isValidMessage(message)) {
+      subBtn.textContent = 'Message must be between 5-5000 characters';
+      subBtn.classList.add('error');
+      setTimeout(() => {
+        subBtn.textContent = 'Send Message';
+        subBtn.classList.remove('error');
+      }, 2000);
+      return;
+    }
+    
+    lastSubmitTime = now;
     const orig = subBtn.textContent;
     subBtn.textContent = 'Sending...';
     subBtn.disabled = true;
@@ -1856,6 +1937,7 @@ if (contactForm) {
       subBtn.textContent = 'Failed. Try again?';
       subBtn.classList.add('error');
       subBtn.disabled = false;
+      lastSubmitTime = 0; // Allow retry on error
       
       setTimeout(() => {
         subBtn.textContent = orig;
