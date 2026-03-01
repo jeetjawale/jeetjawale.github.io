@@ -53,7 +53,12 @@ body {
   font-size: 16px;
   line-height: 1.8;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
+
+/* ─── SCROLLBAR ─── */
+* { scrollbar-width: none; }
+::-webkit-scrollbar { width: 0; height: 0; }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -380,14 +385,14 @@ article blockquote {
 /* ─── FOOTER ─── */
 footer {
   border-top: 1px solid var(--border);
-  padding: 2rem 0;
+  padding: 2rem clamp(2rem, 8vw, 10rem);
   background: var(--bg2);
-  margin-top: 4rem;
 }
 
 .footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
   text-align: center;
-  padding: 0 2rem;
 }
 
 .footer-socials {
@@ -457,6 +462,41 @@ footer {
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+/* ─── BACK TO TOP ─── */
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 50px;
+  height: 50px;
+  background: var(--text);
+  color: var(--bg);
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 300;
+  opacity: 0;
+  visibility: hidden;
+  transition: all .3s cubic-bezier(.16,1,.3,1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+}
+.back-to-top:hover {
+  background: var(--mid);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,.2);
+}
+.back-to-top:focus {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
 }
 </style>
 </head>
@@ -708,6 +748,9 @@ footer {
   </article>
 </main>
 
+<!-- BACK TO TOP -->
+<button class="back-to-top" id="back-to-top" aria-label="Back to top">↑</button>
+
 <footer>
   <div class="footer-content">
     <div class="footer-socials">
@@ -793,6 +836,16 @@ document.getElementById('share-copy')?.addEventListener('click', (e) => {
 // Initialize
 calculateWordCount();
 generateTOC();
+
+/* ── BACK TO TOP ── */
+const backToTop = document.getElementById('back-to-top');
+window.addEventListener('scroll', () => {
+  backToTop?.classList.toggle('visible', window.scrollY > 500);
+}, { passive: true });
+
+backToTop?.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 </script>
 
 </body>
