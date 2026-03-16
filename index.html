@@ -566,8 +566,9 @@ section:last-child { border: none; }
   background: var(--bg2); border: 1px solid var(--border);
   padding: .28rem .72rem;
   transition: background .2s, color .2s, border-color .2s, transform .2s;
-  cursor: default;
+  cursor: pointer;
   position: relative;
+  text-decoration: none;
 }
 .chip:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); transform: translateY(-1px); }
 .chip.hi { color: var(--text); border-color: var(--border2); background: var(--bg); }
@@ -1453,29 +1454,35 @@ footer {
       <div class="skill-row">
         <div class="sk-cat">Languages</div>
         <div class="chips">
-          <span class="chip hi">Python</span><span class="chip hi">Shell Scripting (Bash)</span>
-          <span class="chip">SQL</span><span class="chip">JavaScript</span>
+          <a href="https://www.python.org" class="chip hi" target="_blank" rel="noopener noreferrer">Python</a>
+          <a href="https://www.gnu.org/software/bash/" class="chip hi" target="_blank" rel="noopener noreferrer">Shell Scripting (Bash)</a>
+          <a href="https://www.mysql.com/" class="chip" target="_blank" rel="noopener noreferrer">SQL</a>
+          <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" class="chip" target="_blank" rel="noopener noreferrer">JavaScript</a>
         </div>
       </div>
       <div class="skill-row">
         <div class="sk-cat">Systems</div>
         <div class="chips">
-          <span class="chip hi">Linux (Fedora)</span><span class="chip hi">Git</span>
-          <span class="chip">Docker</span><span class="chip">GCP</span>
+          <a href="https://fedoraproject.org" class="chip hi" target="_blank" rel="noopener noreferrer">Linux (Fedora)</a>
+          <a href="https://git-scm.com" class="chip hi" target="_blank" rel="noopener noreferrer">Git</a>
+          <a href="https://www.docker.com" class="chip" target="_blank" rel="noopener noreferrer">Docker</a>
+          <a href="https://cloud.google.com" class="chip" target="_blank" rel="noopener noreferrer">GCP</a>
         </div>
       </div>
       <div class="skill-row">
         <div class="sk-cat">Frameworks</div>
         <div class="chips">
-          <span class="chip hi">PyQt</span><span class="chip hi">PyQGIS</span>
-          <span class="chip">React</span><span class="chip">Flutter</span>
+          <a href="https://riverbankcomputing.com/software/pyqt/" class="chip hi" target="_blank" rel="noopener noreferrer">PyQt</a>
+          <a href="https://docs.qgis.org/latest/en/docs/pyqgis_developer_cookbook/" class="chip hi" target="_blank" rel="noopener noreferrer">PyQGIS</a>
+          <a href="https://react.dev" class="chip" target="_blank" rel="noopener noreferrer">React</a>
+          <a href="https://flutter.dev" class="chip" target="_blank" rel="noopener noreferrer">Flutter</a>
         </div>
       </div>
       <div class="skill-row">
         <div class="sk-cat">Tools</div>
         <div class="chips">
-          <span class="chip hi">QGIS</span>
-          <span class="chip">Firebase</span>
+          <a href="https://qgis.org" class="chip hi" target="_blank" rel="noopener noreferrer">QGIS</a>
+          <a href="https://firebase.google.com" class="chip" target="_blank" rel="noopener noreferrer">Firebase</a>
         </div>
       </div>
     </div>
