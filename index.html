@@ -407,10 +407,13 @@ section:last-child { border: none; }
 /* ─── HERO ─── */
 #hero {
   min-height: calc(100vh - 64px);
-  display: flex; align-items: center;
+  display: flex; align-items: flex-start;
   border-bottom: 1px solid var(--border);
+  padding: 2rem 0;
+  justify-content: center;
+  
 }
-.hero-wrap { padding: 60px 0; }
+.hero-wrap {padding: clamp(10px, 3vh, 40px) 0;}
 .hero-eyebrow {
   font-family: 'Fira Code', monospace;
   font-size: .7rem; color: var(--muted);
@@ -424,7 +427,7 @@ section:last-child { border: none; }
   animation: upIn .7s cubic-bezier(.16,1,.3,1) 2.6s forwards;
 }
 .hero-title {
-  font-size: clamp(3.5rem, 8vw, 6.5rem);
+  font-size: clamp(2.5rem, 5vw, 6.5rem);
   font-weight: 800; letter-spacing: -.045em;
   line-height: 1.02; color: var(--text);
   margin-bottom: 2rem;
@@ -1273,7 +1276,7 @@ footer {
     <div class="hero-eyebrow"><span>// Computer Engineer</span></div>
     <h1 class="hero-title">
       <span class="hero-line">
-        <span class="hero-line-in"><span class="thin">I</span> build things</span>
+        <span class="hero-line-in"><span class="thin">I</span> build things,</span>
       </span>
 
       <span class="hero-line">
@@ -1281,14 +1284,14 @@ footer {
       </span>
 
       <span class="hero-line">
-        <span class="hero-line-in"><span class="thin">why they</span> fail.</span>
+        <span class="hero-line-in"><span class="thin">& learn why they</span> fail.</span>
       </span>
     </h1>
     <div class="hero-sub">
       <span class="hero-sub-role">Linux · Python · DevOps · Cloud</span>
       <span class="hero-avail"><span class="avail-dot"></span>Available for hire</span>
     </div>
-    <p class="hero-desc">Computer Engineering graduate (July 2025) focused on automation, infrastructure, and reliable systems.</p>
+    <p class="hero-desc">Focused on cloud infrastructure, automation, and reliable systems.</p>
     <div class="hero-btns">
       <a href="#projects" class="btn btn-fill"><span>View Projects</span></a>
       <a href="#contact" class="btn btn-stroke">Get in Touch</a>
