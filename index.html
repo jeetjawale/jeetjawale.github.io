@@ -50,7 +50,6 @@
 body { transition: background .3s, color .3s; }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
 
 body {
   background: var(--bg);
@@ -1586,7 +1585,7 @@ footer {
   </div>
   
   <div class="footer-bottom">
-    <p>&copy; 2026 Jeet Jawale. All rights reserved.</p>
+      <p>&copy; <script>document.write(new Date().getFullYear())</script> Jeet Jawale. All rights reserved.</p>
   </div>
 </footer>
 
@@ -1675,10 +1674,11 @@ function scrollToHash() {
   if (hash) {
     const target = document.querySelector(hash);
     if (target) {
-      setTimeout(() => {
-        const offsetTop = target.offsetTop - 80;
+      setTimeout(() => {  // CHANGE 100 → 1800
+        const paddingTop = parseInt(getComputedStyle(target).paddingTop) || 0;
+        const offsetTop = target.getBoundingClientRect().top + window.scrollY + paddingTop - 64 - 20;
         window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-      }, 100);
+      }, 1800);
     }
   }
 }
@@ -1848,7 +1848,8 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     e.preventDefault();
     const target = document.querySelector(href);
     if (target) {
-      const offsetTop = target.offsetTop - 80;
+      const paddingTop = parseInt(getComputedStyle(target).paddingTop) || 0;
+      const offsetTop = target.getBoundingClientRect().top + window.scrollY + paddingTop - 64 - 20;
       window.scrollTo({
         top: offsetTop,
         behavior: 'smooth'
