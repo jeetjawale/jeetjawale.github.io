@@ -284,6 +284,13 @@ nav.scrolled {
   opacity: 1;
   transform: translateY(0);
 }
+.mobile-menu::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: -1;
+}
 .mobile-menu ul {
   list-style: none;
   display: flex;
@@ -412,7 +419,7 @@ section:last-child { border: none; }
   justify-content: center;
   
 }
-.hero-wrap {padding: clamp(10px, 3vh, 40px) 0;}
+.hero-wrap {padding: clamp(10px, 3vh, 40px) 0; position: relative;}
 .hero-eyebrow {
   font-family: 'Fira Code', monospace;
   font-size: .7rem; color: var(--muted);
@@ -466,10 +473,23 @@ section:last-child { border: none; }
   font-weight: 300; margin-bottom: 2.5rem;
   opacity: 0; animation: fadeUp .6s ease 3.4s forwards;
 }
-.hero-btns {
-  display: flex; gap: .8rem; flex-wrap: wrap;
-  opacity: 0; animation: fadeUp .6s ease 3.5s forwards;
+.hero-scroll-hint {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.2rem;
+  color: var(--muted);
+  opacity: 0;
+  animation: fadeIn 1s ease 4.5s forwards, bounce 2s ease 4.5s infinite;
 }
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(6px); }
+}
+@keyframes fadeIn { to { opacity: 0.5; } }
+
+
 .btn {
   font-size: .75rem; font-weight: 600;
   letter-spacing: .06em; text-transform: uppercase;
@@ -791,6 +811,23 @@ section:last-child { border: none; }
   outline-offset: 2px;
   color: var(--ink);
 }
+.proj-view-all {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: 1.5rem 0;
+  border-top: 1px dashed var(--border2);
+  text-decoration: none;
+  color: var(--muted);
+  font-size: .8rem;
+  transition: color .25s, gap .3s cubic-bezier(.16,1,.3,1);
+}
+.proj-view-all:hover {
+  color: var(--ink);
+  gap: .8rem;
+}
+.proj-view-all-text { font-family: 'Fira Code', monospace; }
+.proj-view-all-arrow { font-size: .9rem; }
 
 /* ─── BLOG ─── */
 .blog-item {
@@ -834,6 +871,23 @@ section:last-child { border: none; }
   flex-shrink: 0;
 }
 .blog-item:hover .blog-arr { transform: translate(5px,-5px); color: var(--ink); }
+.blog-meta {
+  font-size: .68rem; color: var(--muted);
+  margin-top: .4rem; font-family: 'Fira Code', monospace;
+  opacity: 0.7;
+}
+.blog-view-all {
+  border-top: 1px dashed var(--border2);
+  margin-top: .5rem;
+}
+.blog-view-all:hover {
+  border-color: var(--ink);
+}
+.blog-view-all .blog-title {
+  color: var(--muted);
+  transition: color .2s;
+}
+.blog-view-all:hover .blog-title { color: var(--text); }
 
 /* ─── TESTIMONIALS ─── */
 .testimonial-grid {
@@ -1209,6 +1263,29 @@ footer {
 </style>
 </head>
 <body>
+<!-- SKIP TO CONTENT -->
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<style>
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 1rem;
+  background: var(--ink);
+  color: var(--bg);
+  padding: .75rem 1.25rem;
+  font-size: .75rem;
+  font-family: 'Fira Code', monospace;
+  text-decoration: none;
+  z-index: 9999;
+  transition: top .3s;
+}
+.skip-link:focus {
+  top: 1rem;
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+</style>
 
 <!-- CURSOR -->
 <div id="cur-wrap">
@@ -1267,7 +1344,7 @@ footer {
   <a href="#contact" class="mobile-menu-cta mobile-menu-link">Hire me</a>
 </div>
 
-<main>
+<main id="main">
 
 <!-- HERO -->
 <section id="hero">
@@ -1294,8 +1371,9 @@ footer {
     <div class="hero-btns">
       <a href="#projects" class="btn btn-fill"><span>View Projects</span></a>
       <a href="#contact" class="btn btn-stroke">Get in Touch</a>
-      <a href="https://rxresu.me/jeetj/resume" target="_blank" rel="noopener noreferrer" class="btn btn-stroke">View CV ↓</a>
+      <a href="https://rxresu.me/jeetj/resume" target="_blank" rel="noopener noreferrer" class="btn btn-stroke">View CV ↗</a>
     </div>
+    <div class="hero-scroll-hint" aria-hidden="true">↓</div>
   </div>
 </section>
 
@@ -1444,6 +1522,11 @@ footer {
           </div>
         </div>
       </div>
+      <!-- View all projects -->
+      <a href="https://github.com/jeetjawale" target="_blank" rel="noopener noreferrer" class="proj-view-all">
+        <span class="proj-view-all-text">View all projects on GitHub</span>
+        <span class="proj-view-all-arrow">↗</span>
+      </a>
     </div>
   </div>
 </section>
@@ -1603,18 +1686,25 @@ footer {
       blogItem.href = `blog/${post.id}.html`;
       blogItem.className = 'blog-item';
       blogItem.innerHTML = `
-        <div><div class="blog-cat">${post.category}</div><div class="blog-title">${post.title}</div></div>
+        <div>
+          <div class="blog-cat">${post.category}</div>
+          <div class="blog-title">${post.title}</div>
+          <div class="blog-meta">${post.date} · ${post.readTime}</div>
+        </div>
         <div class="blog-arr">↗</div>
       `;
       blogList.appendChild(blogItem);
     });
-    
-    // Add "View all" link
+
+    // Add "View all" link - distinct styling
     const viewAllItem = document.createElement('a');
     viewAllItem.href = 'blog/blog.html';
-    viewAllItem.className = 'blog-item';
+    viewAllItem.className = 'blog-item blog-view-all';
     viewAllItem.innerHTML = `
-      <div><div class="blog-cat">Blog</div><div class="blog-title">View all blog posts →</div></div>
+      <div>
+        <div class="blog-cat"><i class="fa-solid fa-pen-nib"></i> More writing</div>
+        <div class="blog-title">View all blog posts</div>
+      </div>
       <div class="blog-arr">↗</div>
     `;
     blogList.appendChild(viewAllItem);
@@ -1867,8 +1957,15 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 /* ── BACK TO TOP ── */
 const backToTop = document.getElementById('back-to-top');
+const heroScrollHint = document.querySelector('.hero-scroll-hint');
+let scrolledOnce = false;
 window.addEventListener('scroll', () => {
   backToTop?.classList.toggle('visible', window.scrollY > 500);
+  if (!scrolledOnce && window.scrollY > 100) {
+    scrolledOnce = true;
+    heroScrollHint?.style.setProperty('opacity', '0');
+    heroScrollHint?.style.setProperty('transition', 'opacity .5s ease');
+  }
 }, { passive: true });
 
 backToTop?.addEventListener('click', () => {
