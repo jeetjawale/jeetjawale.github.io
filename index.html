@@ -409,13 +409,11 @@ section:last-child { border: none; }
 /* ─── HERO ─── */
 #hero {
   min-height: calc(100vh - 64px);
-  display: flex; align-items: flex-start;
   border-bottom: 1px solid var(--border);
-  padding: 2rem 0;
-  justify-content: center;
-  
+  display: grid;
+  align-content: center;
 }
-.hero-wrap {padding: clamp(10px, 3vh, 40px) 0; position: relative;}
+.hero-wrap { position: relative; width: 100%; }
 .hero-eyebrow {
   font-family: 'Fira Code', monospace;
   font-size: .68rem; color: var(--muted);
@@ -465,7 +463,7 @@ section:last-child { border: none; }
 }
 @keyframes dotPulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(.5);opacity:.3} }
 .hero-desc {
-  max-width: 480px; font-size: .95rem;
+  max-width: 800px; font-size: .95rem;
   color: var(--muted); line-height: 1.9;
   font-weight: 300; margin-bottom: 2.75rem;
   opacity: 0; animation: fadeUp .6s ease 2.7s forwards;
@@ -840,7 +838,6 @@ section:last-child { border: none; }
   text-decoration: none; position: relative;
   transform: translateX(-16px); opacity: 0;
   transition: transform .6s cubic-bezier(.16,1,.3,1), opacity .6s ease;
-  overflow: hidden;
 }
 .blog-item::before {
   content: '';
@@ -1494,11 +1491,15 @@ footer {
     <div class="hero-eyebrow"><span>// Computer Engineer</span></div>
     <h1 class="hero-title">
       <span class="hero-line">
-        <span class="hero-line-in">Engineering</span>
+        <span class="hero-line-in">Build.</span>
       </span>
 
       <span class="hero-line">
-        <span class="hero-line-in">Reliable Systems.</span>
+        <span class="hero-line-in">Break.</span>
+      </span>
+
+      <span class="hero-line">
+        <span class="hero-line-in">Improve.</span>
       </span>
     </h1>
     <div class="hero-sub">
