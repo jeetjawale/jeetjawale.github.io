@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Daily Driver: Fedora KDE Plasma - Jeet Jawale</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
 <meta name="description" content="Why I chose Fedora KDE Plasma as my daily driver, how I use Podman for containers, and what this setup taught me about Linux internals.">
 <meta property="og:title" content="My Daily Driver: Fedora KDE Plasma as a Computer Engineering Graduate">
 <meta property="og:description" content="Why I chose Fedora KDE Plasma as my daily driver, how I use Podman for containers, and what this setup taught me about Linux internals.">
@@ -22,27 +23,36 @@
 <style>
 :root {
   --bg: #ffffff;
-  --bg2: #f7f7f7;
-  --border: #e8e8e8;
-  --border2: #d0d0d0;
-  --text: #0a0a0a;
-  --muted: #777;
-  --mid: #444;
-  --code-bg: #f5f5f5;
-  --code-border: #e0e0e0;
+  --bg2: #fafafa;
+  --border: #eeeeee;
+  --border2: #d8d8d8;
+  --text: #111111;
+  --muted: #888888;
+  --mid: #555555;
+  --accent: #111111;
+  --surface: #f5f5f5;
+  --ink: #111111;
+  --ink-muted: #444444;
+  --nav-bg: rgba(255,255,255,.96);
+  --code-bg: #fafafa;
+  --code-border: #eeeeee;
 }
 
 [data-theme="dark"] {
-  --bg: #0a0a0a;
-  --bg2: #1a1a1a;
-  --border: #2a2a2a;
-  --border2: #404040;
-  --text: #f0f0f0;
-  --muted: #999;
-  --mid: #bbb;
-  --ink: #f0f0f0;
-  --code-bg: #1a1a1a;
-  --code-border: #2a2a2a;
+  --bg: #0d0d0d;
+  --bg2: #141414;
+  --border: #222222;
+  --border2: #333333;
+  --text: #e8e8e8;
+  --muted: #888888;
+  --mid: #aaaaaa;
+  --accent: #e8e8e8;
+  --surface: #1a1a1a;
+  --ink: #e8e8e8;
+  --ink-muted: #aaaaaa;
+  --nav-bg: rgba(13,13,13,.96);
+  --code-bg: #141414;
+  --code-border: #222222;
 }
 
 body { 
@@ -50,508 +60,267 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: 'Fira Code', monospace;
-  font-size: 16px;
-  line-height: 1.8;
+  font-size: 19px;
+  line-height: 1.75;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
+
+/* ─── GLOBAL FOCUS RESET ─── */
+:focus:not(:focus-visible) {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 
 /* ─── SCROLLBAR ─── */
 * { scrollbar-width: none; }
 ::-webkit-scrollbar { width: 0; height: 0; }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* ─── PROGRESS ─── */
+#progress {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 2px; background: transparent; z-index: 500;
+}
+#progress-fill {
+  height: 100%; width: 0%;
+  background: var(--ink);
+  transition: width .08s linear;
+}
 
 /* ─── BREADCRUMB ─── */
 .breadcrumb {
-  display: flex;
-  gap: .5rem;
-  align-items: center;
-  font-size: .8rem;
-  color: var(--muted);
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
+  display: flex; gap: .5rem; align-items: center;
+  font-size: .75rem; color: var(--muted);
+  margin-bottom: 2rem; padding-bottom: 1rem;
   border-bottom: 1px solid var(--border);
+  letter-spacing: .02em;
 }
 
-.breadcrumb a {
-  color: var(--muted);
-  text-decoration: none;
-  transition: color .2s;
-}
-
-.breadcrumb a:hover {
-  color: var(--text);
-}
-
-.breadcrumb span { color: var(--muted); }
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color .2s; }
+.breadcrumb a:hover { color: var(--text); }
 
 /* ─── NAV ─── */
 nav {
-  position: sticky;
-  top: 0;
-  z-index: 400;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  position: fixed; top: 0; width: 100%; z-index: 400;
+  height: 64px; display: flex; align-items: center; justify-content: space-between;
   padding: 0 clamp(2rem, 6vw, 5rem);
-  background: var(--bg2);
-  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0);
+  border-bottom: 1px solid transparent;
+  transition: background .5s, border-color .5s, backdrop-filter .5s;
 }
 
-.nav-logo {
-  font-weight: 700;
-  font-size: 1rem;
-  color: var(--text);
-  text-decoration: none;
+nav.scrolled {
+  background: var(--nav-bg);
+  border-color: var(--border);
+  backdrop-filter: blur(20px);
 }
+
+.nav-logo { font-weight: 700; font-size: 1rem; color: var(--text); text-decoration: none; }
+
+.nav-links { display: flex; gap: 1.8rem; list-style: none; }
+.nav-links a {
+  font-size: .82rem; color: var(--muted);
+  text-decoration: none; letter-spacing: .02em;
+  transition: color .2s; position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute; bottom: -2px; left: 0;
+  width: 0; height: 1px; background: var(--text);
+  transition: width .35s cubic-bezier(.16,1,.3,1);
+}
+.nav-links a:hover { color: var(--text); }
+.nav-links a:hover::after { width: 100%; }
+.nav-links a.active { color: var(--text); }
+.nav-links a.active::after { width: 100%; }
 
 .nav-back {
-  font-size: .75rem;
-  color: var(--bg);
+  font-size: .72rem; font-weight: 600;
+  padding: .55rem 1.2rem; letter-spacing: .05em;
   text-decoration: none;
-  padding: .65rem 1.4rem;
-  border: none;
-  background: var(--text);
-  border-radius: 4px;
-  transition: all .25s;
-  font-weight: 600;
-  letter-spacing: .05em;
+  background: var(--ink); color: var(--bg);
+  transition: background .25s, transform .25s;
 }
-
-.nav-back:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,.15);
-}
+.nav-back:hover { background: var(--ink-muted); transform: translateY(-1px); }
 
 /* ─── MAIN ─── */
 main {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 4rem clamp(2rem, 6vw, 6rem) 4rem;
+  padding-top: 140px;
+  max-width: 1100px; margin: 0 auto;
+  padding-left: 2rem; padding-right: 2rem;
+  padding-bottom: 4rem;
+  display: grid; grid-template-columns: 1fr 280px; gap: 4rem;
+  align-items: start;
 }
 
-.article-header {
-  margin-bottom: 3rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid var(--border);
+@media (max-width: 900px) {
+  main { grid-template-columns: 1fr; gap: 2rem; padding-top: 120px; }
 }
 
-.article-date {
-  font-size: .8rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: .1em;
-  margin-bottom: .5rem;
-}
-
-.article-title {
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 800;
-  letter-spacing: -.02em;
-  line-height: 1.2;
-  margin-bottom: 1rem;
-}
-
-.article-meta {
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-  font-size: .85rem;
-  color: var(--muted);
-}
-
-.word-count {
-  font-size: .8rem;
-  color: var(--muted);
-}
+.article-header { margin-bottom: 4rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+.article-date { font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; margin-bottom: .8rem; }
+.article-title { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 1.5rem; color: var(--text); }
+.article-meta { display: flex; gap: 2.5rem; flex-wrap: wrap; font-size: .85rem; color: var(--muted); }
 
 /* ─── TABLE OF CONTENTS ─── */
-.toc {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 1.5rem;
-  margin: 3rem 0;
-  font-size: .85rem;
-}
-
-.toc-title {
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: var(--text);
-  font-size: .9rem;
-}
-
-.toc ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.toc li {
-  margin-bottom: .5rem;
-}
-
-.toc a {
-  color: var(--muted);
-  text-decoration: none;
-  transition: color .2s;
-}
-
-.toc a:hover {
-  color: var(--text);
-}
-
-.toc li.toc-h3 {
-  margin-left: 1.2rem;
-}
+.toc { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: 1.5rem; font-size: .8rem; position: sticky; top: 100px; }
+@media (max-width: 900px) { .toc { position: static; margin: 2rem 0; } }
+.toc-title { font-weight: 600; margin-bottom: 1.2rem; color: var(--text); font-size: .85rem; text-transform: uppercase; letter-spacing: .05em; }
+.toc ul { list-style: none; }
+.toc li { margin-bottom: .6rem; }
+.toc a { color: var(--muted); text-decoration: none; transition: color .2s; }
+.toc a:hover { color: var(--text); }
+.toc li.toc-h3 { margin-left: 1.2rem; font-size: .75rem; }
 
 /* ─── CONTENT ─── */
-article {
-  font-size: .95rem;
-  color: var(--muted);
-  line-height: 1.85;
-}
+article { font-size: 1rem; color: var(--muted); line-height: 1.8; font-weight: 300; }
+article h2 { font-size: 1.6rem; font-weight: 600; margin: 3.5rem 0 1.2rem; color: var(--text); letter-spacing: -.02em; scroll-margin-top: 100px; }
+article h3 { font-size: 1.2rem; font-weight: 600; margin: 2.5rem 0 1rem; color: var(--text); letter-spacing: -.01em; }
+article p { margin-bottom: 1.8rem; }
+article ul, article ol { margin-left: 1.2rem; margin-bottom: 1.8rem; list-style: none; }
+article li { margin-bottom: 0.7rem; position: relative; padding-left: 1.5rem; }
+article li::before { content: '▹'; position: absolute; left: 0; color: var(--border2); }
+article strong { color: var(--text); font-weight: 500; }
+article code { background: var(--code-bg); padding: .2rem .4rem; border-radius: 3px; color: var(--text); font-size: .85rem; border: 1px solid var(--code-border); }
 
-article h2 {
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin: 2.5rem 0 1rem;
-  color: var(--text);
-  scroll-margin-top: 80px;
+/* ─── CODE BLOCKS ─── */
+article pre { 
+  background: var(--code-bg); 
+  padding: 1.5rem; 
+  border: 1px solid var(--code-border); 
+  border-radius: 4px; 
+  overflow-x: auto; 
+  margin: 2.5rem 0; 
+  position: relative; 
 }
+article pre code { background: none; padding: 0; border: none; font-size: .85rem; line-height: 1.6; }
 
-article h3 {
-  font-size: 1.3rem;
-  font-weight: 700;
-  margin: 2rem 0 0.8rem;
-  color: var(--text);
+.copy-btn {
+  position: absolute; top: 0.75rem; right: 0.75rem;
+  background: var(--bg); border: 1px solid var(--border);
+  color: var(--muted); padding: 0.4rem 0.7rem;
+  font-size: 0.65rem; font-family: inherit;
+  cursor: pointer; opacity: 0; transition: all 0.2s;
+  text-transform: uppercase; letter-spacing: 0.05em;
 }
+article pre:hover .copy-btn { opacity: 1; }
+.copy-btn:hover { border-color: var(--text); color: var(--text); }
+.copy-btn.copied { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 
-article p {
-  margin-bottom: 1.5rem;
-}
-
-article ul,
-article ol {
-  margin-left: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-article li {
-  margin-bottom: 0.5rem;
-}
-
-article code {
-  background: var(--code-bg);
-  padding: .2rem .4rem;
-  border-radius: 3px;
-  color: var(--text);
-  font-family: 'Fira Code', monospace;
-  font-size: .85rem;
-  border: 1px solid var(--code-border);
-}
-
-article pre {
-  background: var(--code-bg);
-  padding: 1.5rem;
-  border: 1px solid var(--code-border);
-  border-radius: 6px;
-  overflow-x: auto;
-  margin: 2rem 0;
-  position: relative;
-}
-
-article pre::before {
-  content: '{ }';
-  position: absolute;
-  top: .75rem;
-  right: 1rem;
-  font-size: .7rem;
-  color: var(--border2);
-  opacity: .6;
-}
-
-article pre code {
-  background: none;
-  padding: 0;
-  color: var(--text);
-  border: none;
-  font-size: .85rem;
-  line-height: 1.6;
-}
-
-article strong {
-  color: var(--text);
-  font-weight: 600;
-}
-
-article blockquote {
-  border-left: 3px solid var(--border2);
-  padding-left: 1.5rem;
-  margin: 2rem 0;
-  color: var(--muted);
-  font-style: italic;
-}
+article blockquote { border-left: 2px solid var(--border2); padding-left: 1.5rem; margin: 2.5rem 0; color: var(--mid); font-style: italic; }
 
 /* ─── SOCIAL SHARE ─── */
-.social-share {
-  display: flex;
-  gap: 1rem;
-  margin: 3rem 0;
-  padding: 2rem 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  align-items: center;
+.social-share { display: flex; gap: 1rem; margin: 4rem 0; padding: 2.5rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); align-items: center; flex-wrap: wrap; }
+.share-label { font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-right: 0.5rem; }
+.share-btn { 
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: 4px; border: 1px solid var(--border);
+  color: var(--muted); text-decoration: none; transition: all .2s; background: var(--bg2);
 }
-
-.share-label {
-  font-size: .85rem;
-  color: var(--muted);
-  margin-right: 1rem;
-}
-
-.share-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: .5rem;
-  padding: .5rem 1rem;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  color: var(--text);
-  text-decoration: none;
-  font-size: .8rem;
-  transition: all .2s;
-}
-
-.share-btn:hover {
-  background: var(--text);
-  color: var(--bg);
-  border-color: var(--text);
-}
-
-/* ─── RELATED POSTS ─── */
-.related-section {
-  margin-top: 4rem;
-  padding-top: 3rem;
-  border-top: 1px solid var(--border);
-}
-
-.related-title {
-  font-size: 1.3rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  color: var(--text);
-}
-
-.related-posts {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-
-.related-card {
-  padding: 1.5rem;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  text-decoration: none;
-  color: var(--muted);
-  transition: all .2s;
-  display: flex;
-  flex-direction: column;
-}
-
-.related-card:hover {
-  border-color: var(--text);
-  transform: translateY(-2px);
-}
-
-.related-card-title {
-  color: var(--text);
-  margin-bottom: .5rem;
-  font-size: .95rem;
-  font-weight: 600;
-}
-
-.related-card-meta {
-  font-size: .75rem;
-  color: var(--muted);
-}
+.share-btn:hover { border-color: var(--text); color: var(--text); transform: translateY(-2px); }
+.share-btn i { font-size: 1rem; }
 
 /* ─── FOOTER ─── */
 footer {
   border-top: 1px solid var(--border);
-  padding: 2rem clamp(2rem, 8vw, 10rem);
+  padding: 1.5rem 0;
   background: var(--bg2);
 }
 
 .footer-content {
-  max-width: 1200px;
+  max-width: 960px;
   margin: 0 auto;
-  text-align: center;
+  padding: 0 clamp(3rem, 7vw, 6rem);
 }
 
-.footer-socials {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 1.5rem;
-}
-
-.footer-social {
-  color: var(--muted);
-  text-decoration: none;
-  font-size: .85rem;
-  padding: .5rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  transition: all .2s;
-  background: transparent;
-}
-
-.footer-social:hover {
-  background: var(--text);
-  border-color: var(--text);
-  color: var(--bg);
-  transform: translateY(-2px);
-}
-
-.footer-content p {
-  color: var(--muted);
-  font-size: .85rem;
-  margin: 0;
-}
-
-.theme-toggle {
-  background: transparent;
-  border: 1px solid var(--border);
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+.footer-name {
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: -.03em;
   color: var(--text);
-  transition: all .25s;
+  margin-bottom: 0.1rem;
 }
 
-.theme-toggle:hover {
-  border-color: var(--text);
+.footer-desc {
+  color: var(--muted);
+  font-size: .8rem;
+  line-height: 1.4;
+  font-weight: 300;
 }
 
-@media (max-width: 680px) {
-  nav {
-    height: 50px;
-  }
-  
-  .nav-back {
-    padding: .5rem 1rem;
-    font-size: .7rem;
-  }
-  
-  .related-posts {
-    grid-template-columns: 1fr;
-  }
-  
-  .social-share {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.footer-bottom {
+  max-width: 960px;
+  margin: 1rem auto 0;
+  padding: 1rem clamp(3rem, 7vw, 6rem) 0;
+  border-top: 1px solid var(--border);
 }
 
-/* ─── BACK TO TOP ─── */
-.back-to-top {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  width: 50px;
-  height: 50px;
-  background: var(--text);
-  color: var(--bg);
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  z-index: 300;
-  opacity: 0;
-  visibility: hidden;
-  transition: all .3s cubic-bezier(.16,1,.3,1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+.footer-bottom p {
+  color: var(--muted);
+  font-size: .75rem;
+  letter-spacing: .02em;
 }
-.back-to-top.visible {
-  opacity: 1;
-  visibility: visible;
-}
-.back-to-top:hover {
-  background: var(--mid);
-  transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(0,0,0,.2);
-}
-.back-to-top:focus {
-  outline: 2px solid var(--text);
-  outline-offset: 2px;
-}
+
+.theme-toggle { background: transparent; border: none; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; color: var(--muted); transition: color .25s, transform .25s; }
+.theme-toggle:hover { color: var(--text); transform: rotate(12deg); }
+
+.back-to-top { position: fixed; bottom: 2rem; right: 2rem; width: 50px; height: 50px; background: var(--bg); color: var(--text); border: 1px solid var(--border2); font-size: 1.1rem; cursor: pointer; z-index: 300; opacity: 0; visibility: hidden; transition: all .3s; display: flex; align-items: center; justify-content: center; }
+.back-to-top.visible { opacity: 1; visibility: visible; }
+.back-to-top:hover { border-color: var(--ink); transform: translateY(-3px); }
 </style>
 </head>
 <body>
 
+<!-- PROGRESS -->
+<div id="progress"><div id="progress-fill"></div></div>
+
 <!-- NAV -->
-<nav>
-  <a href="../index.html" class="nav-logo">Jeet</a>
-  <a href="./blog.html" class="nav-back">← Back to Blog</a>
-  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☾</button>
+<nav id="nav">
+  <a href="../index.html" class="nav-logo">JJ.</a>
+  <ul class="nav-links">
+    <li><a href="../index.html#about">About</a></li>
+    <li><a href="../index.html#experience">Experience</a></li>
+    <li><a href="../index.html#projects">Projects</a></li>
+    <li><a href="./blog.html" class="active">Blog</a></li>
+  </ul>
+  <div style="display: flex; align-items: center; gap: .8rem;">
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☾</button>
+    <a href="../index.html#contact" class="nav-back">Hire me</a>
+  </div>
 </nav>
 
 <main>
-  <!-- BREADCRUMB -->
-  <div class="breadcrumb">
-    <a href="../index.html">Home</a>
-    <span>/</span>
-    <a href="./blog.html">Blog</a>
-    <span>/</span>
-    <span>My Daily Driver: Fedora KDE Plasma</span>
-  </div>
-
-  <div class="article-header">
-    <div class="article-date">February 27, 2026</div>
-    <h1 class="article-title">🐧 My Daily Driver: Fedora KDE Plasma as a Computer Engineering Graduate</h1>
-    <div class="article-meta">
-      <span>10 min read</span>
-      <span>Linux</span>
-      <span class="word-count" id="word-count"></span>
+  <div class="article-content">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a>
+      <span>/</span>
+      <a href="./blog.html">Blog</a>
+      <span>/</span>
+      <span>Fedora KDE</span>
     </div>
-  </div>
 
-  <!-- TABLE OF CONTENTS -->
-  <div class="toc">
-    <div class="toc-title">Table of Contents</div>
-    <ul id="toc-list">
-      <!-- Will be populated by JavaScript -->
-    </ul>
-  </div>
+    <div class="article-header">
+      <div class="article-date">February 27, 2026</div>
+      <h1 class="article-title">My Daily Driver: Fedora KDE Plasma as a Computer Engineering Graduate</h1>
+      <div class="article-meta">
+        <span>10 min read</span>
+        <span>Linux</span>
+        <span id="word-count"></span>
+      </div>
+    </div>
 
-  <!-- SOCIAL SHARE -->
-  <div class="social-share">
-    <span class="share-label">Share:</span>
-    <a href="#" class="share-btn" id="share-twitter">
-      <span>Twitter</span>
-    </a>
-    <a href="#" class="share-btn" id="share-linkedin">
-      <span>LinkedIn</span>
-    </a>
-    <a href="#" class="share-btn" id="share-copy">
-      <span>Copy Link</span>
-    </a>
-  </div>
+    <div class="social-share">
+      <span class="share-label">Share</span>
+      <a href="#" class="share-btn" id="share-twitter" title="Share on Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+      <a href="#" class="share-btn" id="share-linkedin" title="Share on LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+      <a href="#" class="share-btn" id="share-copy" title="Copy Link"><i class="fa-solid fa-link"></i></a>
+    </div>
 
-  <article>
+    <article>
     <p>As a Computer Engineering graduate, I don't see an operating system as just a tool — I see it as a learning environment. Over the past few years, I experimented with Ubuntu, Arch Linux, Debian, RHEL, and Pop!_OS. Each distribution taught me something different about Linux internals, package management, and system architecture.</p>
 
     <p>After all that experimentation, I finally settled on <strong>Fedora Linux (KDE Spin)</strong> as my daily driver.</p>
@@ -564,48 +333,16 @@ footer {
       <li>How this setup supports my development and DevOps learning</li>
     </ul>
 
-    <h2>🐧 What is Fedora?</h2>
-    <p>Fedora Linux is a community-driven Linux distribution sponsored by Red Hat.</p>
-    
-    <p><strong>Key characteristics:</strong></p>
-    <ul>
-      <li>Upstream-first development model</li>
-      <li>Modern Linux kernel versions</li>
-      <li>Strong default security policies</li>
-      <li>Rapid but stable release cycle</li>
-      <li>Close alignment with enterprise Linux</li>
-    </ul>
+    <h2 id="what-is-fedora">🐧 What is Fedora?</h2>
+    <p>Fedora Linux is a community-driven Linux distribution sponsored by Red Hat. It serves as the upstream for <strong>Red Hat Enterprise Linux</strong>. Many technologies used in enterprise environments are first tested and refined in Fedora. For someone aiming toward system engineering or DevOps roles, that alignment matters.</p>
 
-    <p>Fedora serves as the upstream for <strong>Red Hat Enterprise Linux</strong>. This means many technologies used in enterprise environments are first tested and refined in Fedora. For someone aiming toward system engineering or DevOps roles, that alignment matters.</p>
+    <h2 id="why-kde">💎 Why KDE Plasma?</h2>
+    <p>I chose the KDE Spin because of KDE Plasma's customizability, advanced window rules, and lightweight performance. As a developer, I constantly run multiple terminal sessions, inspect logs, and monitor services. KDE allows precise control without additional extensions.</p>
 
-    <h2>💎 Why KDE Plasma?</h2>
-    <p>I chose the KDE Spin because of KDE Plasma.</p>
-    
-    <p><strong>Why KDE works for me:</strong></p>
-    <ul>
-      <li>Highly customizable UI</li>
-      <li>Advanced window rules and tiling</li>
-      <li>Multiple virtual desktops</li>
-      <li>Lightweight and responsive</li>
-      <li>Deep system configuration panel</li>
-    </ul>
-
-    <p>As a developer, I constantly:</p>
-    <ul>
-      <li>Run multiple terminal sessions</li>
-      <li>Inspect logs</li>
-      <li>Monitor services</li>
-      <li>Switch workspaces quickly</li>
-    </ul>
-
-    <p>KDE allows precise control without additional extensions.</p>
-
-    <h2>🛠 My Development Environment</h2>
-    
+    <h2 id="dev-env">🛠 My Development Environment</h2>
     <h3>Programming Stack</h3>
     <ul>
       <li><strong>Python</strong> (automation & scripting)</li>
-      <li><strong>GCC</strong> (C/C++)</li>
       <li><strong>Git</strong> (version control)</li>
       <li><strong>VS Code</strong> (primary IDE)</li>
       <li><strong>Podman</strong> (containerization)</li>
@@ -614,152 +351,40 @@ footer {
     <h3>Daily Linux Tools</h3>
     <ul>
       <li><code>htop</code> – process monitoring</li>
-      <li><code>neovim</code> – quick terminal editing</li>
       <li><code>tmux</code> – persistent sessions</li>
       <li><code>dnf</code> – package management</li>
       <li><code>systemctl</code> – service control</li>
-      <li><code>journalctl</code> – system log inspection</li>
     </ul>
 
-    <p>Using these daily strengthens:</p>
-    <ul>
-      <li>Process-level understanding</li>
-      <li>Service lifecycle management</li>
-      <li>Log analysis skills</li>
-      <li>Debugging ability</li>
-    </ul>
+    <h2 id="podman">📦 Why I Use Podman Instead of Docker</h2>
+    <p>Fedora integrates deeply with <strong>Podman</strong>. Instead of installing Docker, I use Podman because of rootless containers by default and native systemd integration. Unlike Docker, there is no central daemon process; containers run as regular user processes.</p>
 
-    <h2>📦 Why I Use Podman Instead of Docker</h2>
-    <p>Fedora integrates deeply with <strong>Podman</strong>. Instead of installing Docker, I use Podman because:</p>
-    <ul>
-      <li>Rootless containers by default</li>
-      <li>No background daemon</li>
-      <li>Native systemd integration</li>
-      <li>OCI-compliant</li>
-    </ul>
+    <h2 id="internals">🧠 What Fedora Taught Me About Linux Internals</h2>
+    <p>Using Fedora daily improved my understanding of systemd targets, boot sequence behavior, kernel updates, and network configuration. Linux became less of a GUI OS and more of a structured, controllable system.</p>
 
-    <h3>What Makes Podman Architecturally Different?</h3>
-    <p>Unlike Docker:</p>
-    <ul>
-      <li>There is no central daemon process</li>
-      <li>Containers run as regular user processes</li>
-      <li>Security model is stronger in rootless mode</li>
-    </ul>
-
-    <p>This aligns with Fedora's security-first design.</p>
-
-    <p>Using Podman helped me better understand:</p>
-    <ul>
-      <li>Linux namespaces</li>
-      <li>cgroups</li>
-      <li>Image layering</li>
-      <li>Container networking</li>
-      <li>Process isolation</li>
-    </ul>
-
-    <p>Rather than just "running containers," I started understanding how they function internally.</p>
-
-    <h2>📦 Package Management Philosophy</h2>
-    <p>Fedora uses <code>dnf</code>. Compared to:</p>
-    <ul>
-      <li><code>apt</code> (Ubuntu/Debian)</li>
-      <li><code>pacman</code> (Arch)</li>
-    </ul>
-
-    <p>I find <code>dnf</code> provides:</p>
-    <ul>
-      <li>Clear dependency resolution</li>
-      <li>Stable yet modern packages</li>
-      <li>Less manual breakage compared to rolling release systems</li>
-    </ul>
-
-    <p>It strikes a balance between innovation and reliability.</p>
-
-    <h2>🔐 Security & Enterprise Readiness</h2>
-    <p>Fedora ships with:</p>
-
-    <h3>1️⃣ SELinux Enabled by Default</h3>
-    <p>Security-Enhanced Linux enforces mandatory access controls. Instead of disabling it, I learned to:</p>
-    <ul>
-      <li>Interpret audit logs</li>
-      <li>Understand security contexts</li>
-      <li>Work within policy constraints</li>
-    </ul>
-
-    <h3>2️⃣ FirewallD</h3>
-    <p>Zone-based firewall configuration.</p>
-    <p>These features mirror enterprise Linux deployments.</p>
-
-    <h2>🧠 What Fedora Taught Me About Linux Internals</h2>
-    <p>Using Fedora daily improved my understanding of:</p>
-    <ul>
-      <li>systemd targets and units</li>
-      <li>Boot sequence behavior</li>
-      <li>Kernel updates</li>
-      <li>User and permission models</li>
-      <li>Network configuration</li>
-      <li>Service dependency chains</li>
-    </ul>
-
-    <p>Linux became less of a GUI OS and more of a structured, controllable system.</p>
-
-    <h2>🆚 Why Not Ubuntu?</h2>
-    <p>Ubuntu is excellent for beginners and servers. However, for my workflow:</p>
-    <ul>
-      <li>I preferred newer kernel versions</li>
-      <li>I wanted KDE as a primary experience</li>
-      <li>I wanted closer exposure to Red Hat–style systems</li>
-    </ul>
-
-    <p>Fedora KDE felt cleaner, more configurable, and more aligned with my long-term goals.</p>
-
-    <h2>🚀 Career Impact</h2>
-    <p>Switching to Fedora KDE + Podman made me:</p>
-    <ul>
-      <li>More confident with terminal workflows</li>
-      <li>Comfortable debugging services</li>
-      <li>Familiar with container internals</li>
-      <li>Better prepared for DevOps and system roles</li>
-    </ul>
-
-    <p>It transformed Linux from a desktop environment into a professional engineering platform.</p>
-
-    <h2>🎯 Who Should Consider Fedora KDE?</h2>
-    <ul>
-      <li>Engineering students serious about Linux</li>
-      <li>Developers exploring containers</li>
-      <li>DevOps learners</li>
-      <li>Anyone wanting modern packages without full rolling-release maintenance</li>
-    </ul>
-
-    <h2>📈 Final Thoughts</h2>
-    <p>Fedora KDE Plasma provides:</p>
-    <ul>
-      <li>Modern software</li>
-      <li>Enterprise alignment</li>
-      <li>Strong security defaults</li>
-      <li>Deep customization</li>
-      <li>Clean development workflow</li>
-    </ul>
-
-    <p>For a Computer Engineering graduate building system-level expertise, it offers the right balance between experimentation and stability.</p>
+    <h2 id="final">🚀 Career Impact</h2>
+    <p>Switching to Fedora KDE + Podman made me more confident with terminal workflows and better prepared for DevOps roles. It transformed Linux from a desktop environment into a professional engineering platform.</p>
 
     <p><strong>It's not just my operating system. It's my engineering lab.</strong></p>
-  </article>
+    </article>
+  </div>
+
+  <aside class="toc">
+    <div class="toc-title">On this page</div>
+    <ul id="toc-list"></ul>
+  </aside>
 </main>
 
-<!-- BACK TO TOP -->
 <button class="back-to-top" id="back-to-top" aria-label="Back to top">↑</button>
 
 <footer>
   <div class="footer-content">
-    <div class="footer-socials">
-      <a href="https://github.com/jeetjawale" target="_blank" rel="noopener noreferrer" class="footer-social" title="GitHub">GitHub</a>
-      <a href="https://www.linkedin.com/in/jeetjawale" target="_blank" rel="noopener noreferrer" class="footer-social" title="LinkedIn">LinkedIn</a>
-      <a href="https://x.com/jeet_jawale" target="_blank" rel="noopener noreferrer" class="footer-social" title="Twitter/X">Twitter</a>
-      <a href="mailto:jeetjawale@zohomail.in" class="footer-social" title="Email">Email</a>
-    </div>
-    <p>&copy; 2026 Jeet Jawale. All rights reserved.</p>
+    <div class="footer-name">Jeet Jawale.</div>
+    <p class="footer-desc">Linux enthusiast. Coffee enthusiast. Always learning.</p>
+  </div>
+
+  <div class="footer-bottom">
+      <p>&copy; 2026 Jeet Jawale. All rights reserved.</p>
   </div>
 </footer>
 
@@ -778,75 +403,90 @@ themeToggle.addEventListener('click', () => {
   themeToggle.textContent = next === 'dark' ? '☀' : '☾';
 });
 
-// Calculate word count
+// Scroll animations
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('nav');
+  const pFill = document.getElementById('progress-fill');
+  const scrollPct = (window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100);
+  
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+  pFill.style.width = scrollPct + '%';
+}, { passive: true });
+
 function calculateWordCount() {
   const article = document.querySelector('article');
   const text = article.innerText;
   const wordCount = text.trim().split(/\s+/).length;
-  const readTime = Math.ceil(wordCount / 200); // Assuming 200 words per minute
   document.getElementById('word-count').textContent = `${wordCount.toLocaleString()} words`;
-  return wordCount;
 }
 
-// Generate table of contents
 function generateTOC() {
   const article = document.querySelector('article');
   const headings = article.querySelectorAll('h2, h3');
   const tocList = document.getElementById('toc-list');
-  
   headings.forEach((heading, index) => {
     heading.id = heading.id || `heading-${index}`;
     const li = document.createElement('li');
     li.className = heading.tagName === 'H3' ? 'toc-h3' : '';
     const a = document.createElement('a');
     a.href = `#${heading.id}`;
-    a.textContent = heading.textContent;
+    a.textContent = heading.textContent.replace(/^[^\s]+\s/, ''); // Remove emoji for TOC
     li.appendChild(a);
     tocList.appendChild(li);
   });
 }
 
-// Social share buttons
-const postTitle = 'My Daily Driver: Fedora KDE Plasma as a Computer Engineering Graduate';
+// Code Copy Logic
+document.querySelectorAll('pre').forEach(block => {
+  const button = document.createElement('button');
+  button.className = 'copy-btn';
+  button.innerText = 'Copy';
+  block.appendChild(button);
+
+  button.addEventListener('click', () => {
+    const code = block.querySelector('code');
+    navigator.clipboard.writeText(code.innerText).then(() => {
+      button.innerText = 'Copied!';
+      button.classList.add('copied');
+      setTimeout(() => {
+        button.innerText = 'Copy';
+        button.classList.remove('copied');
+      }, 2000);
+    });
+  });
+});
+
+const postTitle = 'My Daily Driver: Fedora KDE Plasma';
 const postUrl = window.location.href;
 
 document.getElementById('share-twitter')?.addEventListener('click', (e) => {
   e.preventDefault();
-  const text = `Check out: ${postTitle}`;
-  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(postUrl)}`, '_blank', 'width=550,height=420');
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(postTitle)}&url=${encodeURIComponent(postUrl)}`, '_blank');
 });
 
 document.getElementById('share-linkedin')?.addEventListener('click', (e) => {
   e.preventDefault();
-  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(postUrl)}`, '_blank', 'width=550,height=420');
+  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(postUrl)}`, '_blank');
 });
 
 document.getElementById('share-copy')?.addEventListener('click', (e) => {
   e.preventDefault();
   navigator.clipboard.writeText(postUrl).then(() => {
-    const btn = e.target.closest('.share-btn');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<span>Copied!</span>';
-    setTimeout(() => {
-      btn.innerHTML = originalText;
-    }, 2000);
+    const btn = e.target.closest('.share-btn') || e.target;
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+    setTimeout(() => btn.innerHTML = orig, 2000);
   });
 });
 
-// Initialize
 calculateWordCount();
 generateTOC();
 
-/* ── BACK TO TOP ── */
 const backToTop = document.getElementById('back-to-top');
 window.addEventListener('scroll', () => {
   backToTop?.classList.toggle('visible', window.scrollY > 500);
 }, { passive: true });
-
-backToTop?.addEventListener('click', () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
+backToTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 </script>
-
 </body>
 </html>

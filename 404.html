@@ -3,30 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>404 - Page Not Found</title>
+<title>404 - Jeet Jawale</title>
 <meta name="description" content="The page you're looking for doesn't exist.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👽</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #ffffff;
-  --bg2: #f7f7f7;
-  --border: #e8e8e8;
-  --border2: #d0d0d0;
-  --text: #0a0a0a;
-  --muted: #777;
-  --mid: #444;
+  --bg2: #fafafa;
+  --border: #eeeeee;
+  --border2: #d8d8d8;
+  --text: #111111;
+  --muted: #888888;
+  --mid: #555555;
+  --accent: #111111;
+  --surface: #f5f5f5;
+  --ink: #111111;
+  --ink-muted: #444444;
 }
 
 [data-theme="dark"] {
-  --bg: #0a0a0a;
-  --bg2: #1a1a1a;
-  --border: #2a2a2a;
-  --border2: #404040;
-  --text: #f0f0f0;
-  --muted: #999;
-  --mid: #bbb;
-  --ink: #f0f0f0;
+  --bg: #0d0d0d;
+  --bg2: #141414;
+  --border: #222222;
+  --border2: #333333;
+  --text: #e8e8e8;
+  --muted: #888888;
+  --mid: #aaaaaa;
+  --accent: #e8e8e8;
+  --surface: #1a1a1a;
+  --ink: #e8e8e8;
+  --ink-muted: #aaaaaa;
+}
+
+/* ─── GLOBAL FOCUS RESET ─── */
+:focus:not(:focus-visible) {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 * {
@@ -45,7 +58,10 @@ body {
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  font-size: 19px;
+  line-height: 1.75;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .container {
@@ -53,92 +69,99 @@ body {
   text-align: center;
 }
 
-.code {
-  font-size: clamp(5rem, 20vw, 15rem);
-  font-weight: 800;
-  letter-spacing: -.05em;
-  color: var(--mid);
-  margin-bottom: 1rem;
-  animation: float 3s ease-in-out infinite;
+.logo {
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: 4rem;
+  letter-spacing: -.03em;
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
+.code {
+  font-size: clamp(5rem, 15vw, 10rem);
+  font-weight: 700;
+  letter-spacing: -.05em;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+  line-height: 1;
 }
 
 h1 {
-  font-size: clamp(1.5rem, 5vw, 2.5rem);
-  font-weight: 700;
+  font-size: 1.25rem;
+  font-weight: 600;
   letter-spacing: -.02em;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   color: var(--text);
 }
 
 p {
-  font-size: 1rem;
+  font-size: .95rem;
   color: var(--muted);
-  line-height: 1.7;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
   font-weight: 300;
+  line-height: 1.8;
 }
 
 .nav {
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 3rem;
-}
-
-a {
-  font-size: .85rem;
-  text-decoration: none;
-  color: var(--muted);
-  display: inline-flex;
+  gap: 2rem;
   align-items: center;
-  gap: .4rem;
-  transition: color .2s;
-}
-
-a:hover {
-  color: var(--text);
+  justify-content: center;
 }
 
 .btn {
-  padding: .75rem 1.6rem;
-  background: var(--text);
+  padding: .8rem 1.75rem;
+  background: var(--ink);
   color: var(--bg);
+  font-size: .72rem;
   font-weight: 600;
-  letter-spacing: .05em;
+  letter-spacing: .08em;
+  text-transform: uppercase;
   border: none;
-  border-radius: 4px;
+  border-radius: 0;
   cursor: pointer;
-  font-family: 'Fira Code', monospace;
-  transition: all .2s;
+  font-family: inherit;
+  transition: all .35s cubic-bezier(.16,1,.3,1);
   text-decoration: none;
-  display: inline-block;
 }
 
 .btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  background: var(--ink-muted);
+  transform: translateY(-1px);
 }
 
-.message {
-  font-size: .9rem;
+.link {
+  font-size: .82rem;
   color: var(--muted);
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--border);
+  text-decoration: none;
+  transition: color .2s;
+  position: relative;
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--text);
+  transition: width .35s cubic-bezier(.16,1,.3,1);
+}
+
+.link:hover {
+  color: var(--text);
+}
+
+.link:hover::after {
+  width: 100%;
 }
 
 .theme-toggle {
   position: fixed;
   top: 2rem;
   right: 2rem;
-  background: var(--bg2);
-  border: 1px solid var(--border);
+  background: transparent;
+  border: none;
   width: 40px;
   height: 40px;
   display: flex;
@@ -146,28 +169,19 @@ a:hover {
   justify-content: center;
   cursor: pointer;
   font-size: 1.1rem;
-  color: var(--text);
-  transition: all .25s;
-  border-radius: 4px;
+  color: var(--muted);
+  transition: color .25s, transform .25s;
 }
 
 .theme-toggle:hover {
-  border-color: var(--text);
-  transform: scale(1.05);
+  color: var(--text);
+  transform: rotate(12deg);
 }
 
 @media (max-width: 680px) {
-  .container {
-    padding: 1rem;
-  }
-  
-  .code {
-    font-size: 4rem;
-  }
-  
   .nav {
     flex-direction: column;
-    gap: .5rem;
+    gap: 1.5rem;
   }
 }
 </style>
@@ -177,17 +191,14 @@ a:hover {
 <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☾</button>
 
 <div class="container">
+  <div class="logo">JJ.</div>
   <div class="code">404</div>
-  <h1>Page Not Found</h1>
-  <p>The page you're looking for has wandered off into the digital void. It might have been moved, deleted, or never existed.</p>
+  <h1>Built it. Broke it. Can't find it.</h1>
+  <p>The system couldn't locate the resource you were looking for. It might have been refactored, moved, or deleted during a deployment.</p>
   
   <div class="nav">
-    <a href="./index.html" class="btn">← Back Home</a>
-    <a href="./blog/blog.html">Read Blog</a>
-  </div>
-  
-  <div class="message">
-    <p>If you think this is a mistake, feel free to reach out via the contact form on my <a href="./index.html#contact">portfolio</a>.</p>
+    <a href="./index.html" class="btn">Back Home</a>
+    <a href="./blog/blog.html" class="link">Read Blog</a>
   </div>
 </div>
 
@@ -205,10 +216,6 @@ themeToggle.addEventListener('click', () => {
   localStorage.setItem('theme', next);
   themeToggle.textContent = next === 'dark' ? '☀' : '☾';
 });
-
-// Redirect to home if accessed via GitHub Pages
-if (window.location.pathname === '/404.html') {
-}
 </script>
 
 </body>
