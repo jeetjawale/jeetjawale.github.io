@@ -27,12 +27,12 @@
   --border: #eeeeee;
   --border2: #d8d8d8;
   --text: #111111;
-  --muted: #888888;
-  --mid: #555555;
+  --muted: #555555;
+  --mid: #444444;
   --accent: #111111;
   --surface: #f5f5f5;
   --ink: #111111;
-  --ink-muted: #444444;
+  --ink-muted: #333333;
   --nav-bg: rgba(255,255,255,.96);
   --code-bg: #fafafa;
   --code-border: #eeeeee;
@@ -91,28 +91,15 @@ html { scroll-behavior: smooth; }
   transition: width .08s linear;
 }
 
-/* ─── BREADCRUMB ─── */
-.breadcrumb {
-  display: flex; gap: .5rem; align-items: center;
-  font-size: .75rem; color: var(--muted);
-  margin-bottom: 2rem; padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border);
-  letter-spacing: .02em;
-}
-
-.breadcrumb a { color: var(--muted); text-decoration: none; transition: color .2s; }
-.breadcrumb a:hover { color: var(--text); }
-
 /* ─── NAV ─── */
 nav {
   position: fixed; top: 0; width: 100%; z-index: 400;
   height: 64px; display: flex; align-items: center; justify-content: space-between;
   padding: 0 clamp(2rem, 6vw, 5rem);
-  background: rgba(255,255,255,0);
-  border-bottom: 1px solid transparent;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
   transition: background .5s, border-color .5s, backdrop-filter .5s;
 }
-
 nav.scrolled {
   background: var(--nav-bg);
   border-color: var(--border);
@@ -138,6 +125,61 @@ nav.scrolled {
 .nav-links a.active { color: var(--text); }
 .nav-links a.active::after { width: 100%; }
 
+/* ─── MOBILE MENU ─── */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+.nav-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  transition: all .3s cubic-bezier(.16,1,.3,1);
+}
+.nav-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.nav-toggle.active span:nth-child(2) { opacity: 0; }
+.nav-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
+
+.mobile-menu {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  z-index: 350;
+  display: none;
+  flex-direction: column;
+  padding: 2rem;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity .35s cubic-bezier(.16,1,.3,1), transform .35s cubic-bezier(.16,1,.3,1);
+}
+.mobile-menu.active {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+}
+.mobile-menu ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.mobile-menu a {
+  font-size: 1.2rem;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+}
+
 .nav-back {
   font-size: .72rem; font-weight: 600;
   padding: .55rem 1.2rem; letter-spacing: .05em;
@@ -159,12 +201,32 @@ main {
 
 @media (max-width: 900px) {
   main { grid-template-columns: 1fr; gap: 2rem; padding-top: 120px; }
+  .nav-links { display: none; }
+  .nav-toggle { display: flex; }
 }
+
+/* ─── ENTRANCE ANIMATIONS ─── */
+.fu {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .65s ease, transform .65s cubic-bezier(.16,1,.3,1);
+}
+.fu.in { opacity: 1; transform: none; }
 
 .article-header { margin-bottom: 4rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
 .article-date { font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; margin-bottom: .8rem; }
 .article-title { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 1.5rem; color: var(--text); }
 .article-meta { display: flex; gap: 2.5rem; flex-wrap: wrap; font-size: .85rem; color: var(--muted); }
+
+/* ─── BREADCRUMB ─── */
+.breadcrumb {
+  display: flex; gap: .5rem; align-items: center;
+  font-size: .75rem; color: var(--muted);
+  margin-bottom: 2rem; padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+  letter-spacing: .02em;
+}
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color .2s; }
+.breadcrumb a:hover { color: var(--text); }
 
 /* ─── TABLE OF CONTENTS ─── */
 .toc { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: 1.5rem; font-size: .8rem; position: sticky; top: 100px; }
@@ -230,40 +292,11 @@ footer {
   padding: 1.5rem 0;
   background: var(--bg2);
 }
-
-.footer-content {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0 clamp(3rem, 7vw, 6rem);
-}
-
-.footer-name {
-  font-weight: 700;
-  font-size: 1.05rem;
-  letter-spacing: -.03em;
-  color: var(--text);
-  margin-bottom: 0.1rem;
-}
-
-.footer-desc {
-  color: var(--muted);
-  font-size: .8rem;
-  line-height: 1.4;
-  font-weight: 300;
-}
-
-.footer-bottom {
-  max-width: 960px;
-  margin: 1rem auto 0;
-  padding: 1rem clamp(3rem, 7vw, 6rem) 0;
-  border-top: 1px solid var(--border);
-}
-
-.footer-bottom p {
-  color: var(--muted);
-  font-size: .75rem;
-  letter-spacing: .02em;
-}
+.footer-content { max-width: 960px; margin: 0 auto; padding: 0 clamp(3rem, 7vw, 6rem); }
+.footer-name { font-weight: 700; font-size: 1.05rem; letter-spacing: -.03em; color: var(--text); margin-bottom: 0.1rem; }
+.footer-desc { color: var(--muted); font-size: .8rem; line-height: 1.4; font-weight: 300; }
+.footer-bottom { max-width: 960px; margin: 1rem auto 0; padding: 1rem clamp(3rem, 7vw, 6rem) 0; border-top: 1px solid var(--border); }
+.footer-bottom p { color: var(--muted); font-size: .75rem; letter-spacing: .02em; }
 
 .theme-toggle { background: transparent; border: none; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; color: var(--muted); transition: color .25s, transform .25s; }
 .theme-toggle:hover { color: var(--text); transform: rotate(12deg); }
@@ -290,11 +323,27 @@ footer {
   <div style="display: flex; align-items: center; gap: .8rem;">
     <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☾</button>
     <a href="../index.html#contact" class="nav-back">Hire me</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </div>
 </nav>
 
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <ul>
+    <li><a href="../index.html#about" class="mobile-menu-link">About</a></li>
+    <li><a href="../index.html#experience" class="mobile-menu-link">Experience</a></li>
+    <li><a href="../index.html#projects" class="mobile-menu-link">Projects</a></li>
+    <li><a href="./blog.html" class="mobile-menu-link">Blog</a></li>
+  </ul>
+  <a href="../index.html#contact" style="margin-top: 2rem; background: var(--ink); color: var(--bg); padding: 1rem; text-align: center; text-decoration: none; font-weight: 600;">Hire me</a>
+</div>
+
 <main>
-  <div class="article-content">
+  <div class="article-content fu">
     <div class="breadcrumb">
       <a href="../index.html">Home</a>
       <span>/</span>
@@ -359,7 +408,7 @@ footer {
     <h2 id="podman">📦 Why I Use Podman Instead of Docker</h2>
     <p>Fedora integrates deeply with <strong>Podman</strong>. Instead of installing Docker, I use Podman because of rootless containers by default and native systemd integration. Unlike Docker, there is no central daemon process; containers run as regular user processes.</p>
 
-    <h2 id="internals">🧠 What Fedora Taught Me About Linux Internals</h2>
+    <h2 id="internals">🧠 What Fedora Taught Me About Linux internals</h2>
     <p>Using Fedora daily improved my understanding of systemd targets, boot sequence behavior, kernel updates, and network configuration. Linux became less of a GUI OS and more of a structured, controllable system.</p>
 
     <h2 id="final">🚀 Career Impact</h2>
@@ -369,7 +418,7 @@ footer {
     </article>
   </div>
 
-  <aside class="toc">
+  <aside class="toc fu">
     <div class="toc-title">On this page</div>
     <ul id="toc-list"></ul>
   </aside>
@@ -413,6 +462,27 @@ window.addEventListener('scroll', () => {
   pFill.style.width = scrollPct + '%';
 }, { passive: true });
 
+// Mobile Menu
+const navToggle = document.getElementById('nav-toggle');
+const mobileMenu = document.getElementById('mobile-menu');
+navToggle?.addEventListener('click', () => {
+  navToggle.classList.toggle('active');
+  mobileMenu.classList.toggle('active');
+  document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+});
+
+// Intersection Observer
+function observe(selector, cb) {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { cb(e.target); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll(selector).forEach(el => obs.observe(el));
+}
+
+observe('.fu', el => el.classList.add('in'));
+
 function calculateWordCount() {
   const article = document.querySelector('article');
   const text = article.innerText;
@@ -430,7 +500,7 @@ function generateTOC() {
     li.className = heading.tagName === 'H3' ? 'toc-h3' : '';
     const a = document.createElement('a');
     a.href = `#${heading.id}`;
-    a.textContent = heading.textContent.replace(/^[^\s]+\s/, ''); // Remove emoji for TOC
+    a.textContent = heading.textContent.replace(/^[^\s]+\s/, ''); // Remove emoji
     li.appendChild(a);
     tocList.appendChild(li);
   });

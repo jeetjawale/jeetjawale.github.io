@@ -15,12 +15,12 @@
   --border: #eeeeee;
   --border2: #d8d8d8;
   --text: #111111;
-  --muted: #888888;
-  --mid: #555555;
+  --muted: #555555;
+  --mid: #444444;
   --accent: #111111;
   --surface: #f5f5f5;
   --ink: #111111;
-  --ink-muted: #444444;
+  --ink-muted: #333333;
   --nav-bg: rgba(255,255,255,.96);
 }
 
@@ -36,7 +36,6 @@
   --surface: #1a1a1a;
   --ink: #e8e8e8;
   --ink-muted: #aaaaaa;
-  --nav-bg: rgba(13,13,13,.96);
 }
 
 body { 
@@ -115,6 +114,61 @@ nav.scrolled {
 .nav-links a.active { color: var(--text); }
 .nav-links a.active::after { width: 100%; }
 
+/* ─── MOBILE MENU ─── */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+.nav-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  transition: all .3s cubic-bezier(.16,1,.3,1);
+}
+.nav-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.nav-toggle.active span:nth-child(2) { opacity: 0; }
+.nav-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
+
+.mobile-menu {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  z-index: 350;
+  display: none;
+  flex-direction: column;
+  padding: 2rem;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity .35s cubic-bezier(.16,1,.3,1), transform .35s cubic-bezier(.16,1,.3,1);
+}
+.mobile-menu.active {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+}
+.mobile-menu ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.mobile-menu a {
+  font-size: 1.2rem;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+}
+
 .nav-back {
   font-size: .72rem; font-weight: 600;
   padding: .55rem 1.2rem; letter-spacing: .05em;
@@ -122,7 +176,6 @@ nav.scrolled {
   background: var(--ink); color: var(--bg);
   transition: background .25s, transform .25s;
 }
-
 .nav-back:hover {
   background: var(--ink-muted);
   transform: translateY(-1px);
@@ -137,6 +190,13 @@ main {
   padding-right: clamp(3rem, 7vw, 6rem);
   min-height: 100vh;
 }
+
+/* ─── ENTRANCE ANIMATIONS ─── */
+.fu {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .65s ease, transform .65s cubic-bezier(.16,1,.3,1);
+}
+.fu.in { opacity: 1; transform: none; }
 
 /* ─── BREADCRUMB ─── */
 .breadcrumb {
@@ -231,16 +291,18 @@ main {
   padding-right: 1rem;
   border-bottom: 1px solid var(--border);
   text-decoration: none; position: relative;
-  transition: opacity .4s ease;
   overflow: visible;
+  opacity: 0; transform: translateX(-16px);
+  transition: transform .6s cubic-bezier(.16,1,.3,1), opacity .6s ease;
 }
 .blog-item:first-child { border-top: 1px solid var(--border); }
+.blog-item.in { opacity: 1; transform: none; }
 
 .blog-item::before {
   content: '';
   position: absolute; bottom: 0; left: 0;
   width: 0; height: 1px; background: var(--ink);
-  transition: width .5s cubic-bezier(.16,1,.3,1);
+  transition: width .35s cubic-bezier(.16,1,.3,1);
 }
 .blog-item:hover::before { width: 100%; }
 
@@ -339,6 +401,12 @@ footer {
   transform: rotate(12deg);
 }
 
+@media (max-width: 680px) {
+  .nav-links { display: none; }
+  .nav-toggle { display: flex; }
+  main { padding-top: 100px; }
+}
+
 /* ─── BACK TO TOP ─── */
 .back-to-top {
   position: fixed;
@@ -386,23 +454,39 @@ footer {
   <div style="display: flex; align-items: center; gap: .8rem;">
     <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☾</button>
     <a href="../index.html#contact" class="nav-back">Hire me</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </div>
 </nav>
 
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <ul>
+    <li><a href="../index.html#about" class="mobile-menu-link">About</a></li>
+    <li><a href="../index.html#experience" class="mobile-menu-link">Experience</a></li>
+    <li><a href="../index.html#projects" class="mobile-menu-link">Projects</a></li>
+    <li><a href="./blog.html" class="mobile-menu-link">Blog</a></li>
+  </ul>
+  <a href="../index.html#contact" style="margin-top: 2rem; background: var(--ink); color: var(--bg); padding: 1rem; text-align: center; text-decoration: none; font-weight: 600;">Hire me</a>
+</div>
+
 <main>
-  <div class="breadcrumb">
+  <div class="breadcrumb fu">
     <a href="../index.html">Home</a>
     <span>/</span>
     <span>Blog</span>
   </div>
 
-  <div class="blog-header">
+  <div class="blog-header fu">
     <h1>Blog</h1>
     <p>Thoughts and insights on infrastructure, automation, and building reliable systems.</p>
   </div>
 
   <!-- FILTERS -->
-  <div class="blog-filters">
+  <div class="blog-filters fu">
     <input type="text" class="search-box" id="search-box" placeholder="Search posts...">
     <button class="filter-btn active" data-filter="all">All</button>
     <button class="filter-btn" data-filter="Linux">Linux</button>
@@ -456,6 +540,27 @@ window.addEventListener('scroll', () => {
   pFill.style.width = scrollPct + '%';
 }, { passive: true });
 
+// Mobile Menu
+const navToggle = document.getElementById('nav-toggle');
+const mobileMenu = document.getElementById('mobile-menu');
+navToggle?.addEventListener('click', () => {
+  navToggle.classList.toggle('active');
+  mobileMenu.classList.toggle('active');
+  document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+});
+
+// Intersection Observer for animations
+function observe(selector, cb) {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { cb(e.target); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll(selector).forEach(el => obs.observe(el));
+}
+
+observe('.fu', el => el.classList.add('in'));
+
 // Render posts
 const posts = blogPosts;
 let currentFilter = 'all';
@@ -480,7 +585,7 @@ function renderPosts() {
   
   noResults.style.display = 'none';
   
-  filtered.forEach(post => {
+  filtered.forEach((post, i) => {
     const postItem = document.createElement('a');
     postItem.href = `./${post.id}.html`;
     postItem.className = 'blog-item';
@@ -493,6 +598,7 @@ function renderPosts() {
       <div class="blog-arr">↗</div>
     `;
     postsGrid.appendChild(postItem);
+    setTimeout(() => postItem.classList.add('in'), i * 80);
   });
 }
 
