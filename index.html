@@ -14,6 +14,15 @@
     <meta name="twitter:description" content="Computer Engineering graduate (July 2025) focused on automation, infrastructure, and reliable systems.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👽</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script>
+  // Initial theme detection - runs before content to prevent flash
+  (function() {
+    const savedTheme = localStorage.getItem('theme');
+    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = savedTheme || (systemDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
 <style>
 :root {
   --bg: #ffffff;
@@ -118,7 +127,7 @@ button:focus-visible,
 /* ─── SPLASH ─── */
 #splash {
   position: fixed; inset: 0; z-index: 2000;
-  background: #000;
+  background: var(--bg);
   display: flex; align-items: center; justify-content: center;
   flex-direction: column; gap: 0;
   overflow: hidden;
@@ -126,9 +135,10 @@ button:focus-visible,
 .sp-bg-lines {
   position: absolute; inset: 0;
   background-image: repeating-linear-gradient(
-    90deg, transparent, transparent 79px, rgba(255,255,255,.04) 79px, rgba(255,255,255,.04) 80px
+    90deg, transparent, transparent 79px, var(--border) 79px, var(--border) 80px
   );
   animation: linesDrift 6s linear infinite;
+  opacity: 0.3;
 }
 @keyframes linesDrift { from{background-position:0 0} to{background-position:80px 0} }
 .sp-content { position: relative; text-align: center; }
@@ -137,7 +147,7 @@ button:focus-visible,
   display: block;
   font-size: clamp(3rem, 9vw, 7rem);
   font-weight: 700; letter-spacing: -.05em;
-  color: #fff; line-height: 1;
+  color: var(--text); line-height: 1;
   transform: translateY(-110%);
   animation: downIn 1s cubic-bezier(.16,1,.3,1) .3s forwards;
 }
@@ -147,18 +157,18 @@ button:focus-visible,
   display: block;
   font-family: 'Fira Code', monospace;
   font-size: .8rem; letter-spacing: .3em;
-  color: rgba(255,255,255,.4); text-transform: uppercase;
+  color: var(--muted); text-transform: uppercase;
   transform: translateY(-110%);
   animation: downIn .8s cubic-bezier(.16,1,.3,1) .7s forwards;
 }
 .sp-bar {
   width: 200px; height: 1px;
-  background: rgba(255,255,255,.12);
+  background: var(--border);
   margin: 0 auto; position: relative; overflow: hidden;
 }
 .sp-bar-fill {
   position: absolute; top: 0; left: 0;
-  height: 100%; width: 0; background: #fff;
+  height: 100%; width: 0; background: var(--text);
   animation: barFill 2.2s cubic-bezier(.4,0,.2,1) .5s forwards;
 }
 @keyframes barFill { to { width: 100%; } }
