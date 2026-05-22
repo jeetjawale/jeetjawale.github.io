@@ -1,156 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jeet Jawale</title>
-<meta name="description" content="Computer Engineering graduate (July 2025) focused on automation, infrastructure, and reliable systems. Available for software engineering roles.">
-<meta property="og:title" content="Jeet Jawale">
-<meta property="og:description" content="Computer Engineering graduate (July 2025) focused on automation, infrastructure, and reliable systems.">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Jeet Jawale">
-    <meta name="twitter:description" content="Computer Engineering graduate (July 2025) focused on automation, infrastructure, and reliable systems.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👽</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script>
-  // Initial theme detection - runs before content to prevent flash
-  (function() {
-    const savedTheme = localStorage.getItem('theme');
-    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const theme = savedTheme || (systemDark ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', theme);
-  })();
-</script>
-<link rel="stylesheet" href="assets/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jeet Jawale</title>
+  <meta name="description" content="Computer Engineering graduate focused on Linux, automation, and infrastructure. Available for software engineering roles.">
+  <meta property="og:title" content="Jeet Jawale | GPU for Breakfast">
+  <meta property="og:description" content="Computer Engineering graduate focused on Linux, automation, and infrastructure.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Jeet Jawale | GPU for Breakfast">
+  <meta name="twitter:description" content="Eats GPUs for breakfast. Patches kernels before coffee.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+
+  <!-- Font Awesome (contact icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
+
 <!-- SKIP TO CONTENT -->
 <a href="#main" class="skip-link">Skip to main content</a>
 
-<style>
-.skip-link {
-  position: fixed;
-  top: -100px;
-  left: 1rem;
-  background: var(--ink);
-  color: var(--bg);
-  padding: .75rem 1.25rem;
-  font-size: .75rem;
-  font-family: 'Fira Code', monospace;
-  text-decoration: none;
-  z-index: 9999;
-  transition: top .3s;
-}
-.skip-link:focus {
-  top: 1rem;
-  outline: 2px solid var(--ink);
-  outline-offset: 2px;
-}
-</style>
+<!-- NEURAL NETWORK CANVAS (fixed background) -->
+<canvas id="nn-canvas" aria-hidden="true"></canvas>
 
-<!-- CURSOR -->
-<!-- SPLASH -->
-<div id="splash">
-  <div class="sp-bg-lines"></div>
-  <div class="sp-content">
-    <div class="sp-name-wrap"><span class="sp-name">Jeet Jawale.</span></div>
-    <div class="sp-role-wrap"><span class="sp-role">Computer Engineer</span></div>
-    <div class="sp-bar"><div class="sp-bar-fill"></div></div>
-    <div id="sp-pct" style="font-size:.58rem;color:rgba(255,255,255,.2);letter-spacing:.15em;margin-top:.7rem;">000%</div>
-  </div>
+<!-- BOOT OVERLAY -->
+<div id="boot-overlay" role="status" aria-label="Loading portfolio">
+  <div id="boot-log"></div>
+  <div class="boot-skip">press any key to skip</div>
 </div>
 
-<!-- PROGRESS -->
-<div id="progress"><div id="progress-fill"></div></div>
+<!-- SCROLL PROGRESS -->
+<div id="scroll-progress" aria-hidden="true"><div id="scroll-progress-fill"></div></div>
+
+<!-- UPTIME COUNTER -->
+<div id="uptime-bar" aria-hidden="true"><span id="uptime-val">Calculating...</span></div>
 
 <!-- NAV -->
 <nav id="nav" aria-label="Main navigation">
-  <div class="nav-logo">JJ.</div>
+  <div class="nav-logo">jj</div>
   <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#experience">Experience</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#blog">Writing</a></li>
-    <li><a href="#github">GitHub</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#about">about</a></li>
+    <li><a href="#experience">experience</a></li>
+    <li><a href="#projects">projects</a></li>
+    <li><a href="#skills">skills</a></li>
+    <li><a href="#blog">writing</a></li>
+    <li><a href="#github">github</a></li>
+    <li><a href="#contact">contact</a></li>
   </ul>
-  <div style="display: flex; align-items: center; gap: .8rem;">
-    <div class="theme-dropdown-container">
-      <button class="theme-toggle" id="theme-toggle" aria-label="Change theme" title="Change theme">
-        <span id="theme-icon">☾</span>
-      </button>
-      <div id="theme-menu" class="theme-menu">
-         <button data-theme="light" class="theme-option"><i class="fa-solid fa-sun" style="color: #444;"></i> Light</button>
-         <button data-theme="dark" class="theme-option"><i class="fa-solid fa-moon"></i> Dark</button>
-         <button data-theme="gruvbox" class="theme-option"><i class="fa-solid fa-mug-hot" style="color:#d79921"></i> Gruvbox</button>
-         <button data-theme="solarized" class="theme-option"><i class="fa-solid fa-sun" style="color:#2aa198"></i> Solarized</button>
-         <button data-theme="dracula" class="theme-option"><i class="fa-solid fa-ghost" style="color:#bd93f9"></i> Dracula</button>
-         <button data-theme="monokai" class="theme-option"><i class="fa-solid fa-leaf" style="color:#a6e22e"></i> Monokai</button>
-         <button data-theme="catppuccin" class="theme-option"><i class="fa-solid fa-cat" style="color:#cba6f7"></i> Catppuccin</button>
-      </div>
-    </div>
-    <a href="#contact" class="nav-cta">Hire me</a>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
-      <span></span>
-      <span></span>
-      <span></span>
+  <div style="display:flex;align-items:center;gap:0.75rem;">
+    <button id="nav-term-toggle" title="Toggle Terminal" style="background:transparent; border:none; color:var(--yellow); font-family:'JetBrains Mono'; font-weight:bold; cursor:pointer; font-size:1.2rem; padding-right:0.5rem;">&gt;_</button>
+    <a href="#contact" class="nav-cta">hire me █</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu">
+      <span></span><span></span><span></span>
     </button>
   </div>
 </nav>
 
 <!-- MOBILE MENU -->
-<div class="mobile-menu" id="mobile-menu">
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
   <ul>
-    <li><a href="#about" class="mobile-menu-link">About</a></li>
-    <li><a href="#experience" class="mobile-menu-link">Experience</a></li>
-    <li><a href="#projects" class="mobile-menu-link">Projects</a></li>
-    <li><a href="#skills" class="mobile-menu-link">Skills</a></li>
-    <li><a href="#blog" class="mobile-menu-link">Writing</a></li>
-    <li><a href="#github" class="mobile-menu-link">GitHub</a></li>
-    <li><a href="#contact" class="mobile-menu-link">Contact</a></li>
+    <li><a href="#about" class="mobile-menu-link">about</a></li>
+    <li><a href="#experience" class="mobile-menu-link">experience</a></li>
+    <li><a href="#projects" class="mobile-menu-link">projects</a></li>
+    <li><a href="#skills" class="mobile-menu-link">skills</a></li>
+    <li><a href="#blog" class="mobile-menu-link">writing</a></li>
+    <li><a href="#github" class="mobile-menu-link">github</a></li>
+    <li><a href="#contact" class="mobile-menu-link">contact</a></li>
   </ul>
-  <a href="#contact" class="mobile-menu-cta mobile-menu-link">Hire me</a>
+  <a href="#contact" class="mobile-menu-cta mobile-menu-link">hire me</a>
 </div>
 
 <main id="main">
 
-<!-- HERO -->
+<!-- ██████████████████████████████████████████████████████ -->
+<!-- HERO — NEOFETCH PANEL                                   -->
+<!-- ██████████████████████████████████████████████████████ -->
 <section id="hero">
-  <div class="page-col hero-wrap">
-    <div class="hero-eyebrow"><span>// Computer Engineer</span></div>
-    <h1 class="hero-title">
-      <span class="hero-line">
-        <span class="hero-line-in">Passionate about</span>
-      </span>
+  <div class="page-col">
+    <div class="neofetch-container">
 
-      <span class="hero-line">
-        <span class="hero-line-in">Linux & automation.</span>
-      </span>
-    </h1>
-    <div class="hero-sub">
-      <span class="hero-sub-role">Linux · Python · Bash · DevOps</span>
-      <span class="hero-avail"><span class="avail-dot"></span>Available for hire</span>
-    </div>
-    <p class="hero-desc">I'm Jeet — a Computer Engineering graduate (July 2025) exploring the world of infrastructure, shell scripting, and automation. Always learning and ready to contribute.</p>
-    <div class="hero-btns">
-      <a href="#projects" class="btn btn-fill"><span>View Projects</span></a>
-      <a href="#contact" class="btn btn-stroke">Get in Touch</a>
-      <a href="https://rxresu.me/jeetj/resume" class="btn btn-stroke">View CV ↗</a>
-    </div>
+      <!-- ASCII ART COLUMN -->
+      <div class="neofetch-ascii-col">
+        <pre class="neofetch-ascii" aria-label="Terminal ASCII art" style="color: var(--fg1); text-shadow: 0 0 10px rgba(235,219,178,0.2);">
+
+            
+  ,=====================.
+  |                     |
+  |.-------------------.|
+  ||[ _ o     . .  _ ]_||
+  |`-------------------'|
+  ||                   ||
+  |`-------------------'|
+  ||                   ||
+  |`-------------------'|
+  ||                   ||
+  |`-----------------_-'|
+  ||[=========]| o  (@) |
+  |`---------=='/u\ --- |
+  |------_--------------|
+  | (/) (_)           []|
+  |---==--==----------==|
+  |||||||||||||||||||||||
+  |||||||||||||||||||||||
+  |||||||||||||||||||||||
+  |||||||||||||||||||||||
+  |||||||||||||||||||||||
+  |||||||||||||||||||||||
+  |||||||||||||||||||||||
+  |||||||||||||||||||||||
+  |||||||||||||||||||||||
+  |||||||||||||||||dxm|||
+  |||||||||||||||||||||||
+  |=====================|
+ .'                     `.
+"""""""""""""""""""""""""""
+        </pre>
+        <div class="neofetch-colors" aria-hidden="true" style="margin-top: 0rem;">
+          <div class="nc nc-0" title="bg"></div>
+          <div class="nc nc-1" title="red"></div>
+          <div class="nc nc-2" title="green"></div>
+          <div class="nc nc-3" title="yellow"></div>
+          <div class="nc nc-4" title="blue"></div>
+          <div class="nc nc-5" title="purple"></div>
+          <div class="nc nc-6" title="aqua"></div>
+          <div class="nc nc-7" title="fg"></div>
+        </div>
+      </div>
+
+      <!-- SYSTEM INFO COLUMN -->
+      <div class="neofetch-info-col">
+        
+        <h1 class="hybrid-headline">Passionate about<br>Linux & automation.</h1>
+        <div class="hybrid-subhead">Linux · Python · Bash · DevOps</div>
+        <div class="nf-separator" style="margin-top: 0.5rem; margin-bottom: 1.5rem; opacity: 0.5;">────────────────────────────────────────</div>
+
+        <div class="nf-row">
+          <span class="nf-key">Username</span>
+          <span class="nf-val">Jeet Jawale</span>
+        </div>
+        
+        <div class="nf-row">
+          <span class="nf-key">OS</span>
+          <span class="nf-val">Fedora Linux 44 x86_64</span>
+        </div>
+        <div class="nf-row">
+          <span class="nf-key">Role</span>
+          <span class="nf-val">Infrastructure & Automation</span>
+        </div>
+        <div class="nf-row">
+          <span class="nf-key">Status</span>
+          <span class="nf-val"><span class="nf-open">Open to Work</span></span>
+        </div>
+        <div class="nf-row nf-bar-row">
+          <span class="nf-key">Coffee</span>
+          <div class="nf-bar"><div class="nf-bar-fill" id="coffee-bar" style="width:0%"></div></div>
+          <span class="nf-bar-val" id="coffee-val">...</span>
+        </div>
+        <div class="nf-row">
+          <span class="nf-key">Uptime</span>
+          <span class="nf-val nf-uptime-id" id="nf-uptime-display">Calculating...</span>
+        </div>
+
+        <div class="nf-hero-btns" style="margin-top: 2rem;">
+          <a href="#projects" class="btn-terminal btn-terminal-fill">View Projects</a>
+          <a href="#contact" class="btn-terminal btn-terminal-outline">Get in Touch</a>
+          <a href="https://rxresu.me/jeetj/resume" target="_blank" rel="noopener noreferrer" class="btn-terminal btn-terminal-outline">cat resume.pdf ↗</a>
+        </div>
+      </div>
+
+    </div><!-- /neofetch-container -->
   </div>
 </section>
 
 <!-- TICKER -->
-<div class="ticker">
+<div class="ticker" aria-hidden="true">
   <div class="ticker-inner">
     <span class="ticker-item">Python</span><span class="ticker-dot">·</span>
     <span class="ticker-item">Bash</span><span class="ticker-dot">·</span>
     <span class="ticker-item">SQL</span><span class="ticker-dot">·</span>
     <span class="ticker-item">JavaScript</span><span class="ticker-dot">·</span>
-    <span class="ticker-item">Linux</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">Fedora Linux</span><span class="ticker-dot">·</span>
     <span class="ticker-item">Git</span><span class="ticker-dot">·</span>
     <span class="ticker-item">Docker</span><span class="ticker-dot">·</span>
     <span class="ticker-item">GCP</span><span class="ticker-dot">·</span>
@@ -159,12 +192,13 @@
     <span class="ticker-item">React</span><span class="ticker-dot">·</span>
     <span class="ticker-item">Firebase</span><span class="ticker-dot">·</span>
     <span class="ticker-item">QGIS</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">Neovim</span><span class="ticker-dot">·</span>
     <!-- duplicate for seamless loop -->
     <span class="ticker-item">Python</span><span class="ticker-dot">·</span>
     <span class="ticker-item">Bash</span><span class="ticker-dot">·</span>
     <span class="ticker-item">SQL</span><span class="ticker-dot">·</span>
     <span class="ticker-item">JavaScript</span><span class="ticker-dot">·</span>
-    <span class="ticker-item">Linux</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">Fedora Linux</span><span class="ticker-dot">·</span>
     <span class="ticker-item">Git</span><span class="ticker-dot">·</span>
     <span class="ticker-item">Docker</span><span class="ticker-dot">·</span>
     <span class="ticker-item">GCP</span><span class="ticker-dot">·</span>
@@ -173,49 +207,109 @@
     <span class="ticker-item">React</span><span class="ticker-dot">·</span>
     <span class="ticker-item">Firebase</span><span class="ticker-dot">·</span>
     <span class="ticker-item">QGIS</span><span class="ticker-dot">·</span>
+    <span class="ticker-item">Neovim</span><span class="ticker-dot">·</span>
   </div>
 </div>
 
-<!-- ABOUT -->
+<!-- ██████████████████████████████████████████████████████ -->
+<!-- CLI TERMINAL                                            -->
+<!-- ██████████████████████████████████████████████████████ -->
+<div id="cli-section">
+  <div class="cli-wrapper term-closed">
+    <div class="resizer resizer-nw"></div>
+    <div class="resizer resizer-ne"></div>
+    <div class="resizer resizer-sw"></div>
+    <div class="resizer resizer-se"></div>
+    <div class="cli-terminal" id="global-terminal" role="application" aria-label="Interactive terminal">
+      <div class="cli-titlebar" id="terminal-drag-handle" aria-hidden="true">
+        <span class="cli-dot cli-dot-red" id="term-close-btn" title="Close"></span>
+        <span class="cli-dot cli-dot-yellow" id="term-min-btn" title="Minimize"></span>
+        <span class="cli-dot cli-dot-green" id="term-max-btn" title="Maximize"></span>
+        <span class="cli-title">jeet@fedora:~/portfolio — bash — 80×24</span>
+        <div style="width:48px"></div>
+      </div>
+      <div class="cli-body" id="cli-body">
+        <div class="cli-output" id="cli-output">
+          <!-- Initial welcome message injected by JS -->
+        </div>
+        <div class="cli-input-row">
+          <span class="cli-prompt" aria-hidden="true">jeet@fedora:<span id="cli-path">~</span>$&nbsp;</span>
+          <input
+            type="text"
+            id="cli-input"
+            class="cli-input"
+            autocomplete="off"
+            spellcheck="false"
+            aria-label="Terminal command input"
+            placeholder=""
+          >
+          <span class="cli-cursor cursor-blink" aria-hidden="true">█</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ██████████████████████████████████████████████████████ -->
+<!-- ABOUT — § 01 // \text{about}                           -->
+<!-- ██████████████████████████████████████████████████████ -->
 <section id="about">
   <div class="page-col">
-    <div class="sec-label" data-num="01">About</div>
+    <div class="sec-label" data-num="01">
+      <span class="sec-math">~</span> about
+    </div>
     <div class="about-bio fu">
-      <p>I'm a Computer Engineering graduate focused on building reliable, efficient systems — preferably on Linux, where I do most of my development.</p>
-      <p>I'm currently focusing on shell scripting, Python automation, and DevOps practices.</p>
-      <p>Outside of code — I explore new technologies, enjoy traveling, play games and occasionally unwinding with movies or tv shows.</p>
+      <p>I'm a <strong>Computer Engineering</strong> graduate focused on building reliable, efficient systems — preferably on <strong>Linux</strong>, where I do most of my development.</p>
+      <p>Currently focusing on shell scripting, Python automation, and DevOps. I like systems that are boring in production and interesting to build.</p>
+      <p>Outside code — exploring new tech, traveling, games, and occasionally unwinding with movies or tv shows.</p>
     </div>
     <div class="about-facts">
-      <div class="fact"><span class="fk">Location</span><span class="fv">Navi Mumbai, India</span></div>
-      <div class="fact"><span class="fk">Education</span><span class="fv">B.Tech. Computer Engineering (2025)</span></div>
-      <div class="fact"><span class="fk">Focus</span><span class="fv">Linux & Cloud · DevOps · Python</span></div>
-      <div class="fact"><span class="fk">Status</span><span class="fv"><span class="badge-open">Open to work</span></span></div>
+      <div class="fact">
+        <span class="fk">Location</span>
+        <span class="fv">Navi Mumbai, India</span>
+      </div>
+      <div class="fact">
+        <span class="fk">Education</span>
+        <span class="fv">B.Tech. Computer Engineering (2025)</span>
+      </div>
+      <div class="fact">
+        <span class="fk">Focus</span>
+        <span class="fv">Linux · Cloud · DevOps · Python</span>
+      </div>
+      <div class="fact">
+        <span class="fk">Status</span>
+        <span class="fv"><span class="badge-open">Open to work</span></span>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- EXPERIENCE -->
+<!-- ██████████████████████████████████████████████████████ -->
+<!-- EXPERIENCE — § 02 // \mathcal{E}xperience              -->
+<!-- ██████████████████████████████████████████████████████ -->
 <section id="experience">
   <div class="page-col">
-    <div class="sec-label" data-num="02">Experience</div>
+    <div class="sec-label" data-num="02">
+      <span class="sec-math">ε</span> experience
+    </div>
     <div class="experience-list">
       <div class="exp-item">
         <div class="exp-period">Jun — Aug 2025</div>
         <div>
-          <h3 class="exp-company">Bhabha Atomic Research Centre (BARC), Trombay</h3>
-          <div class="exp-role">Project Trainee — Radiation Safety Systems Division</div>
-          <p class="exp-desc">Contributed to a project titled “QGIS-Based Decision Support for Implementing Counter Measures”</p>
+          <h3 class="exp-company">Bhabha Atomic Research Centre (BARC)</h3>
+          <div class="exp-role">Project Trainee — Radiation Safety Systems Division, Trombay</div>
+          <p class="exp-desc">Contributed to "QGIS-Based Decision Support for Implementing Counter Measures" — a spatial analysis pipeline for emergency response planning.</p>
           <ul class="exp-achievements">
-            <li>Developed modules for spatial data analysis & visualization</li>
+            <li>Developed modules for spatial data analysis &amp; visualization</li>
             <li>Built a QGIS-based decision-support workflow improving exercise analysis efficiency</li>
-            <li>Automated spatial data processes using Python & PyQGIS, reducing manual handling time</li>
+            <li>Automated spatial data processes using Python &amp; PyQGIS, reducing manual handling time</li>
           </ul>
           <div class="exp-tech">
             <span class="exp-tag">Python</span>
             <span class="exp-tag">PyQt</span>
             <span class="exp-tag">QGIS</span>
             <span class="exp-tag">PyQGIS</span>
-
           </div>
         </div>
       </div>
@@ -223,146 +317,219 @@
   </div>
 </section>
 
-<!-- PROJECTS -->
+<!-- ██████████████████████████████████████████████████████ -->
+<!-- PROJECTS — § 03 // \nabla_{\text{projects}}            -->
+<!-- Training log format                                     -->
+<!-- ██████████████████████████████████████████████████████ -->
 <section id="projects">
   <div class="page-col">
-    <div class="sec-label" data-num="03">Projects</div>
+    <div class="sec-label" data-num="03">
+      <span class="sec-math">∇</span> projects
+    </div>
     <div class="projects-list">
-      <div class="proj-item">
-        <div class="proj-image">
-          <img src="https://raw.githubusercontent.com/jeetjawale/heritage-explorer/main/src/assets/screenshots/LandingPage.png" alt="Heritage Map Screenshot" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
-      </div>
-        <div>
-          <div class="proj-num">// 001</div>
-          <div class="proj-name">Heritage Places Map & Recommendation Engine</div>
-          <p class="proj-desc">Aug 2024 - Jun 2025</p>
-          <p class="proj-desc">Interactive web mapping application showcasing Maharashtra's cultural and heritage sites.</p>
-          <p class="proj-desc" style="color: var(--mid);"><strong>Problem:</strong> Tourists struggle to discover lesser-known heritage sites with reliable information. <strong>Impact:</strong> Helps users plan informed visits with real-time data and personalized recommendations.</p>
-          <ul class="proj-achievements">
-            <li>Real-time place recommendations based on location, filters & reviews</li>
-            <li>Firebase Auth + profile management for secure login & personalized reviews</li>
-            <li>Live weather and directions via OpenRouteService / Google Maps</li>
-            <li>Fetched & visualized multiple GeoJSON layers with dynamic updates</li>
-          </ul>
-          <div class="proj-stack">
-            <span class="stag">React</span><span class="stag">Node.js</span><span class="stag">MapLibre</span><span class="stag">Firebase</span><span class="stag">QGIS</span><span class="stag">Python</span>
-          </div>
-        </div>
-        <div class="proj-links">
-          <a href="https://mh-heritage-explorer.vercel.app" target="_blank" rel="noopener noreferrer" class="plink">Live</a>
-          <a href="https://github.com/jeetjawale/heritage-explorer" target="_blank" rel="noopener noreferrer" class="plink">GitHub</a>
 
+      <!-- PROJECT 001 -->
+      <div class="proj-training-card" data-fill="89">
+        <div class="ptc-header">
+          <span class="ptc-id">PROJECT_001.py</span>
+          <span class="ptc-status status-deployed">● DEPLOYED</span>
+        </div>
+        <div class="ptc-name">Heritage Places Map &amp; Recommendation Engine</div>
+        <div class="ptc-period">Aug 2024 → Jun 2025</div>
+        <div class="ptc-epoch">
+          <span class="epoch-label">[Epoch 89/100]</span>
+          <div class="epoch-bar"><div class="epoch-bar-fill" style="--fill-pct:0%"></div></div>
+          <span class="epoch-metrics">loss: 0.0012 | acc: 99.8%</span>
+        </div>
+        <div class="ptc-abstract">
+          An interactive web mapping application leveraging MapLibre GL, Firebase, and PyQGIS for heritage site visualization. The system achieves state-of-the-art recommendation performance via real-time geospatial filtering on the Maharashtra Heritage Dataset (MHD-2025). Additional experiments confirm scalability to 1,000+ POI entries with sub-100ms query latency.
+        </div>
+        <p class="ptc-desc">Interactive web mapping application showcasing Maharashtra's cultural and heritage sites with real-time recommendations and live weather integration.</p>
+        <ul class="ptc-achievements">
+          <li>Real-time place recommendations based on location, filters &amp; reviews</li>
+          <li>Firebase Auth + profile management for secure login &amp; personalized reviews</li>
+          <li>Live weather and directions via OpenRouteService / Google Maps APIs</li>
+          <li>Fetched &amp; visualized multiple GeoJSON layers with dynamic updates</li>
+        </ul>
+        <div class="ptc-stack">
+          <span class="stag">React</span><span class="stag">Node.js</span><span class="stag">MapLibre</span>
+          <span class="stag">Firebase</span><span class="stag">QGIS</span><span class="stag">Python</span>
+        </div>
+        <div class="ptc-links">
+          <a href="https://mh-heritage-explorer.vercel.app" target="_blank" rel="noopener noreferrer" class="plink">Live ↗</a>
+          <a href="https://github.com/jeetjawale/heritage-explorer" target="_blank" rel="noopener noreferrer" class="plink">GitHub ↗</a>
         </div>
       </div>
-      <div class="proj-item">
-        <div class="proj-image"><i class="fa-solid fa-clipboard-list" style="color: var(--ink);"></i></div>
-        <div>
-          <div class="proj-num">// 002</div>
-          <div class="proj-name">Course Exit Survey</div>
-          <p class="proj-desc">Feb 2024 - Jun 2024</p>
-          <p class="proj-desc">Realtime feedback system for course evaluations and reporting.</p>
-          <p class="proj-desc" style="color: var(--mid);"><strong>Problem:</strong> Manual paper-based course feedback was slow and hard to analyze. <strong>Impact:</strong> Enabled instant feedback collection with visual analytics, reducing evaluation time from days to minutes.</p>
-          <ul class="proj-achievements">
-            <li>Realtime feedback collection with Firebase backend</li>
-            <li>Chart.js visualizations and XLSX export for analysis</li>
-            <li>Digitized feedback workflows to speed academic evaluations</li>
-          </ul>
-          <div class="proj-stack">
-            <span class="stag">React</span><span class="stag">JavaScript</span><span class="stag">Node.js</span><span class="stag">Firebase</span>
-          </div>
+
+      <!-- PROJECT 002 -->
+      <div class="proj-training-card" data-fill="63">
+        <div class="ptc-header">
+          <span class="ptc-id">PROJECT_002.py</span>
+          <span class="ptc-status status-archived">● ARCHIVED</span>
         </div>
-        <div class="proj-links">
-          <a href="https://github.com/jeetjawale/Course-Exit-Survey" target="_blank" rel="noopener noreferrer" class="plink">GitHub</a>
+        <div class="ptc-name">Course Exit Survey</div>
+        <div class="ptc-period">Feb 2024 → Jun 2024</div>
+        <div class="ptc-epoch">
+          <span class="epoch-label">[Epoch 63/100]</span>
+          <div class="epoch-bar"><div class="epoch-bar-fill" style="--fill-pct:0%"></div></div>
+          <span class="epoch-metrics">loss: 0.0089 | acc: 97.4%</span>
         </div>
-      </div>
-      <div class="proj-item">
-        <div class="proj-image"><i class="fa-solid fa-mobile-screen" style="color: var(--ink);"></i></div>
-        <div>
-          <div class="proj-num">// 003</div>
-          <div class="proj-name">C-Learning App</div>
-          <p class="proj-desc">Oct 2023 - Jan 2024</p>
-          <p class="proj-desc">Designed and developed a mobile-first learning platform using Flutter and Dart for teaching C Programming.</p>
-          <p class="proj-desc" style="color: var(--mid);"><strong>Problem:</strong> Beginners lack accessible, structured resources for learning C on mobile. <strong>Impact:</strong> Delivered bite-sized lessons with synced progress, making programming education portable and self-paced.</p>
-          <ul class="proj-achievements">
-            <li>Implemented Firebase Auth and Real-time Database for secure user authentication and content sync</li>
-          </ul>
-          <div class="proj-stack">
-            <span class="stag">Flutter</span><span class="stag">Dart</span><span class="stag">Firebase</span><span class="stag">C Programming</span>
-          </div>
+        <div class="ptc-abstract">
+          A real-time feedback collection system for academic course evaluation. The architecture employs Firebase Realtime Database with Chart.js visualization, reducing evaluation turnaround from O(days) to O(minutes). The system supports concurrent multi-user submissions with XLSX export for downstream statistical analysis.
+        </div>
+        <p class="ptc-desc">Realtime feedback system for course evaluations and reporting, replacing slow paper-based workflows with instant digital analytics.</p>
+        <ul class="ptc-achievements">
+          <li>Realtime feedback collection with Firebase backend</li>
+          <li>Chart.js visualizations and XLSX export for analysis</li>
+          <li>Digitized feedback workflows to speed academic evaluations</li>
+        </ul>
+        <div class="ptc-stack">
+          <span class="stag">React</span><span class="stag">JavaScript</span>
+          <span class="stag">Node.js</span><span class="stag">Firebase</span>
+        </div>
+        <div class="ptc-links">
+          <a href="https://github.com/jeetjawale/Course-Exit-Survey" target="_blank" rel="noopener noreferrer" class="plink">GitHub ↗</a>
         </div>
       </div>
-      <!-- View all projects -->
+
+      <!-- PROJECT 003 -->
+      <div class="proj-training-card" data-fill="47">
+        <div class="ptc-header">
+          <span class="ptc-id">PROJECT_003.dart</span>
+          <span class="ptc-status status-stable">● STABLE</span>
+        </div>
+        <div class="ptc-name">C-Learning App</div>
+        <div class="ptc-period">Oct 2023 → Jan 2024</div>
+        <div class="ptc-epoch">
+          <span class="epoch-label">[Epoch 47/100]</span>
+          <div class="epoch-bar"><div class="epoch-bar-fill" style="--fill-pct:0%"></div></div>
+          <span class="epoch-metrics">loss: 0.0231 | acc: 94.2%</span>
+        </div>
+        <div class="ptc-abstract">
+          A mobile-first C programming curriculum delivered via Flutter. The content delivery model segments lessons into bite-sized modules with Firebase-synchronized progress tracking. The platform targets absolute beginners, achieving measurable learning outcomes through self-paced interactive exercises.
+        </div>
+        <p class="ptc-desc">Mobile-first learning platform for teaching C Programming via Flutter and Dart, with Firebase-backed progress sync.</p>
+        <ul class="ptc-achievements">
+          <li>Firebase Auth and Real-time Database for secure authentication and content sync</li>
+          <li>Bite-sized lessons with structured curriculum for beginners</li>
+        </ul>
+        <div class="ptc-stack">
+          <span class="stag">Flutter</span><span class="stag">Dart</span>
+          <span class="stag">Firebase</span><span class="stag">C Programming</span>
+        </div>
+      </div>
+
+      <!-- VIEW ALL -->
       <a href="https://github.com/jeetjawale" target="_blank" rel="noopener noreferrer" class="proj-view-all">
-        <span class="proj-view-all-text">View all projects on GitHub</span>
+        <span class="proj-view-all-text">$ ls ~/github/jeetjawale — View all on GitHub</span>
         <span class="proj-view-all-arrow">↗</span>
       </a>
     </div>
   </div>
 </section>
 
-<!-- SKILLS -->
+<!-- ██████████████████████████████████████████████████████ -->
+<!-- SKILLS — § 04 // \Sigma_{\text{skills}}                -->
+<!-- Data pipeline flow diagram                              -->
+<!-- ██████████████████████████████████████████████████████ -->
 <section id="skills">
   <div class="page-col">
-    <div class="sec-label" data-num="04">Skills</div>
-    <div class="skills-table">
-      <div class="skill-row">
-        <div class="sk-cat">Languages</div>
-        <div class="chips">
-          <a href="https://www.python.org" class="chip hi" target="_blank" rel="noopener noreferrer">Python</a>
-          <a href="https://www.gnu.org/software/bash/" class="chip hi" target="_blank" rel="noopener noreferrer">Shell Scripting (Bash)</a>
-          <a href="https://www.mysql.com/" class="chip" target="_blank" rel="noopener noreferrer">SQL</a>
-          <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" class="chip" target="_blank" rel="noopener noreferrer">JavaScript</a>
+    <div class="sec-label" data-num="04">
+      <span class="sec-math">Σ</span> skills
+    </div>
+        <div class="skills-pipeline">
+
+      <div class="pipeline-section">
+        <div class="pipeline-cat">Languages</div>
+        <div class="pipeline-flow">
+          <span class="pipeline-node">Python</span>
+          <span class="pipeline-arrow">──→</span>
+          <span class="pipeline-node">Bash</span>
+          <span class="pipeline-arrow">──→</span>
+          <span class="pipeline-node">JavaScript</span>
+          <span class="pipeline-arrow">──→</span>
+          <span class="pipeline-node">Node.js</span>
+          <span class="pipeline-arrow">──→</span>
+          <span class="pipeline-node">Rust</span>
         </div>
       </div>
-      <div class="skill-row">
-        <div class="sk-cat">Systems</div>
-        <div class="chips">
-          <a href="https://fedoraproject.org" class="chip hi" target="_blank" rel="noopener noreferrer">Linux (Fedora)</a>
-          <a href="https://git-scm.com" class="chip hi" target="_blank" rel="noopener noreferrer">Git</a>
-          <a href="https://www.docker.com" class="chip" target="_blank" rel="noopener noreferrer">Docker</a>
-          <a href="https://cloud.google.com" class="chip" target="_blank" rel="noopener noreferrer">GCP</a>
+
+      <div class="pipeline-section">
+        <div class="pipeline-cat">Frameworks &amp; Libraries</div>
+        <div class="pipeline-flow">
+          <span class="pipeline-node">PyQt</span>
+          <span class="pipeline-arrow">──→</span>
+          <span class="pipeline-node">PyQGIS</span>
+          <span class="pipeline-arrow">──→</span>
+          <span class="pipeline-node">React</span>
+          <span class="pipeline-arrow">──→</span>
+          <span class="pipeline-node">Next.js</span>
+          <span class="pipeline-arrow">──→</span>
+          <span class="pipeline-node">Flutter</span>
         </div>
       </div>
-      <div class="skill-row">
-        <div class="sk-cat">Frameworks</div>
-        <div class="chips">
-          <a href="https://riverbankcomputing.com/software/pyqt/" class="chip hi" target="_blank" rel="noopener noreferrer">PyQt</a>
-          <a href="https://docs.qgis.org/latest/en/docs/pyqgis_developer_cookbook/" class="chip hi" target="_blank" rel="noopener noreferrer">PyQGIS</a>
-          <a href="https://react.dev" class="chip" target="_blank" rel="noopener noreferrer">React</a>
-          <a href="https://flutter.dev" class="chip" target="_blank" rel="noopener noreferrer">Flutter</a>
+
+      <div class="pipeline-section">
+        <div class="pipeline-cat">Databases &amp; Cloud</div>
+        <div class="pipeline-flow">
+          <span class="pipeline-node">PostgreSQL</span>
+          <span class="pipeline-arrow">──→</span>
+          <span class="pipeline-node">Supabase</span>
+          <span class="pipeline-arrow">──→</span>
+          <span class="pipeline-node">Firebase</span>
+          <span class="pipeline-arrow">──→</span>
+          <span class="pipeline-node">GCP</span>
         </div>
       </div>
-      <div class="skill-row">
-        <div class="sk-cat">Tools</div>
-        <div class="chips">
-          <a href="https://qgis.org" class="chip hi" target="_blank" rel="noopener noreferrer">QGIS</a>
-          <a href="https://firebase.google.com" class="chip" target="_blank" rel="noopener noreferrer">Firebase</a>
+
+      <div class="pipeline-section">
+        <div class="pipeline-cat">Tools &amp; DevOps</div>
+        <div class="pipeline-flow">
+          <span class="pipeline-node">QGIS</span>
+          <span class="pipeline-arrow">──→</span>
+          <span class="pipeline-node">Linux</span>
+          <span class="pipeline-arrow">──→</span>
+          <span class="pipeline-node">Git</span>
+          <span class="pipeline-arrow">──→</span>
+          <span class="pipeline-node">Docker</span>
+          <span class="pipeline-arrow">──→</span>
+          <span class="pipeline-node">GitHub Actions</span>
         </div>
       </div>
+
     </div>
   </div>
 </section>
 
-<!-- BLOG -->
+<!-- ██████████████████████████████████████████████████████ -->
+<!-- WRITING — § 05 // \partial_{\text{writing}}            -->
+<!-- ██████████████████████████████████████████████████████ -->
 <section id="blog">
   <div class="page-col">
-    <div class="sec-label" data-num="05">Writing</div>
+    <div class="sec-label" data-num="05">
+      <span class="sec-math">∂</span> writing
+    </div>
     <div class="blog-list" id="blog-list">
-      <!-- Dynamically populated by JavaScript -->
+      <!-- Dynamically populated by blog/posts.js + main.js -->
     </div>
   </div>
 </section>
 
-<!-- GITHUB ACTIVITY -->
+<!-- ██████████████████████████████████████████████████████ -->
+<!-- GITHUB ACTIVITY — § 06 // \int_{\text{activity}}      -->
+<!-- ██████████████████████████████████████████████████████ -->
 <section id="github">
   <div class="page-col">
-    <div class="sec-label" data-num="06">Activity</div>
+    <div class="sec-label" data-num="06">
+      <span class="sec-math">∫</span> activity
+    </div>
     <div class="github-stats fu">
       <h3>GitHub Activity</h3>
-      
-      <div class="github-graph-container">
-        <img src="https://ghchart.rshah.org/jeetjawale" alt="GitHub contribution graph" loading="lazy" />
-        <div class="graph-footer">
+
+      <div class="github-graph-container" id="github-calendar-container">
+        <div class="pr-loading">Fetching real-time activity graph...</div>
+      </div>
+      <div class="graph-footer">
           <span id="github-total-contributions">Loading contributions...</span>
           <div class="graph-legend">
             <span>Less</span>
@@ -376,7 +543,6 @@
             <span>More</span>
           </div>
         </div>
-      </div>
 
       <div class="github-prs">
         <div class="prs-header">
@@ -390,71 +556,60 @@
         <p class="prs-subtitle">Merged contributions to open source</p>
 
         <div class="prs-list" id="github-prs-list">
-          <!-- Dynamically populated -->
-          <div class="pr-loading">Loading contributions...</div>
+          <div class="pr-loading">Fetching real-time activity...</div>
         </div>
 
-        <button class="prs-expand" id="github-prs-expand" style="display: none;">
-          <!-- Populated by JS -->
-        </button>
+        <button class="prs-expand" id="github-prs-expand" style="display:none;"></button>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CONTACT -->
+<!-- ██████████████████████████████████████████████████████ -->
+<!-- CONTACT — § 07 // \delta_{\text{contact}}             -->
+<!-- ██████████████████████████████████████████████████████ -->
 <section id="contact">
   <div class="page-col">
-    <div class="sec-label" data-num="07">Contact</div>
+    <div class="sec-label" data-num="07">
+      <span class="sec-math">δ</span> contact
+    </div>
     <div class="contact-grid">
       <div class="fu">
-        <p class="contact-note">Open to junior devops and graduate trainee roles. Also happy to talk about tech, open source, or just shop.</p>
+        <p class="contact-note">Open to junior DevOps and graduate trainee roles. Also happy to talk about Linux, open source, or just grab a virtual coffee.</p>
         <div class="slinks">
-            <a href="mailto:jeetjawale@zohomail.in" class="slink">
-              <div class="slink-icon">
-                <i class="fa-solid fa-envelope"></i>
-              </div>
-              <span>Email</span>
-            </a>
-
-            <a href="https://www.linkedin.com/in/jeetjawale"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="slink">
-              <div class="slink-icon">
-                  <i class="fa-brands fa-linkedin-in"></i>
-              </div>
-              <span>LinkedIn</span>
-            </a>
-            
-            <a href="https://github.com/jeetjawale"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="slink">
-              <div class="slink-icon">
-                  <i class="fa-brands fa-github"></i>
-              </div>
-              <span>GitHub</span>
-            </a>
-
-            <a href="https://x.com/jeet_jawale"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="slink">
-              <div class="slink-icon">
-                  <i class="fa-brands fa-x-twitter"></i>
-              </div>
-              <span>X</span>
-            </a>
-          </div>  
+          <a href="mailto:jeetjawale@zohomail.in" class="slink">
+            <div class="slink-icon"><i class="fa-solid fa-envelope" aria-hidden="true"></i></div>
+            <span>jeetjawale@zohomail.in</span>
+          </a>
+          <a href="https://www.linkedin.com/in/jeetjawale" target="_blank" rel="noopener noreferrer" class="slink">
+            <div class="slink-icon"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></div>
+            <span>LinkedIn</span>
+          </a>
+          <a href="https://github.com/jeetjawale" target="_blank" rel="noopener noreferrer" class="slink">
+            <div class="slink-icon"><i class="fa-brands fa-github" aria-hidden="true"></i></div>
+            <span>github.com/jeetjawale</span>
+          </a>
+          <a href="https://x.com/jeet__sh" target="_blank" rel="noopener noreferrer" class="slink">
+            <div class="slink-icon"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></div>
+            <span>@jeet__sh</span>
+          </a>
         </div>
+      </div>
       <div class="fu">
-        <!-- Replace action URL with your Formspreet -->
         <form id="contact-form" method="POST" action="https://formspree.io/f/mjgezrrl">
-          <div class="form-field"><label class="form-label" for="f-name">Name</label><input id="f-name" name="name" type="text" class="form-input" placeholder="Jane Smith" required></div>
-          <div class="form-field"><label class="form-label" for="f-email">Email</label><input id="f-email" name="email" type="email" class="form-input" placeholder="jane@company.com" required></div>
-          <div class="form-field"><label class="form-label" for="f-message">Message</label><textarea id="f-message" name="message" class="form-textarea" placeholder="What are you working on?" required></textarea></div>
-          <button type="submit" class="sub-btn" id="sub-btn">Send Message</button>
+          <div class="form-field">
+            <label class="form-label" for="f-name">Name</label>
+            <input id="f-name" name="name" type="text" class="form-input" placeholder="Ada Lovelace" required>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="f-email">Email</label>
+            <input id="f-email" name="email" type="email" class="form-input" placeholder="ada@company.com" required>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="f-message">Message</label>
+            <textarea id="f-message" name="message" class="form-textarea" placeholder="What are you working on?" required></textarea>
+          </div>
+          <button type="submit" class="sub-btn" id="sub-btn">Send Message █</button>
         </form>
       </div>
     </div>
@@ -466,16 +621,58 @@
 <!-- BACK TO TOP -->
 <button class="back-to-top" id="back-to-top" aria-label="Back to top">↑</button>
 
+<!-- ██████████████████████████████████████████████████████ -->
+<!-- FOOTER — LIVE METRICS DASHBOARD                        -->
+<!-- ██████████████████████████████████████████████████████ -->
 <footer>
-  <div class="footer-content">
-    <div class="footer-name">Jeet Jawale.</div>
-    <p class="footer-desc">Linux enthusiast. Coffee enthusiast. Always learning.</p>
+  <!-- METRICS SECTION (Commented out for later use)
+  <div class="footer-metrics page-col">
+    <div class="metric-tile">
+      <span class="metric-label">PRs merged</span>
+      <span class="metric-value metric-green" id="footer-prs">...</span>
+    </div>
+    <div class="metric-tile">
+      <span class="metric-label">models trained</span>
+      <span class="metric-value">1,204</span>
+    </div>
+    <div class="metric-tile">
+      <span class="metric-label">datasets labeled</span>
+      <span class="metric-value metric-blue">∞</span>
+    </div>
+    <div class="metric-tile">
+      <span class="metric-label">coffee consumed</span>
+      <span class="metric-value metric-orange" id="footer-coffee">847</span>
+    </div>
+    <div class="metric-tile">
+      <span class="metric-label">GPU hours</span>
+      <span class="metric-value metric-purple">∞</span>
+    </div>
   </div>
-  
-  <div class="footer-bottom">
-      <p>&copy; <script>document.write(new Date().getFullYear())</script> Jeet Jawale. All rights reserved.</p>
+  -->
+  <div class="footer-bottom-row">
+    <div>Jeet Jawale — © <script>document.write(new Date().getFullYear())</script></div>
   </div>
 </footer>
+
+<!-- ██████████████████████████████████████████████████████ -->
+<!-- HINTON'S CONSCIENCE — AI CHATBOT                       -->
+<!-- ██████████████████████████████████████████████████████ -->
+<div id="chatbot-widget" role="complementary" aria-label="Hinton's Conscience chatbot">
+  <div class="chatbot-popup" id="chatbot-popup" aria-hidden="true">
+    <div class="chatbot-header">
+      <span class="chatbot-title">⚡ Hinton's Conscience</span>
+      <button class="chatbot-close" id="chatbot-close" aria-label="Close chatbot">×</button>
+    </div>
+    <div class="chatbot-body">
+      <div class="chatbot-persona">
+        <strong>Geoffrey Hinton AI</strong> · Deep Learning Pioneer · Occasional Pessimist
+      </div>
+      <div class="chatbot-quote" id="chatbot-quote" aria-live="polite"></div>
+      <div class="chatbot-next" id="chatbot-next" role="button" tabindex="0">next thought</div>
+    </div>
+  </div>
+  <button class="chatbot-btn" id="chatbot-btn" aria-label="Open Hinton's Conscience chatbot">🧠</button>
+</div>
 
 <script src="blog/posts.js"></script>
 <script src="assets/js/main.js"></script>

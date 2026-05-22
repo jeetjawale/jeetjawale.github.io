@@ -1,231 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>404 - Jeet Jawale</title>
-<meta name="description" content="The page you're looking for doesn't exist.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👽</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script>
-  // Initial theme detection - runs before content to prevent flash
-  (function() {
-    const savedTheme = localStorage.getItem('theme');
-    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const theme = savedTheme || (systemDark ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', theme);
-  })();
-</script>
-<style>
-:root {
-  --bg: #ffffff;
-  --bg2: #fafafa;
-  --border: #eeeeee;
-  --border2: #d8d8d8;
-  --text: #111111;
-  --muted: #888888;
-  --mid: #555555;
-  --accent: #111111;
-  --surface: #f5f5f5;
-  --ink: #111111;
-  --ink-muted: #444444;
-}
-
-[data-theme="dark"] {
-  --bg: #0d0d0d;
-  --bg2: #141414;
-  --border: #222222;
-  --border2: #333333;
-  --text: #e8e8e8;
-  --muted: #888888;
-  --mid: #aaaaaa;
-  --accent: #e8e8e8;
-  --surface: #1a1a1a;
-  --ink: #e8e8e8;
-  --ink-muted: #aaaaaa;
-}
-
-/* ─── GLOBAL FOCUS RESET ─── */
-:focus:not(:focus-visible) {
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Fira Code', monospace;
-  background: var(--bg);
-  color: var(--text);
-  transition: background .3s, color .3s;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  font-size: 19px;
-  line-height: 1.75;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.container {
-  max-width: 600px;
-  text-align: center;
-}
-
-.logo {
-  font-weight: 700;
-  font-size: 1.5rem;
-  margin-bottom: 4rem;
-  letter-spacing: -.03em;
-}
-
-.code {
-  font-size: clamp(5rem, 15vw, 10rem);
-  font-weight: 700;
-  letter-spacing: -.05em;
-  color: var(--text);
-  margin-bottom: 1.5rem;
-  line-height: 1;
-}
-
-h1 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  letter-spacing: -.02em;
-  margin-bottom: 1.5rem;
-  color: var(--text);
-}
-
-p {
-  font-size: .95rem;
-  color: var(--muted);
-  margin-bottom: 3rem;
-  font-weight: 300;
-  line-height: 1.8;
-}
-
-.nav {
-  display: flex;
-  gap: 2rem;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn {
-  padding: .8rem 1.75rem;
-  background: var(--ink);
-  color: var(--bg);
-  font-size: .72rem;
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  border: none;
-  border-radius: 0;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all .35s cubic-bezier(.16,1,.3,1);
-  text-decoration: none;
-}
-
-.btn:hover {
-  background: var(--ink-muted);
-  transform: translateY(-1px);
-}
-
-.link {
-  font-size: .82rem;
-  color: var(--muted);
-  text-decoration: none;
-  transition: color .2s;
-  position: relative;
-}
-
-.link::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--text);
-  transition: width .35s cubic-bezier(.16,1,.3,1);
-}
-
-.link:hover {
-  color: var(--text);
-}
-
-.link:hover::after {
-  width: 100%;
-}
-
-.theme-toggle {
-  position: fixed;
-  top: 2rem;
-  right: 2rem;
-  background: transparent;
-  border: none;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 1.1rem;
-  color: var(--muted);
-  transition: color .25s, transform .25s;
-}
-
-.theme-toggle:hover {
-  color: var(--text);
-  transform: rotate(12deg);
-}
-
-@media (max-width: 680px) {
-  .nav {
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404: Not Found</title>
+  <meta name="description" content="The page you're looking for doesn't exist.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+    .error-container {
+      max-width: 600px;
+      padding: 2rem;
+    }
+    .error-code {
+      font-size: clamp(5rem, 15vw, 10rem);
+      font-weight: 800;
+      color: var(--red-b);
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 20px rgba(204, 36, 29, 0.4);
+      line-height: 1;
+    }
+    .error-message {
+      font-size: 1.5rem;
+      color: var(--fg1);
+      margin-bottom: 1.5rem;
+      font-weight: bold;
+    }
+    .error-details {
+      color: var(--fg3);
+      margin-bottom: 3rem;
+      line-height: 1.6;
+    }
+    .error-nav {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+  </style>
 </head>
 <body>
 
-<button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☾</button>
+<!-- NEURAL NETWORK CANVAS (fixed background) -->
+<canvas id="nn-canvas" aria-hidden="true"></canvas>
 
-<div class="container">
-  <div class="logo">JJ.</div>
-  <div class="code">404</div>
-  <h1>Built it. Broke it. Can't find it.</h1>
-  <p>The system couldn't locate the resource you were looking for. It might have been refactored, moved, or deleted during a deployment.</p>
+<div class="error-container">
+  <div class="error-code">404</div>
+  <div class="error-message">bash: /path: No such file or directory</div>
+  <p class="error-details">The system couldn't locate the resource you were looking for. It might have been rm -rf'd, moved, or deleted during a deployment.</p>
   
-  <div class="nav">
-    <a href="./index.html" class="btn">Back Home</a>
-    <a href="./blog/blog.html" class="link">Read Blog</a>
+  <div class="error-nav">
+    <a href="index.html" class="btn-terminal btn-terminal-fill">cd ~/home</a>
+    <a href="index.html#contact" class="btn-terminal btn-terminal-outline">Get in Touch</a>
   </div>
 </div>
 
-<script>
-// Dark mode
-const themeToggle = document.getElementById('theme-toggle');
-const savedTheme = localStorage.getItem('theme') || 'light';
-document.documentElement.setAttribute('data-theme', savedTheme);
-themeToggle.textContent = savedTheme === 'dark' ? '☀' : '☾';
-
-themeToggle.addEventListener('click', () => {
-  const current = document.documentElement.getAttribute('data-theme');
-  const next = current === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('theme', next);
-  themeToggle.textContent = next === 'dark' ? '☀' : '☾';
-});
-</script>
-
+<script src="assets/js/main.js"></script>
 </body>
 </html>
