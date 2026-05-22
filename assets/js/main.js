@@ -339,7 +339,7 @@ PROJECTS:
   Course Exit Survey                    — React/Firebase
   C-Learning App                        — Flutter/Dart/Firebase
 
-STATUS:    ● Open to work — hire me?
+STATUS:    ● Open to work
 CONTACT:   jeetjawale@zohomail.in`,
 
     'sudo impress-recruiter': () =>
