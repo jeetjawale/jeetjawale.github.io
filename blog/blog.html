@@ -3,15 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blogs</title>
+  <title>Blog | Jeet Jawale</title>
   <meta name="description" content="Thoughts and insights on infrastructure, automation, and building reliable systems.">
+  <meta property="og:title" content="Blog | Jeet Jawale">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jeetjawale.dev/blog/blog.html">
+  <link rel="canonical" href="https://jeetjawale.dev/blog/blog.html">
+  <meta property="og:image" content="https://jeetjawale.dev/assets/images/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:image" content="https://jeetjawale.dev/assets/images/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
+<div id="crt-overlay"></div>
 
 <!-- NEURAL NETWORK CANVAS (fixed background) -->
 <canvas id="nn-canvas" aria-hidden="true"></canvas>
@@ -29,10 +39,8 @@
       <p style="color: var(--fg3);">Notes on infrastructure, Linux, automation, and things that break in production.</p>
     </div>
 
-    <div class="blog-filters">
+    <div class="blog-filters" id="blog-filters-container">
       <input type="text" class="search-box" id="search-box" placeholder="grep 'search posts...'">
-      <button type="button" class="filter-btn active" data-filter="all">All</button>
-      <button type="button" class="filter-btn" data-filter="Linux">Linux</button>
     </div>
 
     <div class="blog-list" id="posts-grid">
@@ -58,6 +66,35 @@
   const posts = blogPosts || [];
   let currentFilter = 'all';
   let currentSearch = '';
+
+  function generateFilters() {
+    const container = document.getElementById('blog-filters-container');
+    if (!container) return;
+    
+    // Get unique categories
+    const categories = ['all'];
+    posts.forEach(p => {
+      if (p.category && !categories.includes(p.category)) {
+        categories.push(p.category);
+      }
+    });
+
+    categories.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'filter-btn' + (cat === 'all' ? ' active' : '');
+      btn.dataset.filter = cat;
+      btn.textContent = cat === 'all' ? 'All' : cat;
+      
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = cat;
+        renderPosts();
+      });
+      container.appendChild(btn);
+    });
+  }
 
   function renderPosts() {
     const postsGrid = document.getElementById('posts-grid');
@@ -87,7 +124,7 @@
     filtered.forEach((post, index) => {
       const postItem = document.createElement('a');
       postItem.href = `./${post.id}.html`;
-      postItem.className = 'blog-item';
+      postItem.className = 'blog-item blog-item--dashed';
       
       const badge = post.latest ? '<span style="color:var(--red-b); border:1px solid var(--red-b); padding:2px 6px; font-size:0.6rem; margin-left:0.5rem; border-radius:2px;">LATEST</span>' : '';
       
@@ -97,7 +134,7 @@
           <div class="blog-title">${post.title}</div>
           <div class="blog-meta">${post.date} · ${post.readTime}</div>
         </div>
-        <div class="blog-arr">→</div>
+        <div class="blog-arr">↗</div>
       `;
       postsGrid.appendChild(postItem);
       
@@ -107,15 +144,7 @@
     });
   }
 
-  // Filter buttons
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentFilter = btn.dataset.filter;
-      renderPosts();
-    });
-  });
+
 
   // Search box
   document.getElementById('search-box')?.addEventListener('input', (e) => {
@@ -124,6 +153,7 @@
   });
 
   // Initial render
+  generateFilters();
   renderPosts();
 </script>
 

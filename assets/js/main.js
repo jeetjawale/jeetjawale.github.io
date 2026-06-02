@@ -40,10 +40,15 @@ function startBootSequence() {
   if (!overlay || !log) return Promise.resolve();
 
   const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('skipBoot') === '1') {
+  const isSkipParam = urlParams.get('skipBoot') === '1';
+  if (isSkipParam || sessionStorage.getItem('booted')) {
     overlay.style.display = 'none';
-    window.history.replaceState({}, document.title, window.location.pathname);
-    return Promise.resolve();
+    if (isSkipParam) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    document.body.classList.add('boot-skipped');
+    sessionStorage.setItem('booted', '1');
+    return Promise.resolve(true);
   }
 
   return new Promise(resolve => {
@@ -53,16 +58,18 @@ function startBootSequence() {
     function skip() {
       if (skipped) return;
       skipped = true;
+      document.body.classList.add('boot-skipped');
+      sessionStorage.setItem('booted', '1');
       // Dump remaining lines instantly
       while (i < BOOT_LINES.length) {
         appendLine(BOOT_LINES[i]);
         i++;
       }
-      setTimeout(() => { overlay.classList.add('boot-done'); setTimeout(resolve, 900); }, 120);
+      setTimeout(() => { overlay.classList.add('boot-done'); setTimeout(() => resolve(true), 900); }, 120);
     }
 
     document.addEventListener('keydown', skip, { once: true });
-    overlay.addEventListener('click', skip);
+    overlay.addEventListener('click', skip, { once: true });
 
     function appendLine(line) {
       const el = document.createElement('div');
@@ -77,7 +84,7 @@ function startBootSequence() {
       if (i >= BOOT_LINES.length) {
         setTimeout(() => {
           overlay.classList.add('boot-done');
-          setTimeout(resolve, 900);
+          setTimeout(() => { sessionStorage.setItem('booted', '1'); resolve(false); }, 900);
         }, 400);
         return;
       }
@@ -104,7 +111,7 @@ function initNeuralCanvas() {
   const ctx = canvas.getContext('2d');
 
   const CFG = {
-    numNodes:      52,
+    numNodes:      window.innerWidth < 768 ? 32 : 80,
     connDist:      190,
     nodeRadius:    { min: 1, max: 3.5 },
     speed:         0.28,
@@ -203,7 +210,7 @@ function initNeuralCanvas() {
       ctx.fill();
     }
 
-    requestAnimationFrame(draw);
+    animId = requestAnimationFrame(draw);
   }
 
   // Periodic backprop-style activation pulse
@@ -220,7 +227,18 @@ function initNeuralCanvas() {
       }
     }
   }
-  setInterval(triggerPulse, CFG.activateEvery);
+  let pulseId = setInterval(triggerPulse, CFG.activateEvery);
+  let animId;
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      cancelAnimationFrame(animId);
+      clearInterval(pulseId);
+    } else {
+      draw();
+      pulseId = setInterval(triggerPulse, CFG.activateEvery);
+    }
+  });
 
   // Mouse tracking (window-level, canvas is behind everything)
   window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; }, { passive: true });
@@ -262,7 +280,11 @@ function initUptimeCounter() {
   }
 
   tick();
-  setInterval(tick, 1000);
+  let upId = setInterval(tick, 1000);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) clearInterval(upId);
+    else { tick(); upId = setInterval(tick, 1000); }
+  });
 }
 
 /* ──────────────────────────────────────────────────────────────── */
@@ -340,7 +362,7 @@ PROJECTS:
   C-Learning App                        — Flutter/Dart/Firebase
 
 STATUS:    ● Open to work
-CONTACT:   jeetjawale@zohomail.in`,
+CONTACT:   mail@jeetjawale.dev`,
 
     'sudo impress-recruiter': () =>
 `[sudo] password for jeet: ••••••••
@@ -362,20 +384,24 @@ impress-recruiter v2.6.1 — initializing...
 [✓] Work-life balance      COMMAND NOT FOUND
 [✓] Hire-ability score     99.8%  (loss: 0.0012)
 
-Contact: jeetjawale@zohomail.in
+Contact: mail@jeetjawale.dev
 → Offer drafted. Awaiting your signature. █`,
 
     'git log': async () => {
         try {
+            const cachedLog = sessionStorage.getItem('github_git_log');
+            if (cachedLog) return cachedLog;
             const res = await fetch('https://api.github.com/repos/jeetjawale/jeetjawale.github.io/commits');
             if (!res.ok) return 'fatal: bad revision or path';
             const data = await res.json();
-            return data.slice(0, 10).map((c, i) => {
+            const logStr = data.slice(0, 10).map((c, i) => {
                 const sha = c.sha.substring(0, 7);
                 const msg = c.commit.message.split('\n')[0];
                 const head = i === 0 ? ' (HEAD -> main) ' : ' ';
                 return `${sha}${head}${msg}`;
             }).join('\n');
+            sessionStorage.setItem('github_git_log', logStr);
+            return logStr;
         } catch(e) {
             return 'fatal: your current branch appears to be broken';
         }
@@ -410,12 +436,13 @@ jeet      4891  99.9  0.0  thinking_about_side_projects`,
   let histIdx = -1;
 
   // Welcome message on load
-  function showWelcome() {
+  window.showTerminalWelcome = function() {
     addBlock('', `Welcome to jeet@fedora:~/portfolio
 Type 'help' to see available commands.
 ──────────────────────────────────────────
 bash: work-life-balance: command not found`, 'cli-err');
   }
+  window.showTerminalWelcome();
 
   function addBlock(cmd, result, resultCls = '') {
     const block = document.createElement('div');
@@ -537,7 +564,7 @@ bash: work-life-balance: command not found`, 'cli-err');
   // Click anywhere on terminal body to focus input
   body.addEventListener('click', () => input.focus());
 
-  showWelcome();
+  window.showTerminalWelcome();
 }
 
 /* ──────────────────────────────────────────────────────────────── */
@@ -593,9 +620,13 @@ function initChatbot() {
   next.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') showQuote(); });
 
   // Auto-rotate quote every 30s when open
-  setInterval(() => {
+  let chatInterval = setInterval(() => {
     if (popup.classList.contains('open')) showQuote();
   }, 30000);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) clearInterval(chatInterval);
+    else chatInterval = setInterval(() => { if (popup.classList.contains('open')) showQuote(); }, 30000);
+  });
 
   // Close on outside click
   document.addEventListener('click', e => {
@@ -615,7 +646,7 @@ async function initFooterMetrics() {
   const coffeeEl = document.getElementById('footer-coffee');
   if (coffeeEl) {
     let cups = 847;
-    setInterval(() => {
+    setTimeout(() => {
       cups++;
       coffeeEl.textContent = cups.toLocaleString();
     }, 43000); // a cup every ~43 seconds (very optimistic)
@@ -625,10 +656,16 @@ async function initFooterMetrics() {
   const prsEl = document.getElementById('footer-prs');
   if (!prsEl) return;
   try {
+    const cachedPrs = sessionStorage.getItem('github_prs_total');
+    if (cachedPrs) {
+      prsEl.textContent = Number(cachedPrs).toLocaleString();
+      return;
+    }
     const res  = await fetch('https://api.github.com/search/issues?q=author:jeetjawale+is:pr+is:public+is:merged&per_page=1');
     const data = await res.json();
     if (data.total_count !== undefined) {
       prsEl.textContent = data.total_count.toLocaleString();
+      sessionStorage.setItem('github_prs_total', data.total_count);
     }
   } catch (_) {
     prsEl.textContent = '4,891'; // fallback fake
@@ -934,8 +971,15 @@ function initContactForm() {
     const calContainer = document.getElementById('github-calendar-container');
     
     try {
-      const res  = await fetch(`https://github-contributions-api.deno.dev/${user}.json`);
-      const data = await res.json();
+      const cached = sessionStorage.getItem('github_contribs_data');
+      let data;
+      if (cached) {
+        data = JSON.parse(cached);
+      } else {
+        const res  = await fetch(`https://github-contributions-api.deno.dev/${user}.json`);
+        data = await res.json();
+        sessionStorage.setItem('github_contribs_data', JSON.stringify(data));
+      }
       
       let total = 0;
       let weeks = [];
@@ -993,8 +1037,8 @@ function initContactForm() {
         calContainer.scrollLeft = calContainer.scrollWidth;
       }
     } catch(_) {
-      if (el) el.textContent = 'View contributions on GitHub';
-      if (calContainer) calContainer.innerHTML = '<div class="pr-loading">Failed to load graph data.</div>';
+      if (el) el.innerHTML = 'Failed to load. <a href="https://github.com/jeetjawale" target="_blank" style="color:var(--yellow);text-decoration:underline;">View on GitHub</a>';
+      if (calContainer) calContainer.innerHTML = '<div class="pr-loading">Failed to load graph data. <a href="https://github.com/jeetjawale" target="_blank" style="color:var(--yellow);text-decoration:underline;">View on GitHub</a></div>';
     }
   }
 
@@ -1049,13 +1093,25 @@ function initContactForm() {
       const dotColor = state === 'merged' ? '#d3869b' : state === 'open' ? '#b8bb26' : '#fb4934';
       const el = document.createElement('div');
       el.className = 'pr-item';
+
+      let safeUrl = '#';
+      try {
+        const url = new URL(item.html_url);
+        if (url.protocol === 'http:' || url.protocol === 'https:') {
+          safeUrl = url.href;
+        }
+      } catch (e) {}
+
       el.innerHTML = `
         <div class="pr-dot" style="background:${dotColor}"></div>
         <div class="pr-info">
-          <a href="${item.html_url}" target="_blank" rel="noopener noreferrer" class="pr-title">${item.title}</a>
-          <span class="pr-repo">${repoPath}</span>
+          <a target="_blank" rel="noopener noreferrer" class="pr-title"></a>
+          <span class="pr-repo"></span>
         </div>
       `;
+      el.querySelector('.pr-title').href = safeUrl;
+      el.querySelector('.pr-title').textContent = item.title;
+      el.querySelector('.pr-repo').textContent = repoPath;
       prList.appendChild(el);
     });
 
@@ -1079,8 +1135,15 @@ function initContactForm() {
     visibleCount = 3;
 
     try {
-      const res  = await fetch(`https://api.github.com/search/issues?q=${encodeURIComponent(queries[state])}&per_page=20`);
-      const data = await res.json();
+      const cached = sessionStorage.getItem(`github_prs_${state}`);
+      let data;
+      if (cached) {
+        data = JSON.parse(cached);
+      } else {
+        const res  = await fetch(`https://api.github.com/search/issues?q=${encodeURIComponent(queries[state])}&per_page=20`);
+        data = await res.json();
+        sessionStorage.setItem(`github_prs_${state}`, JSON.stringify(data));
+      }
       if (!data.items || !data.items.length) {
         prList.innerHTML = `<div class="pr-loading">No ${state} contributions found.</div>`;
         return;
@@ -1112,15 +1175,17 @@ function initContactForm() {
     });
   });
 
-  fetchContributions();
-  fetchPRs('merged');
+  if (document.getElementById('github-calendar-container')) {
+    fetchContributions();
+    fetchPRs('merged');
+  }
 })();
 
 /* ──────────────────────────────────────────────────────────────── */
 /*  HASH SCROLL ON LOAD                                             */
 /* ──────────────────────────────────────────────────────────────── */
 
-function scrollToHash() {
+function scrollToHash(isSkipped = false) {
   const hash = window.location.hash;
   if (!hash) return;
   const target = document.querySelector(hash);
@@ -1128,7 +1193,7 @@ function scrollToHash() {
     setTimeout(() => {
       const offset = target.getBoundingClientRect().top + window.scrollY - 56 - 20;
       window.scrollTo({ top: offset, behavior: 'smooth' });
-    }, 3500); // after boot sequence
+    }, isSkipped === true ? 200 : 3500); // after boot sequence
   }
 }
 
@@ -1189,14 +1254,8 @@ function initFloatingTerminal() {
         
         await new Promise(r => setTimeout(r, 400));
         if(output) output.innerHTML = '';
-        // showWelcome is global or in scope? It is in scope of initCliTerminal, but this is initTerminalDragAndDrop
-        // Let's dispatch a custom event to trigger it or just use the global DOM
-        if(output) {
-            const div = document.createElement('div');
-            div.className = 'cli-out-text cli-err';
-            div.innerHTML = `Welcome to jeet@fedora:~/portfolio<br>Type 'help' to see available commands.<br>──────────────────────────────────────────<br>bash: work-life-balance: command not found`;
-            output.appendChild(div);
-        }
+        if(output) output.innerHTML = '';
+        if (window.showTerminalWelcome) window.showTerminalWelcome();
         if(inputRow) inputRow.style.display = 'flex';
         const inp = document.getElementById('cli-input');
         if(inp) inp.focus();
@@ -1416,7 +1475,9 @@ function initFloatingTerminal() {
 /*  BOOT → INIT                                                     */
 /* ──────────────────────────────────────────────────────────────── */
 
-startBootSequence().then(() => {
+startBootSequence().then((isSkipped) => {
+  const footerYearEl = document.getElementById('footer-year');
+  if (footerYearEl) footerYearEl.textContent = new Date().getFullYear();
   populateBlog();
   initNeuralCanvas();
   initUptimeCounter();
@@ -1433,7 +1494,7 @@ startBootSequence().then(() => {
   initBackToTop();
   initObservers();
   initContactForm();
-  scrollToHash();
+  scrollToHash(isSkipped);
 });
 
 // Also allow hash navigation via browser back/forward
