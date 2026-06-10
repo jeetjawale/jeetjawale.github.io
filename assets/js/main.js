@@ -439,7 +439,7 @@ Tip: use ↑↓ arrow keys for command history.`,
     "ls projects/": () =>
       `total 4 (use 'cat <project>' for details)
 
-drwxr-xr-x  job-pilot/                May 2026 → Present   [ACTIVE]
+drwxr-xr-x  opteer/                   May 2026 → Present   [ACTIVE]
 drwxr-xr-x  heritage-explorer/        Aug 2024 → Jun 2025  [DEPLOYED ✓]
 drwxr-xr-x  course-exit-survey/       Feb 2024 → Jun 2024  [ARCHIVED]
 drwxr-xr-x  c-learning-app/           Oct 2023 → Jan 2024  [ARCHIVED]
@@ -454,7 +454,7 @@ FOCUS:     Software Engineering · AI · Full-Stack · Automation
 SUMMARY:
   Built a geospatial radiation safety decision-support system at
   Bhabha Atomic Research Centre (BARC). Currently developing an
-  AI-powered job application CRM using LangGraph and FastAPI.
+  AI-powered job application platform using LangGraph and FastAPI.
   Seeking entry-level Software Engineering roles.
 
 EXPERIENCE:
@@ -468,7 +468,7 @@ EXPERIENCE:
      emergency response and countermeasure planning exercises
 
 PROJECTS:
-  JobPilot CRM           — Next.js / FastAPI / LangGraph / Supabase
+  Opteer                 — Next.js / FastAPI / LangGraph / PostgreSQL
   Heritage Explorer      — QGIS / React / MapLibre / Node.js / Firebase
   Course Exit Survey     — React / Firebase / Chart.js
   C-Learning App         — Flutter / Dart / Firebase
