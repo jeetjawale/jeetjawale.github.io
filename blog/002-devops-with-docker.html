@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mastering Docker: From "Works on My Machine" to Secure, Orchestrated Deployments | jeet@fedora:~/blog</title>
+  <meta name="description" content="Recently, I completed the DevOps with Docker course, and it completely transformed how I think about application development, security, and deployment.">
+  <meta property="og:title" content="Mastering Docker: From 'Works on My Machine' to Secure, Orchestrated Deployments">
+  <meta property="og:description" content="Recently, I completed the DevOps with Docker course, and it completely transformed how I think about application development, security, and deployment.">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-06-20">
+  <meta property="og:url" content="https://jeetjawale.dev/blog/002-devops-with-docker.html">
+  <link rel="canonical" href="https://jeetjawale.dev/blog/002-devops-with-docker.html">
+  <meta property="og:image" content="https://jeetjawale.dev/assets/images/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:image" content="https://jeetjawale.dev/assets/images/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org/",
+    "@type": "Article",
+    "headline": "Mastering Docker: From 'Works on My Machine' to Secure, Orchestrated Deployments",
+    "description": "Recently, I completed the DevOps with Docker course, and it completely transformed how I think about application development, security, and deployment.",
+    "author": {
+      "@type": "Person",
+      "name": "Jeet Jawale",
+      "url": "https://jeetjawale.dev/"
+    },
+    "datePublished": "2026-06-20",
+    "image": "https://jeetjawale.dev/assets/images/og-image.png"
+  }
+  </script>
+</head>
+<body>
+<div id="crt-overlay"></div>
+
+<canvas id="nn-canvas" aria-hidden="true"></canvas>
+
+<main>
+  <div class="page-col" style="padding-top: 4rem;">
+    <div style="margin-bottom: 3rem; display: flex; gap: 1rem;">
+      <a href="./blog.html" class="btn-terminal btn-terminal-outline" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">cd ../</a>
+      <a href="../index.html?skipBoot=1" class="btn-terminal btn-terminal-outline" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">cd ~/home</a>
+    </div>
+
+    <article class="post-content">
+      <header class="post-header">
+        <div style="color: var(--yellow); font-size: 0.9rem; margin-bottom: 1rem;">[category: DevOps]</div>
+        <h1>Mastering Docker: From "Works on My Machine" to Secure, Orchestrated Deployments</h1>
+        <div style="color: var(--fg3); font-size: 0.9rem;">8 min read · DevOps</div>
+      </header>
+
+      <div class="post-body">
+        <p>If you have ever spent days debugging an application only to realize it was due to a missing local dependency or an incorrect runtime version, you know the pain of the "works on my machine" problem.</p>
+
+        <p>Recently, I completed the <strong>DevOps with Docker</strong> course (from the University of Helsinki), and it completely transformed how I think about application development, security, and deployment.</p>
+
+        <div style="background: var(--bg1); padding: 1.5rem; border-left: 4px solid var(--aqua-b); margin: 2.5rem 0;">
+          <h4 style="margin-top: 0; margin-bottom: 1rem; color: var(--aqua-b); font-size: 1rem;">On this page</h4>
+          <ul style="margin-bottom: 0; list-style-type: square; padding-left: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.95rem;">
+            <li><a href="#what-i-did" style="color: var(--fg); text-decoration: none;">What I Actually Built (The 39 Exercises)</a></li>
+            <li><a href="#lesson-1" style="color: var(--fg); text-decoration: none;">1. Containers are Ephemeral, but Data Shouldn't Be</a></li>
+            <li><a href="#lesson-2" style="color: var(--fg); text-decoration: none;">2. Taming Multi-Container Chaos with Docker Compose</a></li>
+            <li><a href="#lesson-3" style="color: var(--fg); text-decoration: none;">3. The Art of Image Optimization</a></li>
+            <li><a href="#lesson-4" style="color: var(--fg); text-decoration: none;">4. Running as Root is a Massive Security Flaw</a></li>
+            <li><a href="#lesson-5" style="color: var(--fg); text-decoration: none;">5. Automating the Future: CI/CD and Beyond</a></li>
+            <li><a href="#conclusion" style="color: var(--fg); text-decoration: none;">Conclusion & Resources</a></li>
+          </ul>
+        </div>
+
+        <h2 id="what-i-did">🛠️ What I Actually Built (The 39 Exercises)</h2>
+        <p>Before diving into the theory, here is a concrete list of exactly what I built and configured across the 39 hands-on exercises in this course:</p>
+        
+        <ul>
+          <li><strong>Docker Basics:</strong> Built custom <code>Dockerfiles</code> from scratch for Java, Node.js, and Go projects. I pushed these images to Docker Hub and successfully deployed them to the cloud.</li>
+          <li><strong>Complex Orchestration:</strong> Authored <code>compose.yaml</code> files to manage multi-container setups. I packaged a full development environment running a frontend, backend, Nginx reverse-proxy, PostgreSQL database, and Redis cache.</li>
+          <li><strong>Security & Optimization:</strong> Rewrote Dockerfiles to run as non-root users, heavily reduced image sizes using multi-stage builds and Alpine Linux, and fully automated deployments using GitHub Actions CI/CD pipelines.</li>
+        </ul>
+
+        <p>Here are the 5 most critical lessons I learned from building out these environments.</p>
+
+        <h2 id="lesson-1">💾 1. Containers are Ephemeral, but Data Shouldn't Be</h2>
+        <p>At its core, a Docker image is a read-only blueprint, and a container is a running, isolated instance of that image. Because containers share the host machine's OS kernel, they are incredibly lightweight and start almost instantly.</p>
+
+        <p>However, containers are <strong>ephemeral by nature</strong>. If a container is deleted, all the manual changes and data generated inside it are permanently lost. To make containers useful for real-world applications like databases, we must bridge the heavily isolated container filesystem with the host machine using volumes and bind mounts.</p>
+
+        <ul>
+          <li><strong>Bind Mounts:</strong> Map a specific file or directory from the host directly into the container. This is perfect for local development, as you can achieve instant "hot reloading" when you edit your source code.</li>
+          <li><strong>Named Volumes:</strong> Explicit storage locations managed completely by Docker, which are ideal for safely persisting application state or databases across container restarts.</li>
+        </ul>
+
+        <h2 id="lesson-2">🐙 2. Taming Multi-Container Chaos with Docker Compose</h2>
+        <p>While the Docker CLI is powerful, manually running multiple interconnected containers (like a React frontend, a Node backend, and a PostgreSQL database) using raw <code>docker run</code> commands is tedious and error-prone.</p>
+
+        <p><strong>Docker Compose</strong> allows you to define and orchestrate your entire application stack declaratively within a single <code>compose.yaml</code> file. By default, Compose automatically creates an internal bridge network and DNS system. This means containers can communicate with each other securely using their service names as hostnames (e.g., <code>http://backend:8080</code>) without ever exposing internal database or cache ports to the host machine or public internet.</p>
+
+        <h2 id="lesson-3">⚡ 3. The Art of Image Optimization</h2>
+        <p>Bloated Docker images slow down deployment pipelines, consume unnecessary storage, and dramatically increase your security attack surface. Writing an "okay" Dockerfile takes 30 seconds, but writing an optimal one requires strategic layering.</p>
+
+        <ul style="margin-bottom: 1.5rem;">
+          <li><strong>Layer Caching:</strong> Every instruction in a Dockerfile (like <code>RUN</code> or <code>COPY</code>) creates a permanent, immutable layer. To optimize builds, you should place slow, rarely changing commands (like installing dependencies) at the top of the file, and fast, frequently changing commands (like copying source code) at the bottom.</li>
+          <li><strong>Alpine Linux:</strong> Moving away from heavy base images like <code>ubuntu</code> to lightweight, language-specific variants like <code>node:16-alpine</code> can cut image sizes by hundreds of megabytes.</li>
+          <li><strong>Multi-Stage Builds:</strong> This is the definitive solution to bloated containers. Multi-stage builds allow you to compile your application in a heavy "builder" environment, and then explicitly copy only the final compiled artifacts into a fresh, minimal production image. For compiled languages like Go, you can even copy the final binary into a <code>scratch</code> image (an explicitly empty file system of 0 bytes), resulting in an ultra-secure image that is often under 20 MB.</li>
+        </ul>
+
+        <h2 id="lesson-4">🛡️ 4. Running as Root is a Massive Security Flaw</h2>
+        <p>By default, Docker processes run as the <code>root</code> user. If an attacker exploits a vulnerability in your web application, they immediately gain root-level access within that container, significantly increasing the risk of a "container breakout" to the host machine.</p>
+
+        <p>Applying the <strong>Principle of Least Privilege</strong> is mandatory for production containers. You must explicitly create an unprivileged user inside the container, use the Linux <code>chown</code> command to grant them ownership of the application directory, and use the <code>USER</code> Dockerfile directive to drop root privileges before executing the application.</p>
+
+        <h2 id="lesson-5">🚀 5. Automating the Future: CI/CD and Beyond</h2>
+        <p>The ultimate goal of DevOps is automation. A robust <strong>Continuous Integration and Continuous Deployment (CI/CD)</strong> pipeline removes human error and establishes your Git repository as the single source of truth.</p>
+
+        <p>Using tools like GitHub Actions, you can automate the process of authenticating with Docker Hub, building multi-architecture images, and pushing them to a registry on every code commit. From there, tools like Watchtower can poll the registry to automatically pull updates and seamlessly restart your local containers.</p>
+
+        <p>For larger, enterprise-scale deployments, single-host Docker Compose environments give way to <strong>Kubernetes (K8s)</strong>. Kubernetes abstracts the underlying infrastructure into a "Control Plane" and "Worker Nodes," allowing you to orchestrate ephemeral Pods and resilient Services across a massive fleet of machines for true high availability.</p>
+
+        <h2 id="conclusion">🎯 Conclusion & Resources</h2>
+        <p>Containerization is no longer just a tool for operations teams; it is a fundamental developer skill. By codifying infrastructure into Dockerfiles, leveraging Compose for orchestration, and strictly enforcing non-root permissions and multi-stage optimizations, we can build pipelines that are as secure and portable as they are efficient.</p>
+
+        <p>I have posted my personal notes, all 39 exercise write-ups, and my custom Docker CLI & Compose Cheat Sheets publicly. You can find everything here:</p>
+
+        <ul>
+          <li>👉 <strong><a href="https://github.com/jeetjawale/devops-with-docker-spring-2026" target="_blank" style="color: var(--blue-b);">GitHub Repository</a></strong></li>
+          <li>👉 <strong><a href="https://courses.mooc.fi/org/uh-cs/courses/devops-with-docker-spring-2026" target="_blank" style="color: var(--blue-b);">DevOps with Docker Course</a></strong></li>
+        </ul>
+
+        <p style="font-size: 1.1rem; font-style: italic; border-top: 1px dashed var(--bg3); padding-top: 2.5rem; margin-top: 3.5rem; text-align: center; color: var(--yellow-b);">
+          Building scalable environments, one container at a time. 🏗️
+        </p>
+      </div>
+    </article>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-bottom-row" style="justify-content: center;">
+    <div>Jeet Jawale — &copy; <span id="year"></span></div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script src="../assets/js/main.js"></script>
+
+</body>
+</html>
