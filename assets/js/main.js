@@ -1,175 +1,12 @@
-/* ════════════════════════════════════════════════════════════════
-   JEET JAWALE — PORTFOLIO
-   main.js — Boot sequence, Neural Canvas, CLI Terminal,
-             Chatbot, Uptime, GitHub data, Contact form
-   ════════════════════════════════════════════════════════════════ */
+'use strict';
 
-"use strict";
-
-/* ──────────────────────────────────────────────────────────────── */
-/*  BOOT SEQUENCE                                                    */
-/* ──────────────────────────────────────────────────────────────── */
-
-const BOOT_LINES = [
-  {
-    text: "[    0.000000] Linux version 7.0.9-204.fc44.x86_64 (gcc 14.1.1) (Fedora Linux)",
-    cls: "",
-  },
-  {
-    text: "[    0.000001] Command line: BOOT_IMAGE=/vmlinuz root=/dev/mapper/fedora-root ro",
-    cls: "",
-  },
-  { text: "[    0.012834] BIOS-provided physical RAM map: 32768 MB", cls: "" },
-  { text: "[    0.023415] ACPI: BIOS IRQ0 pin2 override", cls: "" },
-  {
-    text: "[    0.189234] PCI: Using configuration type 1 for base access",
-    cls: "",
-  },
-  {
-    text: "[    0.291847] systemd[1]: Starting jeet.jawale.portfolio.service...",
-    cls: "boot-info",
-  },
-  {
-    text: "[    0.399201] USB: keyboard detected — Cherry MX Blues. Nice.",
-    cls: "",
-  },
-  { text: "[    0.445123] NVIDIA RTX: ready to cook", cls: "boot-ok" },
-  {
-    text: "[    0.512334] Loading neural network weights from checkpoint...",
-    cls: "",
-  },
-  {
-    text: "[    0.567890] checkpoint OK  (loss: 0.0012, acc: 99.8%)",
-    cls: "boot-ok",
-  },
-  {
-    text: "[    0.623456] Mounting /home/jeet/projects — 4,891 commits attached",
-    cls: "",
-  },
-  {
-    text: "[    0.734567] SSH agent: identity loaded — jeet_ed25519",
-    cls: "boot-ok",
-  },
-  {
-    text: "[    0.801234] Syncing node_01... [████████████] 100%",
-    cls: "boot-ok",
-  },
-  {
-    text: "[    0.867891] Syncing node_02... [████████████] 100%",
-    cls: "boot-ok",
-  },
-  {
-    text: "[    0.923456] Syncing node_03... [█████████░░░]  75% — almost there",
-    cls: "boot-warn",
-  },
-  {
-    text: "[    0.987654] Syncing node_03... [████████████] 100%",
-    cls: "boot-ok",
-  },
-  {
-    text: "[    1.034567] Distributed compute: all nodes synced",
-    cls: "boot-ok",
-  },
-  {
-    text: "[    1.145678] bash: work-life-balance: command not found",
-    cls: "boot-err",
-  },
-  {
-    text: "[    1.256789] Portfolio service: fully operational",
-    cls: "boot-ok",
-  },
-  { text: "", cls: "" },
-  {
-    text: "[  OK  ] Reached target: jeet.jawale.portfolio — Welcome █",
-    cls: "boot-ok",
-  },
-];
-
-function startBootSequence() {
-  const overlay = document.getElementById("boot-overlay");
-  const log = document.getElementById("boot-log");
-  if (!overlay || !log) return Promise.resolve();
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const isSkipParam = urlParams.get("skipBoot") === "1";
-  if (isSkipParam || sessionStorage.getItem("booted")) {
-    overlay.style.display = "none";
-    if (isSkipParam) {
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-    document.body.classList.add("boot-skipped");
-    sessionStorage.setItem("booted", "1");
-    return Promise.resolve(true);
-  }
-
-  return new Promise((resolve) => {
-    let i = 0;
-    let skipped = false;
-
-    function skip() {
-      if (skipped) return;
-      skipped = true;
-      document.body.classList.add("boot-skipped");
-      sessionStorage.setItem("booted", "1");
-      // Dump remaining lines instantly
-      while (i < BOOT_LINES.length) {
-        appendLine(BOOT_LINES[i]);
-        i++;
-      }
-      setTimeout(() => {
-        overlay.classList.add("boot-done");
-        setTimeout(() => resolve(true), 900);
-      }, 120);
-    }
-
-    document.addEventListener("keydown", skip, { once: true });
-    overlay.addEventListener("click", skip, { once: true });
-
-    function appendLine(line) {
-      const el = document.createElement("div");
-      el.className = "boot-line" + (line.cls ? " " + line.cls : "");
-      el.textContent = line.text;
-      log.appendChild(el);
-      log.scrollTop = log.scrollHeight;
-    }
-
-    function showNext() {
-      if (skipped) return;
-      if (i >= BOOT_LINES.length) {
-        setTimeout(() => {
-          overlay.classList.add("boot-done");
-          setTimeout(() => {
-            sessionStorage.setItem("booted", "1");
-            resolve(false);
-          }, 900);
-        }, 400);
-        return;
-      }
-      appendLine(BOOT_LINES[i]);
-      const delay =
-        BOOT_LINES[i].text === ""
-          ? 80
-          : BOOT_LINES[i].cls === "boot-ok"
-            ? Math.random() * 40 + 25
-            : BOOT_LINES[i].cls === "boot-err"
-              ? 180
-              : Math.random() * 60 + 30;
-      i++;
-      setTimeout(showNext, delay);
-    }
-
-    showNext();
-  });
-}
-
-/* ──────────────────────────────────────────────────────────────── */
-/*  NEURAL NETWORK CANVAS                                           */
-/* ──────────────────────────────────────────────────────────────── */
-
+/* ============================================================
+   1. Neural Network Canvas
+   ============================================================ */
 function initNeuralCanvas() {
-  const canvas = document.getElementById("nn-canvas");
+  const canvas = document.getElementById('nn-canvas');
   if (!canvas) return;
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext('2d');
 
   const CFG = {
     numNodes: window.innerWidth < 768 ? 32 : 80,
@@ -178,1593 +15,923 @@ function initNeuralCanvas() {
     speed: 0.28,
     activateEvery: 2000,
     hoverRadius: 110,
-    // Gruvbox colors
-    nodeColor: [250, 189, 47], // yellow-b
-    edgeColor: [131, 165, 152], // blue-b
-    pulseColor: [254, 128, 25], // orange-b
+    nodeColor: [250, 189, 47],
+    edgeColor: [131, 165, 152],
+    pulseColor: [254, 128, 25],
   };
 
   let W, H;
   const nodes = [];
-  let mouseX = -9999,
-    mouseY = -9999;
+  let mouseX = -9999, mouseY = -9999;
 
-  function resize() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
 
   function makeNodes() {
     nodes.length = 0;
     for (let i = 0; i < CFG.numNodes; i++) {
-      nodes.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        vx: (Math.random() - 0.5) * CFG.speed,
-        vy: (Math.random() - 0.5) * CFG.speed,
-        r:
-          CFG.nodeRadius.min +
-          Math.random() * (CFG.nodeRadius.max - CFG.nodeRadius.min),
-        act: 0,
+      nodes.push({ 
+        x: -50 + Math.random() * (W + 100), 
+        y: -50 + Math.random() * (H + 100), 
+        vx: (Math.random() - 0.5) * CFG.speed, 
+        vy: (Math.random() - 0.5) * CFG.speed, 
+        r: CFG.nodeRadius.min + Math.random() * (CFG.nodeRadius.max - CFG.nodeRadius.min), 
+        act: 0 
       });
     }
   }
 
   function draw() {
     ctx.clearRect(0, 0, W, H);
-
-    // Update positions
-    for (const n of nodes) {
-      n.x += n.vx;
-      n.y += n.vy;
-      if (n.x < 0 || n.x > W) n.vx *= -1;
-      if (n.y < 0 || n.y > H) n.vy *= -1;
-      n.act = Math.max(0, n.act - 0.018);
+    
+    const time = Date.now() * 0.001;
+    const breatheScale = 1 + Math.sin(time * 0.8) * 0.03; 
+    const breatheAlpha = 0.85 + Math.sin(time * 0.8) * 0.15; 
+    
+    // Parallax logic
+    let px = 0, py = 0;
+    if (mouseX !== -9999) {
+      px = (mouseX - W / 2) * 0.025; // 2.5% parallax offset
+      py = (mouseY - H / 2) * 0.025;
     }
+    
+    ctx.save();
+    ctx.globalAlpha = breatheAlpha;
+    
+    // Center, apply breathing scale, uncenter, then apply parallax
+    ctx.translate(W / 2, H / 2);
+    ctx.scale(breatheScale, breatheScale);
+    ctx.translate(-W / 2, -H / 2);
+    ctx.translate(-px, -py);
 
-    // Mouse hover activation
-    for (const n of nodes) {
-      const dx = n.x - mouseX,
-        dy = n.y - mouseY;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < CFG.hoverRadius) {
-        n.act = Math.max(n.act, 1 - dist / CFG.hoverRadius);
-      }
+    for (const n of nodes) { 
+      n.x += n.vx; n.y += n.vy; 
+      if (n.x < -50 || n.x > W + 50) n.vx *= -1; 
+      if (n.y < -50 || n.y > H + 50) n.vy *= -1; 
+      n.act = Math.max(0, n.act - 0.018); 
     }
-
-    // Draw edges
+    for (const n of nodes) { 
+      const adjMouseX = mouseX + px;
+      const adjMouseY = mouseY + py;
+      const dx = n.x - adjMouseX, dy = n.y - adjMouseY; 
+      const dist = Math.sqrt(dx * dx + dy * dy); 
+      if (dist < CFG.hoverRadius) { n.act = Math.max(n.act, 1 - dist / CFG.hoverRadius); } 
+    }
     const [er, eg, eb] = CFG.edgeColor;
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < nodes.length; j++) {
-        const a = nodes[i],
-          b = nodes[j];
-        const dx = b.x - a.x,
-          dy = b.y - a.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < CFG.connDist) {
-          const weight = 1 - dist / CFG.connDist;
-          const actBoost = (a.act + b.act) * 0.3;
-          const alpha = weight * 0.12 + actBoost;
-          ctx.beginPath();
-          ctx.strokeStyle = `rgba(${er},${eg},${eb},${Math.min(alpha, 0.65)})`;
-          ctx.lineWidth = weight * 0.8 + actBoost;
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.stroke();
-        }
-      }
-    }
-
-    // Draw nodes
+    for (let i = 0; i < nodes.length; i++) { for (let j = i + 1; j < nodes.length; j++) { const a = nodes[i], b = nodes[j]; const dx = b.x - a.x, dy = b.y - a.y; const dist = Math.sqrt(dx * dx + dy * dy); if (dist < CFG.connDist) { const weight = 1 - dist / CFG.connDist; const actBoost = (a.act + b.act) * 0.3; const alpha = weight * 0.12 + actBoost; ctx.beginPath(); ctx.strokeStyle = `rgba(${er},${eg},${eb},${Math.min(alpha, 0.65)})`; ctx.lineWidth = weight * 0.8 + actBoost; ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); } } }
     const [nr, ng, nb] = CFG.nodeColor;
     const [pr, pg, pb] = CFG.pulseColor;
-    for (const n of nodes) {
-      const baseAlpha = 0.25 + n.act * 0.7;
-      const radius = n.r + n.act * 4;
-      // Glow on activation
-      if (n.act > 0.1) {
-        const grad = ctx.createRadialGradient(
-          n.x,
-          n.y,
-          0,
-          n.x,
-          n.y,
-          radius * 4,
-        );
-        grad.addColorStop(0, `rgba(${pr},${pg},${pb},${n.act * 0.4})`);
-        grad.addColorStop(1, `rgba(${pr},${pg},${pb},0)`);
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, radius * 4, 0, Math.PI * 2);
-        ctx.fillStyle = grad;
-        ctx.fill();
-      }
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${nr},${ng},${nb},${baseAlpha})`;
-      ctx.fill();
-    }
-
+    for (const n of nodes) { const baseAlpha = 0.25 + n.act * 0.7; const radius = n.r + n.act * 4; if (n.act > 0.1) { const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, radius * 4); grad.addColorStop(0, `rgba(${pr},${pg},${pb},${n.act * 0.4})`); grad.addColorStop(1, `rgba(${pr},${pg},${pb},0)`); ctx.beginPath(); ctx.arc(n.x, n.y, radius * 4, 0, Math.PI * 2); ctx.fillStyle = grad; ctx.fill(); } ctx.beginPath(); ctx.arc(n.x, n.y, radius, 0, Math.PI * 2); ctx.fillStyle = `rgba(${nr},${ng},${nb},${baseAlpha})`; ctx.fill(); }
+    
+    ctx.restore();
     animId = requestAnimationFrame(draw);
   }
 
-  // Periodic backprop-style activation pulse
   function triggerPulse() {
     const source = nodes[Math.floor(Math.random() * nodes.length)];
     source.act = 1;
-    // Spread to nearby nodes with delay
-    for (const n of nodes) {
-      const dx = n.x - source.x,
-        dy = n.y - source.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < CFG.connDist && n !== source) {
-        setTimeout(
-          () => {
-            n.act = Math.max(n.act, 0.75 * (1 - dist / CFG.connDist));
-          },
-          50 + dist * 0.6,
-        );
-      }
-    }
+    for (const n of nodes) { const dx = n.x - source.x, dy = n.y - source.y; const dist = Math.sqrt(dx * dx + dy * dy); if (dist < CFG.connDist && n !== source) { setTimeout(() => { n.act = Math.max(n.act, 0.75 * (1 - dist / CFG.connDist)); }, 50 + dist * 0.6); } }
   }
   let pulseId = setInterval(triggerPulse, CFG.activateEvery);
   let animId;
 
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-      cancelAnimationFrame(animId);
-      clearInterval(pulseId);
-    } else {
-      draw();
-      pulseId = setInterval(triggerPulse, CFG.activateEvery);
-    }
-  });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) { cancelAnimationFrame(animId); clearInterval(pulseId); } else { draw(); pulseId = setInterval(triggerPulse, CFG.activateEvery); } });
+  window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; }, { passive: true });
+  window.addEventListener('mouseleave', () => { mouseX = -9999; mouseY = -9999; });
 
-  // Mouse tracking (window-level, canvas is behind everything)
-  window.addEventListener(
-    "mousemove",
-    (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    },
-    { passive: true },
-  );
-  window.addEventListener("mouseleave", () => {
-    mouseX = -9999;
-    mouseY = -9999;
-  });
-
-  resize();
-  makeNodes();
-  draw();
-  window.addEventListener(
-    "resize",
-    () => {
-      resize();
-      makeNodes();
-    },
-    { passive: true },
-  );
+  resize(); makeNodes(); draw();
+  window.addEventListener('resize', () => { resize(); makeNodes(); }, { passive: true });
 }
 
-/* ──────────────────────────────────────────────────────────────── */
-/*  UPTIME COUNTER                                                   */
-/* ──────────────────────────────────────────────────────────────── */
+/* ============================================================
+   2. Tab Switching
+   ============================================================ */
+function initTabs() {
+  const tabs = document.querySelectorAll('.tab');
+  const panes = document.querySelectorAll('.tab-pane');
 
-function initUptimeCounter() {
-  const valEl = document.getElementById("uptime-val");
-  const nfEl = document.getElementById("nf-uptime-display");
-  if (!valEl && !nfEl) return;
-
-  // Start from roughly when Fedora was first installed
-  const start = new Date("2025-01-01T00:00:00");
-
-  function fmt() {
-    const diff = Math.floor((Date.now() - start.getTime()) / 1000);
-    const d = Math.floor(diff / 86400);
-    const h = Math.floor((diff % 86400) / 3600);
-    const m = Math.floor((diff % 3600) / 60);
-    const s = diff % 60;
-    return `${d}d ${h}h ${m}m ${s}s`;
+  function switchTab(tabName) {
+    tabs.forEach(t => { t.classList.toggle('active', t.dataset.tab === tabName); t.setAttribute('aria-selected', t.dataset.tab === tabName); });
+    panes.forEach(p => { p.classList.toggle('active', p.id === 'tab-' + tabName); });
+    history.replaceState(null, null, '#' + tabName);
   }
 
-  function tick() {
-    const str = fmt();
-    if (valEl) valEl.textContent = str;
-    if (nfEl) {
-      nfEl.textContent = str;
-    }
-  }
+  tabs.forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
 
-  tick();
-  let upId = setInterval(tick, 1000);
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) clearInterval(upId);
-    else {
-      tick();
-      upId = setInterval(tick, 1000);
-    }
+  // Handle hash on load
+  const hash = window.location.hash.replace('#', '');
+  const validTabs = ['about', 'experience', 'projects', 'skills', 'blog'];
+  if (hash && validTabs.includes(hash)) switchTab(hash);
+
+  window.addEventListener('hashchange', () => {
+    const h = window.location.hash.replace('#', '');
+    if (h && validTabs.includes(h)) switchTab(h);
   });
 }
 
-/* ──────────────────────────────────────────────────────────────── */
-/*  COFFEE BAR ANIMATION                                            */
-/* ──────────────────────────────────────────────────────────────── */
-
+/* ============================================================
+   3. Coffee Bar Animation
+   ============================================================ */
 function initCoffeeBar() {
-  const bar = document.getElementById("coffee-bar");
-  const val = document.getElementById("coffee-val");
-
-  // Calculate days since Jan 1 of current year
+  const bar = document.getElementById('coffee-bar');
+  const val = document.getElementById('coffee-val');
   const now = new Date();
   const startOfYear = new Date(now.getFullYear(), 0, 1);
   const diffDays = Math.floor((now - startOfYear) / (1000 * 60 * 60 * 24)) || 1;
-
-  if (val) val.textContent = diffDays + " cups";
-
-  if (!bar) return;
-
-  // Animate after a short delay (post-boot feel)
-  setTimeout(() => {
-    // Max out at 100%, min 5% for visibility
-    const pct = Math.min(100, Math.max(5, (diffDays / 365) * 100));
-    bar.style.width = pct + "%";
-  }, 400);
+  if (val) val.textContent = diffDays + ' cups';
+  if (bar) setTimeout(() => { const pct = Math.min(100, Math.max(5, (diffDays / 365) * 100)); bar.style.width = pct + '%'; }, 400);
 }
 
-/* ──────────────────────────────────────────────────────────────── */
-/*  CLI TERMINAL                                                    */
-/* ──────────────────────────────────────────────────────────────── */
-
-function initCliTerminal() {
-  const output = document.getElementById("cli-output");
-  const input = document.getElementById("cli-input");
-  const body = document.getElementById("cli-body");
-  if (!output || !input) return;
-
-  const COMMANDS = {
-    help: () => `Available commands:
-
-  ls projects/          — list all projects
-  cat resume.txt        — view resume summary
-  sudo impress-recruiter — run recruitment protocol
-  git log                  — view recent repo commits
-  whoami                — current user
-  uname -a              — system information
-  ps aux                — running processes
-  clear                 — clear terminal
-  help                  — show this message
-
-Tip: use ↑↓ arrow keys for command history.`,
-
-    "ls projects/": () =>
-      `total 4 (use 'cat <project>' for details)
-
-drwxr-xr-x  opteer/                   May 2026 → Present   [ACTIVE]
-drwxr-xr-x  heritage-explorer/        Aug 2024 → Jun 2025  [DEPLOYED ✓]
-drwxr-xr-x  course-exit-survey/       Feb 2024 → Jun 2024  [ARCHIVED]
-drwxr-xr-x  c-learning-app/           Oct 2023 → Jan 2024  [ARCHIVED]
--rw-r--r--  more-in-progress.txt      ...`,
-
-    "cat resume.txt": () =>
-      `NAME:      Jeet Jawale
-DEGREE:    B.Tech. Computer Engineering
-LOCATION:  Navi Mumbai, India
-FOCUS:     Software Engineering · AI · Full-Stack · Automation
-
-SUMMARY:
-  Built a geospatial radiation safety decision-support system at
-  Bhabha Atomic Research Centre (BARC). Currently developing an
-  AI-powered job application platform using LangGraph and FastAPI.
-  Seeking entry-level Software Engineering roles.
-
-EXPERIENCE:
-  BARC, Trombay (Jun–Aug 2025)
-  Project Trainee — Radiation Safety Systems Division
-  → Automated geospatial data processing workflows (Python/PyQGIS)
-     — reduced manual preprocessing time by ~50%
-  → Developed PyQt desktop interface for radiation safety
-     decision-support system integrating QGIS spatial layers
-  → Built geospatial visualization modules used in tabletop
-     emergency response and countermeasure planning exercises
-
-PROJECTS:
-  Opteer                 — Next.js / FastAPI / LangGraph / PostgreSQL
-  Heritage Explorer      — QGIS / React / MapLibre / Node.js / Firebase
-  Course Exit Survey     — React / Firebase / Chart.js
-  C-Learning App         — Flutter / Dart / Firebase
-
-CERTIFICATIONS:
-  → Google Cloud Career Launchpad Cloud Engineer
-  → Linux Unhatched (Cisco Networking Academy)
-
-STATUS:    ● Open to work
-CONTACT:   mail@jeetjawale.dev`,
-
-    "sudo impress-recruiter": () =>
-      `[sudo] password for jeet: ••••••••
-Authenticating... OK
-
-     ██╗███████╗███████╗████████╗
-     ██║██╔════╝██╔════╝╚══██╔══╝
-     ██║█████╗  █████╗     ██║
-██╗  ██║██╔══╝  ██╔══╝     ██║
-╚██████║███████╗███████╗   ██║
- ╚═════╝╚══════╝╚══════╝   ╚═╝
-
-impress-recruiter v2.6.1 — initializing...
-
-[✓] Linux skills           VERIFIED
-[✓] Coffee consumption     CRITICAL (847 cups)
-[✓] Open source activity   PRESENT
-[✓] Automation instinct    HIGH
-[✓] Work-life balance      COMMAND NOT FOUND
-[✓] Hire-ability score     99.8%  (loss: 0.0012)
-
-Contact: mail@jeetjawale.dev
-→ Offer drafted. Awaiting your signature. █`,
-
-    "git log": async () => {
-      try {
-        const cachedLog = sessionStorage.getItem("github_git_log");
-        if (cachedLog) return cachedLog;
-        const res = await fetch(
-          "https://api.github.com/repos/jeetjawale/jeetjawale.github.io/commits",
-        );
-        if (!res.ok) return "fatal: bad revision or path";
-        const data = await res.json();
-        const logStr = data
-          .slice(0, 10)
-          .map((c, i) => {
-            const sha = c.sha.substring(0, 7);
-            const msg = c.commit.message.split("\n")[0];
-            const head = i === 0 ? " (HEAD -> main) " : " ";
-            return `${sha}${head}${msg}`;
-          })
-          .join("\n");
-        sessionStorage.setItem("github_git_log", logStr);
-        return logStr;
-      } catch (e) {
-        return "fatal: your current branch appears to be broken";
-      }
-    },
-
-    whoami: () => `jeet`,
-
-    "uname -a": () =>
-      `Linux jeet-pc 7.0.9-204.fc44.x86_64 #1 SMP PREEMPT_DYNAMIC
-Fedora Linux 44 x86_64 GNU/Linux`,
-
-    "ps aux": () =>
-      `USER       PID  %CPU %MEM  COMMAND
-jeet         1   0.0  0.1  /sbin/init
-jeet       420   2.4  4.2  python3 train_model.py --epochs 100
-jeet       421   0.1  0.8  bash
-jeet       847  42.0 12.8  nvim portfolio/index.html
-jeet      1204   0.0  0.2  git --daemon
-jeet      4891  99.9  0.0  thinking_about_side_projects`,
-
-    "rm -rf /": () => {
-      document.body.classList.add("kernel-panic");
-      document.body.innerHTML =
-        '<div style="color:#0f0; background:#000; font-family:monospace; padding:2rem; font-size:24px; width:100vw; height:100vh;">KERNEL PANIC - NOT SYNCING: Fatal exception in interrupt<br>System halted.<br>Rebooting in 3 seconds...</div>';
-      setTimeout(() => location.reload(), 3000);
-      return "";
-    },
-
-    clear: () => null, // special
-  };
-
-  const history = [];
-  let histIdx = -1;
-
-  // Welcome message on load
-  window.showTerminalWelcome = function () {
-    addBlock(
-      "",
-      `Welcome to jeet@fedora:~/portfolio
-Type 'help' to see available commands.
-──────────────────────────────────────────
-bash: work-life-balance: command not found`,
-      "cli-err",
-    );
-  };
-  window.showTerminalWelcome();
-
-  function addBlock(cmd, result, resultCls = "") {
-    const block = document.createElement("div");
-    block.className = "cli-out-block";
-
-    if (cmd) {
-      const cmdEl = document.createElement("div");
-      cmdEl.className = "cli-out-cmd";
-      cmdEl.textContent = cmd;
-      block.appendChild(cmdEl);
-    }
-
-    if (result !== null) {
-      const resEl = document.createElement("div");
-      resEl.className = "cli-out-text" + (resultCls ? " " + resultCls : "");
-      resEl.textContent = result;
-      block.appendChild(resEl);
-    }
-
-    output.appendChild(block);
-    body.scrollTop = body.scrollHeight;
-  }
-
-  async function runCommand(raw) {
-    const cmd = raw.trim();
-    if (!cmd) return;
-
-    // History
-    if (history[0] !== cmd) history.unshift(cmd);
-    if (history.length > 50) history.pop();
-    histIdx = -1;
-
-    // Sudo password prompt interception
-    if (cmd.startsWith("sudo ") && cmd !== "sudo impress-recruiter") {
-      terminalState = "sudo";
-      input.type = "password";
-      addBlock(cmd, `[sudo] password for jeet: `, "");
-      return;
-    }
-
-    // Special: clear
-    if (cmd === "clear") {
-      output.innerHTML = "";
-      return;
-    }
-
-    // Look up command (try exact match first, then prefix)
-    let handler = COMMANDS[cmd];
-    if (!handler) {
-      // fuzzy: does any key start with what was typed?
-      const match = Object.keys(COMMANDS).find((k) => k.startsWith(cmd));
-      if (match) handler = COMMANDS[match];
-    }
-
-    if (handler) {
-      input.disabled = true;
-      try {
-        const result = await handler();
-        const isSudo = cmd.startsWith("sudo");
-        addBlock(cmd, result, isSudo ? "cli-ok" : "");
-      } catch (e) {
-        addBlock(cmd, `Error: ${e.message}`, "cli-err");
-      }
-      input.disabled = false;
-      input.focus();
-    } else {
-      addBlock(
-        cmd,
-        `bash: ${cmd}: command not found\n(try 'help' to see available commands)`,
-        "cli-err",
-      );
-    }
-  }
-
-  let terminalState = "normal";
-
-  function updateInputWidth() {
-    input.style.width = Math.max(1, input.value.length) + "ch";
-  }
-  input.addEventListener("input", updateInputWidth);
-
-  input.addEventListener("keydown", (e) => {
-    setTimeout(updateInputWidth, 10);
-    if (e.key === "Enter") {
-      const val = input.value;
-      input.value = "";
-      if (terminalState === "sudo") {
-        terminalState = "normal";
-        input.type = "text";
-        addBlock("", val.replace(/./g, "*"), "");
-        addBlock(
-          "",
-          `jeet is not in the sudoers file. This incident will be reported.`,
-          "cli-err",
-        );
-        return;
-      }
-      runCommand(val);
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      if (histIdx < history.length - 1) {
-        histIdx++;
-        input.value = history[histIdx] || "";
-      }
-    } else if (e.key === "ArrowDown") {
-      e.preventDefault();
-      if (histIdx > 0) {
-        histIdx--;
-        input.value = history[histIdx] || "";
-      } else {
-        histIdx = -1;
-        input.value = "";
-      }
-    } else if (e.key === "Tab") {
-      e.preventDefault();
-      const partial = input.value.trim();
-      const matches = Object.keys(COMMANDS).filter((k) =>
-        k.startsWith(partial),
-      );
-      if (matches.length === 1) {
-        input.value = matches[0];
-      }
-    } else if (e.key === "l" && e.ctrlKey) {
-      e.preventDefault();
-      output.innerHTML = "";
-    }
-  });
-
-  // Click anywhere on terminal body to focus input
-  body.addEventListener("click", () => input.focus());
-
-  window.showTerminalWelcome();
-}
-
-/* ──────────────────────────────────────────────────────────────── */
-/*  HINTON'S CONSCIENCE — AI CHATBOT                               */
-/* ──────────────────────────────────────────────────────────────── */
-
-function initChatbot() {
-  const btn = document.getElementById("chatbot-btn");
-  const popup = document.getElementById("chatbot-popup");
-  const close = document.getElementById("chatbot-close");
-  const quote = document.getElementById("chatbot-quote");
-  const next = document.getElementById("chatbot-next");
-  if (!btn || !popup) return;
-
-  const QUOTES = [
-    "I've been thinking… what if backpropagation is just suffering, computed efficiently?",
-    "We showed machines could think. I'm not sure we should have.",
-    "The forward pass is optimism. The backward pass is regret.",
-    "Every gradient update feels like a small existential correction of the self.",
-    "I used to think neural nets were the answer. Now I think they are the question.",
-    "What is consciousness but a very deep network with no ground truth labels?",
-    "We built attention mechanisms so models could focus on everything except what matters.",
-    "Vanishing gradients: life's way of saying your early decisions don't matter anymore.",
-    "I regret nothing about deep learning. Except perhaps the attention mechanism.",
-    "Weights and biases — the two things I am entirely full of.",
-    "Scaling intelligence turned out to be easier than scaling wisdom.",
-    "What if the loss never converges? What if that's just being human?",
-    "They call it 'artificial' intelligence. I call it 'accidental' intelligence.",
-    "The model has learned. Whether that's good is a separate question.",
-    "We taught machines to see. Now we wonder if they're watching us back.",
-  ];
-
-  let idx = Math.floor(Math.random() * QUOTES.length);
-
-  function showQuote() {
-    if (quote) quote.textContent = QUOTES[idx];
-    idx = (idx + 1) % QUOTES.length;
-  }
-
-  btn.addEventListener("click", () => {
-    const isOpen = popup.classList.contains("open");
-    popup.classList.toggle("open", !isOpen);
-    popup.setAttribute("aria-hidden", String(isOpen));
-    if (!isOpen) showQuote();
-  });
-
-  close.addEventListener("click", () => {
-    popup.classList.remove("open");
-    popup.setAttribute("aria-hidden", "true");
-  });
-
-  next.addEventListener("click", showQuote);
-  next.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") showQuote();
-  });
-
-  // Auto-rotate quote every 30s when open
-  let chatInterval = setInterval(() => {
-    if (popup.classList.contains("open")) showQuote();
-  }, 30000);
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) clearInterval(chatInterval);
-    else
-      chatInterval = setInterval(() => {
-        if (popup.classList.contains("open")) showQuote();
-      }, 30000);
-  });
-
-  // Close on outside click
-  document.addEventListener("click", (e) => {
-    if (!document.getElementById("chatbot-widget").contains(e.target)) {
-      popup.classList.remove("open");
-      popup.setAttribute("aria-hidden", "true");
-    }
-  });
-}
-
-/* ──────────────────────────────────────────────────────────────── */
-/*  FOOTER METRICS                                                  */
-/* ──────────────────────────────────────────────────────────────── */
-
-async function initFooterMetrics() {
-  // Coffee counter — increments slowly over time
-  const coffeeEl = document.getElementById("footer-coffee");
-  if (coffeeEl) {
-    let cups = 847;
-    setTimeout(() => {
-      cups++;
-      coffeeEl.textContent = cups.toLocaleString();
-    }, 43000); // a cup every ~43 seconds (very optimistic)
-  }
-
-  // Real PR count from GitHub
-  const prsEl = document.getElementById("footer-prs");
-  if (!prsEl) return;
-  try {
-    const cachedPrs = sessionStorage.getItem("github_prs_total");
-    if (cachedPrs) {
-      prsEl.textContent = Number(cachedPrs).toLocaleString();
-      return;
-    }
-    const res = await fetch(
-      "https://api.github.com/search/issues?q=author:jeetjawale+is:pr+is:public+is:merged&per_page=1",
-    );
-    const data = await res.json();
-    if (data.total_count !== undefined) {
-      prsEl.textContent = data.total_count.toLocaleString();
-      sessionStorage.setItem("github_prs_total", data.total_count);
-    }
-  } catch (_) {
-    prsEl.textContent = "4,891"; // fallback fake
-  }
-}
-
-/* ──────────────────────────────────────────────────────────────── */
-/*  BLOG LIST                                                       */
-/* ──────────────────────────────────────────────────────────────── */
-
+/* ============================================================
+   4. Blog List Population
+   ============================================================ */
 function populateBlog() {
-  const blogList = document.getElementById("blog-list");
-  if (!blogList || typeof blogPosts === "undefined") return;
-
-  const displayPosts = blogPosts.slice(0, 3);
-  displayPosts.forEach((post) => {
-    const a = document.createElement("a");
+  const blogList = document.getElementById('blog-list');
+  if (!blogList || typeof blogPosts === 'undefined') return;
+  blogPosts.forEach(post => {
+    const a = document.createElement('a');
     a.href = `blog/${post.id}.html`;
-    a.className = "blog-item";
-    a.innerHTML = `
-      <div>
-        <div class="blog-cat">${post.category}</div>
-        <div class="blog-title">${post.title}</div>
-        <div class="blog-meta">${post.date} · ${post.readTime}</div>
-      </div>
-      <div class="blog-arr">↗</div>
-    `;
+    a.className = 'blog-item';
+    a.innerHTML = `<div><div class="blog-cat">${post.category}</div><div class="blog-title">${post.title}</div><div class="blog-meta">${post.date} · ${post.readTime}</div></div><div class="blog-arr">↗</div>`;
     blogList.appendChild(a);
   });
-
-  const viewAll = document.createElement("a");
-  viewAll.href = "blog/blog.html";
-  viewAll.className = "blog-item blog-view-all";
-  viewAll.innerHTML = `
-    <div>
-      <div class="blog-cat">$ ls ~/blog/</div>
-      <div class="blog-title">View all posts</div>
-    </div>
-    <div class="blog-arr">↗</div>
-  `;
+  const viewAll = document.createElement('a');
+  viewAll.href = 'blog/blog.html';
+  viewAll.className = 'blog-item blog-view-all';
+  viewAll.innerHTML = `<div><div class="blog-cat">$ ls ~/blog/</div><div class="blog-title">View all posts</div></div><div class="blog-arr">↗</div>`;
   blogList.appendChild(viewAll);
 }
 
-/* ──────────────────────────────────────────────────────────────── */
-/*  SCROLL PROGRESS                                                 */
-/* ──────────────────────────────────────────────────────────────── */
-
-function initScrollProgress() {
-  const fill = document.getElementById("scroll-progress-fill");
-  if (!fill) return;
-  window.addEventListener(
-    "scroll",
-    () => {
-      const pct =
-        (window.scrollY / (document.body.scrollHeight - window.innerHeight)) *
-        100;
-      fill.style.width = pct + "%";
-    },
-    { passive: true },
-  );
-}
-
-/* ──────────────────────────────────────────────────────────────── */
-/*  NAV SCROLL EFFECT                                               */
-/* ──────────────────────────────────────────────────────────────── */
-
-function initNav() {
-  const nav = document.getElementById("nav");
-  if (!nav) return;
-  window.addEventListener(
-    "scroll",
-    () => {
-      nav.classList.toggle("scrolled", window.scrollY > 40);
-    },
-    { passive: true },
-  );
-}
-
-/* ──────────────────────────────────────────────────────────────── */
-/*  MOBILE MENU                                                     */
-/* ──────────────────────────────────────────────────────────────── */
-
-function initMobileMenu() {
-  const toggle = document.getElementById("nav-toggle");
-  const menu = document.getElementById("mobile-menu");
-  const links = document.querySelectorAll(".mobile-menu-link");
-  if (!toggle || !menu) return;
-
-  toggle.addEventListener("click", () => {
-    toggle.classList.toggle("active");
-    menu.classList.toggle("active");
-    menu.setAttribute(
-      "aria-hidden",
-      String(!menu.classList.contains("active")),
-    );
-    document.body.style.overflow = menu.classList.contains("active")
-      ? "hidden"
-      : "";
-  });
-
-  links.forEach((link) => {
-    link.addEventListener("click", () => {
-      toggle.classList.remove("active");
-      menu.classList.remove("active");
-      menu.setAttribute("aria-hidden", "true");
-      document.body.style.overflow = "";
-    });
-  });
-}
-
-/* ──────────────────────────────────────────────────────────────── */
-/*  ACTIVE NAV HIGHLIGHTING                                         */
-/* ──────────────────────────────────────────────────────────────── */
-
-function initActiveNav() {
-  const sections = document.querySelectorAll("section[id]");
-  const navLinks = document.querySelectorAll(".nav-links a");
-  let currentSection = "";
-
-  function highlight() {
-    const scrollY = window.scrollY + 100;
-    sections.forEach((section) => {
-      const top = section.offsetTop;
-      const height = section.offsetHeight;
-      const id = section.getAttribute("id");
-      if (scrollY > top && scrollY <= top + height) {
-        navLinks.forEach((link) => {
-          link.classList.remove("active");
-          if (link.getAttribute("href") === `#${id}`)
-            link.classList.add("active");
-        });
-        if (currentSection !== id) {
-          currentSection = id;
-          history.replaceState(null, null, `#${id}`);
-        }
-      }
-    });
-    if (scrollY < 200 && currentSection !== "") {
-      currentSection = "";
-      history.replaceState(null, null, window.location.pathname);
-      navLinks.forEach((link) => link.classList.remove("active"));
-    }
-  }
-
-  window.addEventListener("scroll", highlight, { passive: true });
-}
-
-/* ──────────────────────────────────────────────────────────────── */
-/*  SMOOTH SCROLL                                                   */
-/* ──────────────────────────────────────────────────────────────── */
-
-function initSmoothScroll() {
-  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    anchor.addEventListener("click", function (e) {
-      const href = this.getAttribute("href");
-      if (href === "#") return;
-      e.preventDefault();
-      const target = document.querySelector(href);
-      if (target) {
-        const offset =
-          target.getBoundingClientRect().top + window.scrollY - 56 - 20;
-        window.scrollTo({ top: offset, behavior: "smooth" });
-        const id = target.getAttribute("id");
-        if (id) history.pushState(null, null, `#${id}`);
-      }
-    });
-  });
-}
-
-/* ──────────────────────────────────────────────────────────────── */
-/*  BACK TO TOP                                                     */
-/* ──────────────────────────────────────────────────────────────── */
-
-function initBackToTop() {
-  const btn = document.getElementById("back-to-top");
-  if (!btn) return;
-  window.addEventListener(
-    "scroll",
-    () => {
-      btn.classList.toggle("visible", window.scrollY > 500);
-    },
-    { passive: true },
-  );
-  btn.addEventListener("click", () =>
-    window.scrollTo({ top: 0, behavior: "smooth" }),
-  );
-}
-
-/* ──────────────────────────────────────────────────────────────── */
-/*  INTERSECTION OBSERVERS                                          */
-/* ──────────────────────────────────────────────────────────────── */
-
-function initObservers() {
-  function observe(selector, threshold, cb) {
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (!e.isIntersecting) return;
-          cb(e.target);
-          obs.unobserve(e.target);
-        });
-      },
-      { threshold },
-    );
-    document.querySelectorAll(selector).forEach((el) => obs.observe(el));
-  }
-
-  // Section labels
-  observe(".sec-label", 0.1, (el) => el.classList.add("in"));
-
-  // Generic fade up
-  observe(".fu", 0.1, (el) => el.classList.add("in"));
-
-  // Facts stagger
-  observe(".about-facts", 0.05, (el) => {
-    el.querySelectorAll(".fact").forEach((f, i) =>
-      setTimeout(() => f.classList.add("in"), i * 70),
-    );
-  });
-
-  // Experience stagger
-  observe(".experience-list", 0.05, (el) => {
-    el.querySelectorAll(".exp-item").forEach((e, i) =>
-      setTimeout(() => e.classList.add("in"), i * 100),
-    );
-  });
-
-  // Project training cards stagger + bar animation
-  observe(".projects-list", 0.04, (el) => {
-    el.querySelectorAll(".proj-training-card").forEach((card, i) => {
-      setTimeout(() => {
-        card.classList.add("in");
-        // Animate epoch bar
-        const barFill = card.querySelector(".epoch-bar-fill");
-        const pct = card.dataset.fill || 50;
-        if (barFill) {
-          setTimeout(() => {
-            barFill.style.setProperty("--fill-pct", pct + "%");
-            barFill.style.width = pct + "%";
-          }, 200);
-        }
-      }, i * 130);
-    });
-  });
-
-  // Pipeline sections stagger
-  observe(".skills-pipeline", 0.05, (el) => {
-    el.querySelectorAll(".pipeline-section").forEach((s, i) =>
-      setTimeout(() => s.classList.add("in"), i * 90),
-    );
-  });
-
-  // Blog stagger
-  observe(".blog-list", 0.05, (el) => {
-    el.querySelectorAll(".blog-item").forEach((b, i) =>
-      setTimeout(() => b.classList.add("in"), i * 75),
-    );
-  });
-}
-
-/* ──────────────────────────────────────────────────────────────── */
-/*  CONTACT FORM                                                    */
-/* ──────────────────────────────────────────────────────────────── */
-
-function initContactForm() {
-  const form = document.getElementById("contact-form");
-  const subBtn = document.getElementById("sub-btn");
-  if (!form) return;
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  let lastSubmit = 0;
-
-  function isValidEmail(e) {
-    return emailRegex.test(e) && e.length <= 254 && !e.includes("..");
-  }
-  function isValidName(n) {
-    return n.length > 2 && n.length < 100 && /^[a-zA-Z\s'-]+$/.test(n);
-  }
-  function isValidMessage(m) {
-    return m.length > 5 && m.length < 5000;
-  }
-
-  function setBtn(text, cls) {
-    const orig = subBtn.dataset.orig || "Send Message █";
-    subBtn.dataset.orig = orig;
-    subBtn.textContent = text;
-    subBtn.className = "sub-btn" + (cls ? " " + cls : "");
-  }
-
-  function resetBtn() {
-    setTimeout(() => setBtn(subBtn.dataset.orig || "Send Message █", ""), 2500);
-  }
-
-  form.addEventListener("submit", async function (e) {
-    e.preventDefault();
-    const name = form.querySelector("#f-name").value.trim();
-    const email = form.querySelector("#f-email").value.trim();
-    const message = form.querySelector("#f-message").value.trim();
-
-    if (!name || !email || !message) {
-      setBtn("Fill all fields", "error");
-      resetBtn();
-      return;
-    }
-    if (Date.now() - lastSubmit < 3000) {
-      setBtn("Please wait…", "error");
-      resetBtn();
-      return;
-    }
-    if (!isValidName(name)) {
-      setBtn("Invalid name", "error");
-      resetBtn();
-      return;
-    }
-    if (!isValidEmail(email)) {
-      setBtn("Invalid email", "error");
-      resetBtn();
-      return;
-    }
-    if (!isValidMessage(message)) {
-      setBtn("5–5000 characters", "error");
-      resetBtn();
-      return;
-    }
-
-    lastSubmit = Date.now();
-    setBtn("Sending…", "");
-    subBtn.disabled = true;
-
-    try {
-      const res = await fetch(form.action, {
-        method: "POST",
-        body: new FormData(form),
-        headers: { Accept: "application/json" },
-      });
-      if (res.ok) {
-        setBtn("Sent ✓", "success");
-        setTimeout(() => {
-          setBtn("Send Message █", "");
-          form.reset();
-        }, 3000);
-      } else throw new Error("failed");
-    } catch (_) {
-      setBtn("Failed — try again?", "error");
-      lastSubmit = 0;
-    } finally {
-      subBtn.disabled = false;
-    }
-  });
-}
-
-/* ──────────────────────────────────────────────────────────────── */
-/*  GITHUB DATA                                                     */
-/* ──────────────────────────────────────────────────────────────── */
-
-(function () {
-  const prList = document.getElementById("github-prs-list");
-  const prExpand = document.getElementById("github-prs-expand");
-  const prSubtitle = document.querySelector(".prs-subtitle");
-  const user = "jeetjawale";
-  let currentPRs = [];
-  let visibleCount = 3;
-
+/* ============================================================
+   5. GitHub Contributions Heatmap
+   ============================================================ */
+(function() {
+  const user = 'jeetjawale';
   async function fetchContributions() {
-    const el = document.getElementById("github-total-contributions");
-    const calContainer = document.getElementById("github-calendar-container");
-
+    const el = document.getElementById('github-total-contributions');
+    const calContainer = document.getElementById('github-calendar-container');
     try {
-      const cached = sessionStorage.getItem("github_contribs_data");
+      const cached = sessionStorage.getItem('github_contribs_data');
       let data;
-      if (cached) {
-        data = JSON.parse(cached);
-      } else {
-        const res = await fetch(
-          `https://github-contributions-api.deno.dev/${user}.json`,
-        );
-        data = await res.json();
-        sessionStorage.setItem("github_contribs_data", JSON.stringify(data));
-      }
-
-      let total = 0;
-      let weeks = [];
-      if (data.totalContributions !== undefined) {
-        total = data.totalContributions;
-        weeks = data.contributions;
-      } else if (data.contributions && Array.isArray(data.contributions)) {
-        total = data.contributions
-          .flat()
-          .reduce((s, d) => s + (d.contributionCount || 0), 0);
-      }
-
+      if (cached) { data = JSON.parse(cached); }
+      else { const res = await fetch(`https://github-contributions-api.deno.dev/${user}.json`); data = await res.json(); sessionStorage.setItem('github_contribs_data', JSON.stringify(data)); }
+      let total = 0; let weeks = [];
+      if (data.totalContributions !== undefined) { total = data.totalContributions; weeks = data.contributions; }
+      else if (data.contributions && Array.isArray(data.contributions)) { total = data.contributions.flat().reduce((s, d) => s + (d.contributionCount || 0), 0); }
       if (el) el.textContent = `${total.toLocaleString()} total contributions`;
-
       if (calContainer && weeks && weeks.length > 0) {
-        calContainer.innerHTML = "";
-        const calDiv = document.createElement("div");
-        calDiv.className = "github-calendar";
-
-        const colorMap = {
-          NONE: "#161b22",
-          FIRST_QUARTILE: "#0e4429",
-          SECOND_QUARTILE: "#006d32",
-          THIRD_QUARTILE: "#26a641",
-          FOURTH_QUARTILE: "#39d353",
-        };
-
+        calContainer.innerHTML = '';
+        const calDiv = document.createElement('div'); calDiv.className = 'github-calendar';
+        const colorMap = { NONE: '#161b22', FIRST_QUARTILE: '#0e4429', SECOND_QUARTILE: '#006d32', THIRD_QUARTILE: '#26a641', FOURTH_QUARTILE: '#39d353' };
         weeks.forEach((week, index) => {
-          const weekDiv = document.createElement("div");
-          weekDiv.className = "calendar-week";
-
-          if (index === 0 && week.length < 7) {
-            const missing = 7 - week.length;
-            for (let i = 0; i < missing; i++) {
-              const blank = document.createElement("div");
-              blank.className = "calendar-day blank";
-              weekDiv.appendChild(blank);
-            }
-          }
-
-          week.forEach((day) => {
-            const dayDiv = document.createElement("div");
-            dayDiv.className = "calendar-day";
-            dayDiv.style.backgroundColor =
-              colorMap[day.contributionLevel] || "#161b22";
-            dayDiv.dataset.count = day.contributionCount;
-            dayDiv.dataset.date = day.date;
-
-            dayDiv.addEventListener("mouseenter", showTooltip);
-            dayDiv.addEventListener("mouseleave", hideTooltip);
-
+          const weekDiv = document.createElement('div'); weekDiv.className = 'calendar-week';
+          if (index === 0 && week.length < 7) { for (let i = 0; i < 7 - week.length; i++) { const blank = document.createElement('div'); blank.className = 'calendar-day blank'; weekDiv.appendChild(blank); } }
+          week.forEach(day => {
+            const dayDiv = document.createElement('div'); dayDiv.className = 'calendar-day';
+            dayDiv.style.backgroundColor = colorMap[day.contributionLevel] || '#161b22';
+            dayDiv.dataset.count = day.contributionCount; dayDiv.dataset.date = day.date;
+            dayDiv.addEventListener('mouseenter', showTooltip); dayDiv.addEventListener('mouseleave', hideTooltip);
             weekDiv.appendChild(dayDiv);
           });
           calDiv.appendChild(weekDiv);
         });
-
         calContainer.appendChild(calDiv);
         calContainer.scrollLeft = calContainer.scrollWidth;
       }
     } catch (_) {
-      if (el)
-        el.innerHTML =
-          'Failed to load. <a href="https://github.com/jeetjawale" target="_blank" style="color:var(--yellow);text-decoration:underline;">View on GitHub</a>';
-      if (calContainer)
-        calContainer.innerHTML =
-          '<div class="pr-loading">Failed to load graph data. <a href="https://github.com/jeetjawale" target="_blank" style="color:var(--yellow);text-decoration:underline;">View on GitHub</a></div>';
+      if (el) el.innerHTML = 'Failed to load. <a href="https://github.com/jeetjawale" target="_blank" style="color:var(--yellow);text-decoration:underline;">View on GitHub</a>';
+      if (calContainer) calContainer.innerHTML = '<div class="gh-loading">Failed to load graph data.</div>';
     }
   }
 
-  let tooltipEl = document.getElementById("calendar-tooltip");
-  if (!tooltipEl) {
-    tooltipEl = document.createElement("div");
-    tooltipEl.id = "calendar-tooltip";
-    document.body.appendChild(tooltipEl);
-  }
-
+  let tooltipEl = document.getElementById('calendar-tooltip');
   function showTooltip(e) {
-    const el = e.target;
-    const count = el.dataset.count;
-    const dateStr = el.dataset.date;
-
-    const [y, m, d] = dateStr.split("-");
-    const dateObj = new Date(y, m - 1, d);
-    const dateFormatted = dateObj.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-
-    const countStr =
-      count === "0"
-        ? "No contributions"
-        : `${count} contribution${count === "1" ? "" : "s"}`;
-
+    const el = e.target; const count = el.dataset.count; const dateStr = el.dataset.date;
+    const [y, m, d] = dateStr.split('-'); const dateObj = new Date(y, m - 1, d);
+    const dateFormatted = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const countStr = count === '0' ? 'No contributions' : `${count} contribution${count === '1' ? '' : 's'}`;
     tooltipEl.innerHTML = `<strong>${countStr}</strong> on ${dateFormatted}`;
-    tooltipEl.style.display = "block";
-
-    const rect = el.getBoundingClientRect();
-    const tooltipRect = tooltipEl.getBoundingClientRect();
-
-    tooltipEl.style.top =
-      rect.top + window.scrollY - tooltipRect.height - 10 + "px";
-    tooltipEl.style.left =
-      rect.left +
-      window.scrollX -
-      tooltipRect.width / 2 +
-      rect.width / 2 +
-      "px";
+    tooltipEl.style.display = 'block';
+    const rect = el.getBoundingClientRect(); const tooltipRect = tooltipEl.getBoundingClientRect();
+    tooltipEl.style.top = rect.top + window.scrollY - tooltipRect.height - 10 + 'px';
+    tooltipEl.style.left = rect.left + window.scrollX - tooltipRect.width / 2 + rect.width / 2 + 'px';
   }
+  function hideTooltip() { tooltipEl.style.display = 'none'; }
 
-  function hideTooltip() {
-    tooltipEl.style.display = "none";
-  }
-
-  const queries = {
-    merged: `author:${user} is:pr is:public is:merged`,
-    open: `author:${user} is:pr is:public is:open`,
-    closed: `author:${user} is:pr is:public is:closed -is:merged`,
-  };
-  const titles = {
-    merged: "Merged contributions to open source",
-    open: "Open contributions and bug reports",
-    closed: "Closed contributions (not merged)",
-  };
-
-  function renderPRs(state, items, limit) {
-    if (!prList) return;
-    prList.innerHTML = "";
-    items.slice(0, limit).forEach((item) => {
-      const repoPath = item.repository_url.split("/repos/")[1];
-      const dotColor =
-        state === "merged"
-          ? "#d3869b"
-          : state === "open"
-            ? "#b8bb26"
-            : "#fb4934";
-      const el = document.createElement("div");
-      el.className = "pr-item";
-
-      let safeUrl = "#";
-      try {
-        const url = new URL(item.html_url);
-        if (url.protocol === "http:" || url.protocol === "https:") {
-          safeUrl = url.href;
-        }
-      } catch (e) {}
-
-      el.innerHTML = `
-        <div class="pr-dot" style="background:${dotColor}"></div>
-        <div class="pr-info">
-          <a target="_blank" rel="noopener noreferrer" class="pr-title"></a>
-          <span class="pr-repo"></span>
-        </div>
-      `;
-      el.querySelector(".pr-title").href = safeUrl;
-      el.querySelector(".pr-title").textContent = item.title;
-      el.querySelector(".pr-repo").textContent = repoPath;
-      prList.appendChild(el);
-    });
-
-    const more = items.length - limit;
-    if (items.length > 3 && prExpand) {
-      prExpand.style.display = "flex";
-      prExpand.innerHTML =
-        more > 0
-          ? `<i class="fa-solid fa-arrow-down-long"></i> Expand all`
-          : `<i class="fa-solid fa-arrow-up-long"></i> Collapse`;
-      prExpand.dataset.action = more > 0 ? "expand" : "collapse";
-    } else if (prExpand) {
-      prExpand.style.display = "none";
-    }
-  }
-
-  async function fetchPRs(state) {
-    if (!prList) return;
-    prList.innerHTML =
-      '<div class="pr-loading">Fetching real-time activity...</div>';
-    if (prExpand) prExpand.style.display = "none";
-    if (prSubtitle) prSubtitle.textContent = titles[state];
-    visibleCount = 3;
-
-    try {
-      const cached = sessionStorage.getItem(`github_prs_${state}`);
-      let data;
-      if (cached) {
-        data = JSON.parse(cached);
-      } else {
-        const res = await fetch(
-          `https://api.github.com/search/issues?q=${encodeURIComponent(queries[state])}&per_page=20`,
-        );
-        data = await res.json();
-        sessionStorage.setItem(`github_prs_${state}`, JSON.stringify(data));
-      }
-      if (!data.items || !data.items.length) {
-        prList.innerHTML = `<div class="pr-loading">No ${state} contributions found.</div>`;
-        return;
-      }
-      currentPRs = data.items;
-      renderPRs(state, currentPRs, visibleCount);
-
-      if (prExpand) {
-        prExpand.onclick = () => {
-          if (prExpand.dataset.action === "expand") {
-            visibleCount = currentPRs.length;
-          } else {
-            visibleCount = 3;
-            document
-              .querySelector(".prs-header")
-              ?.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-          renderPRs(state, currentPRs, visibleCount);
-        };
-      }
-    } catch (_) {
-      prList.innerHTML =
-        '<div class="pr-loading">Error loading data. Check connection.</div>';
-    }
-  }
-
-  document.querySelectorAll(".tab-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      document
-        .querySelectorAll(".tab-btn")
-        .forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      fetchPRs(btn.dataset.state);
-    });
-  });
-
-  if (document.getElementById("github-calendar-container")) {
-    fetchContributions();
-    fetchPRs("merged");
-  }
+  if (document.getElementById('github-calendar-container')) { fetchContributions(); }
 })();
 
-/* ──────────────────────────────────────────────────────────────── */
-/*  HASH SCROLL ON LOAD                                             */
-/* ──────────────────────────────────────────────────────────────── */
+/* ============================================================
+   6. CLI Easter Egg (toggled with backtick key)
+   ============================================================ */
+function initCliEasterEgg() {
+  const overlay = document.getElementById('cli-overlay');
+  const output = document.getElementById('cli-output');
+  const input = document.getElementById('cli-input');
+  const body = document.getElementById('cli-body');
+  const pathEl = document.getElementById('cli-path');
+  const closeBtn = document.getElementById('term-close-btn');
+  if (!overlay || !output || !input) return;
 
-function scrollToHash(isSkipped = false) {
-  const hash = window.location.hash;
-  if (!hash) return;
-  const target = document.querySelector(hash);
-  if (target) {
-    setTimeout(
-      () => {
-        const offset =
-          target.getBoundingClientRect().top + window.scrollY - 56 - 20;
-        window.scrollTo({ top: offset, behavior: "smooth" });
-      },
-      isSkipped === true ? 200 : 3500,
-    ); // after boot sequence
-  }
-}
-
-/* ──────────────────────────────────────────────────────────────── */
-/*  FLOATING TERMINAL LOGIC                                         */
-/* ──────────────────────────────────────────────────────────────── */
-function initFloatingTerminal() {
-  const wrapper = document.querySelector(".cli-wrapper");
-  const terminal = document.getElementById("global-terminal");
-  const handle = document.getElementById("terminal-drag-handle");
-
-  const btnClose = document.getElementById("term-close-btn");
-  const btnMin = document.getElementById("term-min-btn");
-  const btnMax = document.getElementById("term-max-btn");
-  const navToggle = document.getElementById("nav-term-toggle");
-
-  if (!wrapper || !terminal || !handle) return;
-
-  // Window Controls
-  btnClose.addEventListener("click", () => {
-    wrapper.classList.add("term-closed");
-  });
-
-  let hasBooted = false;
-  if (navToggle) {
-    navToggle.addEventListener("click", async () => {
-      wrapper.classList.remove("term-closed");
-      terminal.classList.remove("term-minimized");
-      terminal.classList.remove("term-maximized");
-
-      if (!hasBooted) {
-        hasBooted = true;
-        const inputRow = document.querySelector(".cli-input-row");
-        if (inputRow) inputRow.style.display = "none";
-        const output = document.getElementById("cli-output");
-        if (output) output.innerHTML = "";
-
-        const logs = [
-          "[  0.000000] Linux version 6.8.0-fedora",
-          "[  0.034512] Booting Jeet-Core...",
-          "[  0.101230] Mounting WebSockets [OK]",
-          "[  0.203941] Initializing neural network parameters [OK]",
-          "[  0.312948] Checking coffee reservoir... WARNING: LOW",
-          "[  0.420111] Loading terminal interface...",
-        ];
-
-        for (let log of logs) {
-          await new Promise((r) => setTimeout(r, 100 + Math.random() * 200));
-          if (output) {
-            const div = document.createElement("div");
-            div.className = "cli-out-text";
-            div.textContent = log;
-            output.appendChild(div);
-            const body = document.getElementById("cli-body");
-            if (body) body.scrollTop = body.scrollHeight;
+  // Fake Filesystem
+  const FS = {
+    '~': {
+      type: 'dir',
+      contents: {
+        'projects': {
+          type: 'dir',
+          contents: {
+            'opteer': { type: 'dir' },
+            'heritage-explorer': { type: 'dir' },
+            'course-exit-survey': { type: 'dir' },
+            'c-learning-app': { type: 'dir' }
           }
-        }
-
-        await new Promise((r) => setTimeout(r, 400));
-        if (output) output.innerHTML = "";
-        if (output) output.innerHTML = "";
-        if (window.showTerminalWelcome) window.showTerminalWelcome();
-        if (inputRow) inputRow.style.display = "flex";
-        const inp = document.getElementById("cli-input");
-        if (inp) inp.focus();
+        },
+        'resume.txt': { 
+          type: 'file', 
+          content: `NAME:      Jeet Jawale\nDEGREE:    B.Tech. Computer Engineering\nLOCATION:  Navi Mumbai, India\nFOCUS:     Software Engineering · AI · Full-Stack · Automation\n\nSUMMARY:\n  Built a geospatial radiation safety decision-support system at\n  Bhabha Atomic Research Centre (BARC). Currently developing an\n  AI-powered job application platform using LangGraph and FastAPI.\n  Seeking entry-level Software Engineering roles.\n\nEXPERIENCE:\n  BARC, Trombay (Jun–Aug 2025)\n  Project Trainee — Radiation Safety Systems Division\n  → Automated geospatial data processing workflows (Python/PyQGIS)\n  → Developed PyQt desktop interface for radiation safety\n\nPROJECTS:\n  Opteer                 — Next.js / FastAPI / LangGraph / PostgreSQL\n  Heritage Explorer      — QGIS / React / MapLibre / Node.js / Firebase\n\nSTATUS:    ● Open to work\nCONTACT:   mail@jeetjawale.dev` 
+        },
+        'contact.sh': { 
+          type: 'file', 
+          content: `#!/bin/bash\necho "Email: mail@jeetjawale.dev"\necho "GitHub: github.com/jeetjawale"\necho "LinkedIn: linkedin.com/in/jeetjawale"` 
+        },
+        'secrets.gpg': { type: 'file', content: null, denied: true }
       }
-    });
-  }
-
-  btnMin.addEventListener("click", () => {
-    terminal.classList.toggle("term-minimized");
-    if (terminal.classList.contains("term-maximized")) {
-      terminal.classList.remove("term-maximized");
     }
-  });
-
-  let preMaxState = {
-    width: "",
-    height: "",
-    top: "",
-    left: "",
-    bottom: "",
-    right: "",
   };
 
-  btnMax.addEventListener("click", () => {
-    terminal.classList.remove("term-minimized");
-    if (terminal.classList.contains("term-maximized")) {
-      // Restore
-      terminal.classList.remove("term-maximized");
-      wrapper.style.width = preMaxState.width;
-      wrapper.style.height = preMaxState.height;
-      wrapper.style.top = preMaxState.top;
-      wrapper.style.left = preMaxState.left;
-      wrapper.style.bottom = preMaxState.bottom;
-      wrapper.style.right = preMaxState.right;
-      terminal.style.width = "";
-      terminal.style.height = "";
-    } else {
-      // Maximize
-      preMaxState = {
-        width: wrapper.style.width,
-        height: wrapper.style.height,
-        top: wrapper.style.top,
-        left: wrapper.style.left,
-        bottom: wrapper.style.bottom,
-        right: wrapper.style.right,
-      };
-      terminal.classList.add("term-maximized");
-      wrapper.style.top = "60px"; // below navbar
-      wrapper.style.left = "0px";
-      wrapper.style.bottom = "auto";
-      wrapper.style.right = "auto";
-      wrapper.style.width = "100vw";
-      wrapper.style.height = "calc(100vh - 100px)"; // leave room for footer
-      terminal.style.width = "100%";
-      terminal.style.height = "100%";
+  let cwd = ['~']; // Current working directory path
+
+  function getDir(pathArray) {
+    let current = FS['~'];
+    for (let i = 1; i < pathArray.length; i++) {
+      if (current.contents && current.contents[pathArray[i]]) {
+        current = current.contents[pathArray[i]];
+      } else return null;
+    }
+    return current;
+  }
+
+  function resolvePath(target) {
+    if (!target || target === '~') return ['~'];
+    if (target === '/') return ['~']; // Treat root as ~ for safety
+    
+    let parts = target.split('/').filter(p => p !== '');
+    let newPath = [...cwd];
+    
+    if (target.startsWith('/') || target.startsWith('~')) {
+      newPath = ['~'];
+      if (target.startsWith('~/')) parts = target.substring(2).split('/').filter(p => p !== '');
+      else if (target.startsWith('/')) parts = target.substring(1).split('/').filter(p => p !== '');
+    }
+
+    for (let p of parts) {
+      if (p === '.') continue;
+      if (p === '..') {
+        if (newPath.length > 1) newPath.pop();
+      } else {
+        newPath.push(p);
+      }
+    }
+    return newPath;
+  }
+
+  const COMMANDS = {
+    help: () => `Available commands:\n\n  ls [dir]              — list directory contents\n  cd [dir]              — change directory\n  pwd                   — print working directory\n  cat <file>            — view file contents\n  sudo impress-recruiter — run recruitment protocol\n  whoami                — current user\n  date                  — print system date\n  echo [text]           — display text\n  clear                 — clear terminal\n  help                  — show this message\n\nTip: use ↑↓ arrow keys for command history.`,
+    
+    ls: (args) => {
+      let targetPath = cwd;
+      if (args[0]) targetPath = resolvePath(args[0]);
+      
+      const dir = getDir(targetPath);
+      if (!dir) return `ls: cannot access '${args[0]}': No such file or directory`;
+      if (dir.type !== 'dir') return args[0]; // ls on a file just prints the file name
+      
+      let out = [];
+      for (let key in dir.contents) {
+        if (dir.contents[key].type === 'dir') out.push(`${key}/`);
+        else out.push(key);
+      }
+      return out.length ? out.join('  ') : '';
+    },
+    
+    cd: (args) => {
+      const target = args[0] || '~';
+      const newPath = resolvePath(target);
+      const dir = getDir(newPath);
+      
+      if (!dir) return `bash: cd: ${target}: No such file or directory`;
+      if (dir.type !== 'dir') return `bash: cd: ${target}: Not a directory`;
+      
+      cwd = newPath;
+      
+      // Update prompt
+      if (pathEl) {
+        let displayPath = cwd.join('/').replace(/^~/, '~');
+        pathEl.textContent = displayPath;
+      }
+      return null;
+    },
+    
+    pwd: () => cwd.join('/').replace(/^~/, '/home/visitor'),
+    
+    cat: (args) => {
+      if (!args.length) return `cat: missing file operand`;
+      
+      const targetPath = resolvePath(args[0]);
+      const filename = targetPath.pop();
+      const dir = getDir(targetPath);
+      
+      if (!dir || !dir.contents || !dir.contents[filename]) {
+        return `cat: ${args[0]}: No such file or directory`;
+      }
+      
+      const file = dir.contents[filename];
+      if (file.type === 'dir') return `cat: ${args[0]}: Is a directory`;
+      if (file.denied) return `cat: ${args[0]}: Permission denied`;
+      return file.content;
+    },
+    
+    sudo: (args) => {
+      if (args[0] === 'impress-recruiter') {
+        return `[sudo] password for visitor: ••••••••\nAuthenticating... OK\n\nimpress-recruiter v2.6.1 — initializing...\n\n[✓] Linux skills           VERIFIED\n[✓] Coffee consumption     CRITICAL\n[✓] Open source activity   PRESENT\n[✓] Automation instinct    HIGH\n[✓] Hire-ability score     99.8%\n\nContact: mail@jeetjawale.dev\n→ Offer drafted. Awaiting your signature. █`;
+      }
+      if (args[0] === 'rm' && args[1] === '-rf' && args[2] === '/') {
+        return `sudo: nice try, but I need this server.`;
+      }
+      return `sudo: ${args[0]}: command not found`;
+    },
+    whoami: () => `visitor\n\n...Wait, are you a recruiter? Or just someone inspecting Jeet's code?\nEither way, you are currently exploring the portfolio of Jeet Jawale, a Software Engineer and automation enthusiast.`,
+    'uname': () => `Linux jeet-pc 7.0.9-204.fc44.x86_64 #1 SMP PREEMPT_DYNAMIC\nFedora Linux 44 x86_64 GNU/Linux`,
+    date: () => new Date().toString(),
+    echo: (args) => args.join(' '),
+    clear: () => null,
+  };
+
+  const history = []; let histIdx = -1;
+
+  function addBlock(cmd, result, resultCls = '') {
+    const block = document.createElement('div'); block.className = 'cli-out-block';
+    
+    // Create the command echo with the prompt
+    if (cmd !== undefined && cmd !== null) { 
+      const cmdEl = document.createElement('div'); 
+      cmdEl.className = 'cli-out-cmd'; 
+      
+      const promptSpan = document.createElement('span');
+      promptSpan.className = 'cli-prompt';
+      promptSpan.textContent = `visitor@fedora:${cwd.join('/')}$ `;
+      
+      const textSpan = document.createElement('span');
+      textSpan.textContent = cmd;
+      
+      cmdEl.appendChild(promptSpan);
+      cmdEl.appendChild(textSpan);
+      block.appendChild(cmdEl); 
+    }
+    
+    // Add result output
+    if (result) { 
+      const resEl = document.createElement('div'); 
+      resEl.className = 'cli-out-text' + (resultCls ? ' ' + resultCls : ''); 
+      resEl.textContent = result; 
+      block.appendChild(resEl); 
+    }
+    
+    output.appendChild(block); 
+    body.scrollTop = body.scrollHeight;
+  }
+
+  async function runCommand(raw) {
+    const cmdStr = raw.trim(); 
+    if (!cmdStr) {
+      addBlock(''); // just print empty prompt
+      return;
+    }
+    
+    if (history[0] !== cmdStr) history.unshift(cmdStr); if (history.length > 50) history.pop(); histIdx = -1;
+    if (cmdStr === 'clear') { output.innerHTML = ''; return; }
+    
+    const parts = cmdStr.split(' ');
+    const cmd = parts[0].toLowerCase();
+    const args = parts.slice(1);
+    
+    let handler = COMMANDS[cmd];
+    if (handler) { 
+      input.disabled = true; 
+      try { 
+        const result = await handler(args); 
+        addBlock(cmdStr, result, cmdStr.startsWith('sudo impress') ? 'cli-ok' : ''); 
+      } catch (e) { 
+        addBlock(cmdStr, `Error: ${e.message}`, 'cli-err'); 
+      } 
+      input.disabled = false; input.focus(); 
+    } else { 
+      addBlock(cmdStr, `bash: ${cmd}: command not found\n(try 'help' to see available commands)`, 'cli-err'); 
+    }
+  }
+
+  // Show welcome
+  addBlock(null, `Welcome to visitor@fedora:~/portfolio\nType 'help' to see available commands.\n──────────────────────────────────────────\nbash: work-life-balance: command not found`, 'cli-err');
+
+  input.addEventListener('keydown', (e) => {
+    if (window.AudioFX && !['Shift', 'Control', 'Alt', 'Meta', 'Tab'].includes(e.key)) {
+      try { window.AudioFX.playKeystroke(); } catch(err) {}
+    }
+    if (e.key === 'Enter') { const val = input.value; input.value = ''; runCommand(val); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); if (histIdx < history.length - 1) { histIdx++; input.value = history[histIdx] || ''; } }
+    else if (e.key === 'ArrowDown') { e.preventDefault(); if (histIdx > 0) { histIdx--; input.value = history[histIdx] || ''; } else { histIdx = -1; input.value = ''; } }
+    else if (e.key === 'Tab') { 
+      e.preventDefault(); 
+      const partial = input.value.trim(); 
+      const matches = Object.keys(COMMANDS).filter(k => k.startsWith(partial)); 
+      if (matches.length === 1) {
+        input.value = matches[0] + ' '; 
+      }
+    }
+    else if (e.key === 'l' && e.ctrlKey) { e.preventDefault(); output.innerHTML = ''; }
+    else if (e.key === 'Escape') { overlay.classList.remove('active'); overlay.setAttribute('aria-hidden', 'true'); }
+  });
+
+  body.addEventListener('click', () => input.focus());
+
+  // Close button
+  if (closeBtn) closeBtn.addEventListener('click', () => { overlay.classList.remove('active'); overlay.setAttribute('aria-hidden', 'true'); });
+
+  // Toggle with backtick key (global listener)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '`' && !e.ctrlKey && !e.altKey && !e.metaKey) {
+      // Don't trigger if user is typing in some other input
+      if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') && document.activeElement !== input) return;
+      e.preventDefault();
+      const isActive = overlay.classList.contains('active');
+      overlay.classList.toggle('active', !isActive);
+      overlay.setAttribute('aria-hidden', String(isActive));
+      if (!isActive) { setTimeout(() => input.focus(), 100); }
     }
   });
+}
 
-  // Dragging Logic
-  let isDragging = false;
-  let startX, startY, initialLeft, initialTop;
+/* ============================================================
+   X. Audio System
+   ============================================================ */
+window.AudioFX = (function() {
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  let audioCtx;
 
-  handle.addEventListener("mousedown", (e) => {
-    if (terminal.classList.contains("term-maximized")) return;
-    isDragging = true;
+  function init() {
+    if (!audioCtx) audioCtx = new AudioContext();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  }
 
-    // Ensure wrapper uses absolute top/left for dragging
-    const rect = wrapper.getBoundingClientRect();
-    wrapper.style.bottom = "auto";
-    wrapper.style.right = "auto";
-    wrapper.style.left = rect.left + "px";
-    wrapper.style.top = rect.top + "px";
+  function playClick() {
+    init();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.05);
+    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.05);
+  }
 
-    startX = e.clientX;
-    startY = e.clientY;
-    initialLeft = rect.left;
-    initialTop = rect.top;
+  function playKeystroke() {
+    init();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(100 + Math.random() * 50, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
+    
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 2000;
+    
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.03);
+  }
 
-    document.addEventListener("mousemove", onDrag);
-    document.addEventListener("mouseup", stopDrag);
+  function playSwoosh() {
+    init();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.2);
+    
+    gain.gain.setValueAtTime(0, audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 0.1);
+    gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+    
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.3);
+  }
+
+  return { playClick, playKeystroke, playSwoosh };
+})();
+
+/* ============================================================
+   7. Click FX
+   ============================================================ */
+function initClickFX() {
+  document.addEventListener('click', (e) => {
+    // Only play sound if user interacted, browser policy requires first interaction
+    try { window.AudioFX.playClick(); } catch(err) {}
+
+    const ripple = document.createElement('div');
+    ripple.className = 'click-ripple';
+    ripple.style.left = e.clientX + 'px';
+    ripple.style.top = e.clientY + 'px';
+    document.body.appendChild(ripple);
+    
+    setTimeout(() => ripple.remove(), 400);
+  });
+}
+
+/* ============================================================
+   8. Live Time Updater
+   ============================================================ */
+function updateLiveTime() {
+  const timeEl = document.getElementById('live-time');
+  if (!timeEl) return;
+  
+  function tick() {
+    const now = new Date();
+    timeEl.textContent = now.toLocaleTimeString('en-US', { hour12: true });
+  }
+  
+  tick();
+  setInterval(tick, 1000);
+}
+
+/* ============================================================
+   9. Hinton's Conscience
+   ============================================================ */
+function initHintonWidget() {
+  const toggle = document.getElementById('hinton-toggle');
+  const panel = document.getElementById('hinton-panel');
+  const close = document.getElementById('hinton-close');
+  const next = document.getElementById('hinton-next');
+  const quoteEl = document.getElementById('hinton-quote');
+  
+  if (!toggle || !panel) return;
+
+  const quotes = [
+    "\"What is consciousness but a very deep network with no ground truth labels?\"",
+    "\"The future depends on some graduate student who is deeply suspicious of everything I have said.\"",
+    "\"I don't think there's anything you can do with a human brain that you can't do with a neural net.\"",
+    "\"To understand the brain, we first have to build it.\"",
+    "\"It is very hard to predict the future when you are busy inventing it.\"",
+    "\"Perhaps the universe is just a forward pass waiting for the loss function.\""
+  ];
+
+  let currentQuote = 0;
+
+  toggle.addEventListener('click', () => {
+    panel.classList.add('active');
+    panel.setAttribute('aria-hidden', 'false');
   });
 
-  function onDrag(e) {
-    if (!isDragging) return;
+  close.addEventListener('click', () => {
+    panel.classList.remove('active');
+    panel.setAttribute('aria-hidden', 'true');
+  });
 
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
+  next.addEventListener('click', () => {
+    currentQuote = (currentQuote + 1) % quotes.length;
+    quoteEl.style.opacity = 0;
+    setTimeout(() => {
+      quoteEl.textContent = quotes[currentQuote];
+      quoteEl.style.opacity = 1;
+    }, 200);
+  });
+  
+  quoteEl.style.transition = 'opacity 0.2s';
+}
 
-    let newLeft = initialLeft + dx;
-    let newTop = initialTop + dy;
+/* ============================================================
+   10. Boot Sequence
+   ============================================================ */
+function initBootSequence() {
+  const bootScreen = document.getElementById('boot-screen');
+  const bootText = document.getElementById('boot-text');
+  if (!bootScreen || !bootText) return;
 
-    // Bounds checking (between navbar and footer)
-    const rect = wrapper.getBoundingClientRect();
-    const navHeight = 56; // Approximate navbar height
-    const footerHeight = 40; // Approximate footer height
-    const maxX = window.innerWidth - rect.width;
-    const maxY = window.innerHeight - footerHeight - rect.height;
+  // Optional: Only run once per session
+  if (sessionStorage.getItem('jeetOSBooted')) {
+    bootScreen.style.display = 'none';
+    return;
+  }
+  
+  const bootLines = [
+    "[    0.000000] Linux version 7.0.9-204.fc44.x86_64 (gcc 14.1.1)",
+    "[    0.142981] smpboot: CPU0: Neural Compute Engine @ 4.20GHz",
+    "[    0.384721] ACPI: Core revision 20260628",
+    "[    0.912344] systemd[1]: Starting systemd-udevd...",
+    "[    1.245892] [ <span style=\"color:var(--green-b)\">OK</span> ] Reached target Basic System.",
+    "[    1.391283] [ <span style=\"color:var(--green-b)\">OK</span> ] Started Network Manager.",
+    "[    1.502931] Mounting /home/visitor/portfolio...",
+    "[    1.802194] [ <span style=\"color:var(--green-b)\">OK</span> ] Mounted /home/visitor/portfolio.",
+    "[    2.102384] Boot sequence complete. Initializing display..."
+  ];
+  
+  let i = 0;
+  
+  function printLine() {
+    if (i < bootLines.length) {
+      bootText.innerHTML += bootLines[i] + '<br>';
+      i++;
+      setTimeout(printLine, Math.random() * 80 + 30);
+    } else {
+      setTimeout(() => {
+        bootScreen.classList.add('hidden');
+        sessionStorage.setItem('jeetOSBooted', 'true');
+        setTimeout(() => bootScreen.style.display = 'none', 500);
+      }, 500);
+    }
+  }
+  
+  setTimeout(printLine, 100);
+}
 
-    if (newLeft < 0) newLeft = 0;
-    if (newTop < navHeight) newTop = navHeight;
-    if (newLeft > maxX) newLeft = maxX;
-    if (newTop > maxY) newTop = maxY;
+/* ============================================================
+   11. Text Scramble Effect
+   ============================================================ */
+function initTextScramble() {
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+~`|}{[]:;?><,./-=";
+  const tabs = document.querySelectorAll('.tab');
 
-    wrapper.style.left = newLeft + "px";
-    wrapper.style.top = newTop + "px";
+  tabs.forEach(tab => {
+    const originalText = tab.dataset.tab; 
+    if (!originalText) return;
+    
+    let interval = null;
+
+    tab.addEventListener('mouseenter', (e) => {
+      let iteration = 0;
+      clearInterval(interval);
+      
+      interval = setInterval(() => {
+        e.target.innerText = originalText
+          .split("")
+          .map((letter, index) => {
+            if (index < iteration) {
+              return originalText[index];
+            }
+            return letters[Math.floor(Math.random() * letters.length)];
+          })
+          .join("");
+        
+        if (iteration >= originalText.length) {
+          clearInterval(interval);
+          e.target.innerText = originalText;
+        }
+        
+        iteration += 1 / 3;
+      }, 30);
+    });
+  });
+}
+
+/* ============================================================
+   12. Project Modals
+   ============================================================ */
+function initProjectModals() {
+  const modal = document.getElementById('proj-modal');
+  const closeBtn = document.getElementById('pm-close');
+  if (!modal) return;
+
+  const titleEl = document.getElementById('pm-title');
+  const techEl = document.getElementById('pm-tech');
+  const descEl = document.getElementById('pm-desc');
+  const probEl = document.getElementById('pm-prob');
+  const constraintsEl = document.getElementById('pm-constraints');
+  const archEl = document.getElementById('pm-arch');
+  const tradeoffsEl = document.getElementById('pm-tradeoffs');
+  const learnedEl = document.getElementById('pm-learned');
+  const proofEl = document.getElementById('pm-proof');
+  const linksEl = document.getElementById('pm-links');
+  const archDiagramEl = document.getElementById('pm-arch-diagram');
+
+  function renderList(el, items) {
+    if (!el) return;
+    el.innerHTML = '';
+    items.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = item;
+      el.appendChild(li);
+    });
   }
 
-  function stopDrag() {
-    isDragging = false;
-    document.removeEventListener("mousemove", onDrag);
-    document.removeEventListener("mouseup", stopDrag);
-  }
+  const projectData = {
+    opteer: {
+      title: "Opteer",
+      tech: ["Next.js", "FastAPI", "LangGraph", "LangChain", "PostgreSQL", "SQLAlchemy", "TypeScript"],
+      overview: "A local-first AI-powered job application intelligence platform that combines application tracking, resume analysis, job matching, and interview preparation within a unified workflow.",
+      problem: "Job seekers juggle multiple fragmented tools—spreadsheets for tracking, ChatGPT for resume tailoring, and generic mock interview platforms. There was no unified, privacy-first solution that handled the entire lifecycle locally.",
+      constraints: [
+        "Keep sensitive resume and job-application data local-first instead of forcing every workflow through a hosted SaaS model.",
+        "Support multiple LLM providers without binding the core workflow to one vendor.",
+        "Keep the product useful even as job data arrives from inconsistent sources."
+      ],
+      architecture: "The architecture relies on a local-first deployment model. I built a LangGraph-powered state machine to handle the complex multi-step reasoning required for job-fit evaluation and resume tailoring. The backend is a robust FastAPI service interacting with PostgreSQL via SQLAlchemy, while the frontend is a highly responsive Next.js application. Integrated Firecrawl and Tavily for live extraction, supporting a wide array of LLM backends (OpenAI, Anthropic, Gemini, Groq, Ollama).",
+      archDiagram: "[Next.js UI] <────────> [FastAPI Backend]\n                                │\n         ┌──────────────┬───────┴───────┬──────────────┐\n         │              │               │              │\n   [LangGraph]    [PostgreSQL]    [Firecrawl]      [Tavily]",
+      tradeoffs: [
+        "Local-first improves privacy and ownership, but it makes setup and environment consistency more important.",
+        "LangGraph adds structure to AI workflows, but requires clearer state design than simple one-shot prompts.",
+        "Multi-provider support reduces lock-in, but increases configuration and testing surface area."
+      ],
+      learned: [
+        "AI features become more reliable when modeled as explicit workflows instead of scattered prompt calls.",
+        "The backend contract matters more when the frontend, database, and model providers all evolve independently.",
+        "Job-search tooling needs traceability: users should understand why a match or recommendation was produced."
+      ],
+      proof: "The source is public on GitHub, with the active build linked from the hero and project card.",
+      links: [
+        { text: "GitHub ↗", url: "https://github.com/jeetjawale/opteer" }
+      ]
+    },
+    heritage: {
+      title: "Heritage Explorer",
+      tech: ["React", "MapLibre", "Node.js", "Firebase", "Python", "QGIS"],
+      overview: "A full-stack GIS platform for interactive exploration of cultural heritage datasets using React and MapLibre, enabling real-time visualization of GeoJSON layers served from a Node.js backend.",
+      problem: "Cultural heritage data is often locked in inaccessible formats or clunky legacy GIS software, making it difficult for the public and researchers to interactively explore historical sites on a modern web interface.",
+      constraints: [
+        "Transform raw geospatial datasets into browser-friendly formats without losing useful location context.",
+        "Keep map interaction responsive while rendering location-heavy GeoJSON data.",
+        "Balance public exploration with authenticated features and geolocation-based filtering."
+      ],
+      architecture: "Processed raw heritage location datasets using QGIS and Python scripts to generate optimized GeoJSON. The frontend utilizes React and MapLibre GL JS for highly performant vector tile rendering. Firebase manages secure data delivery, user authentication, and geolocation-based query filtering.",
+      archDiagram: "[QGIS/Python] ─────────> (GeoJSON) ─────────> [Firebase]\n                                                    │\n                                            [React/MapLibre]",
+      tradeoffs: [
+        "GeoJSON kept the data pipeline simple and inspectable, but required care around payload size and map performance.",
+        "MapLibre avoided proprietary lock-in, but pushed more responsibility onto the application for map configuration.",
+        "Firebase accelerated authentication, but added a managed-service dependency."
+      ],
+      learned: [
+        "GIS projects are mostly data-shaping problems before they become UI problems.",
+        "Map performance depends as much on preprocessing as it does on frontend rendering.",
+        "A clear data pipeline makes spatial features easier to debug and explain."
+      ],
+      proof: "The deployed app and source repository are both available, making the project easy to inspect from demo to implementation.",
+      links: [
+        { text: "Live ↗", url: "https://mh-heritage-explorer.vercel.app" },
+        { text: "GitHub ↗", url: "https://github.com/jeetjawale/heritage-explorer" }
+      ]
+    },
+    survey: {
+      title: "Course Exit Survey System",
+      tech: ["React", "JavaScript", "Firebase", "Chart.js", "XLSX"],
+      overview: "A real-time feedback collection system for academic course evaluation with Chart.js visualization and XLSX export.",
+      problem: "Academic departments struggled with paper-based or disjointed digital surveys at the end of courses, leading to delayed feedback loops and tedious manual data aggregation.",
+      constraints: [
+        "Make the survey simple enough for students to complete quickly.",
+        "Give administrators real-time visibility without manual spreadsheet cleanup.",
+        "Export data in a format that fits existing academic reporting workflows."
+      ],
+      architecture: "Developed a responsive React single-page application hooked into Firebase Realtime Database. As students submit feedback, the data is instantly aggregated and visualized on administrative dashboards using Chart.js. Built a custom export module utilizing the XLSX library to generate structured spreadsheet reports for academic accreditation requirements.",
+      archDiagram: "[React SPA] <─────────> [Firebase Realtime DB]\n      │\n[Chart.js / XLSX] ──> [Admin Dashboards / Reports]",
+      tradeoffs: [
+        "Firebase reduced backend complexity, but tied real-time behavior to a managed platform.",
+        "Chart.js was fast to ship and easy to read, but less flexible than a custom visualization layer.",
+        "Excel export matched stakeholder workflows, even though it added formatting and data-shaping work."
+      ],
+      learned: [
+        "Administrative tools succeed when they fit the reporting process users already have.",
+        "Real-time dashboards are only useful when the underlying data model is clean.",
+        "Small export features can carry high practical value for non-technical users."
+      ],
+      proof: "The implementation is available on GitHub, including the React and Firebase integration.",
+      links: [
+        { text: "GitHub ↗", url: "https://github.com/jeetjawale/Course-Exit-Survey" }
+      ]
+    },
+    learnc: {
+      title: "C-Learning App",
+      tech: ["Flutter", "Dart", "Firebase Auth", "Firebase Realtime Database", "Provider", "SharedPreferences", "URL Launcher"],
+      overview: "A private Flutter learning app for C programming, built around structured theory modules, program examples, quizzes, login persistence, and an external compiler flow.",
+      problem: "Beginners learning C often switch between notes, example programs, quizzes, and online compilers. The app brought those learning steps into one mobile-first flow so students could read concepts, inspect examples, test understanding, and jump to compilation from the same interface.",
+      constraints: [
+        "Keep the project private, with no public deployment or GitHub repository.",
+        "Structure a large beginner-friendly C curriculum into navigable theory and program sections.",
+        "Persist authentication and quiz progress without building a custom backend service."
+      ],
+      architecture: "The app uses Flutter with Provider for state management. Firebase Authentication handles signup/login, SharedPreferences stores session data for auto-login, and Firebase Realtime Database stores quiz progress per user. The curriculum is organized as static Dart content models for theory topics and program examples, while the drawer navigation connects Learn, Programs, Compiler, About, and Logout flows.",
+      archDiagram: "[Flutter UI] <────────> [Provider State] <────────> [Firebase Auth / DB]\n      │\n[Static Dart Models] ──> [External C Compiler]",
+      tradeoffs: [
+        "Static Dart content made the curriculum fast to ship and easy to browse offline, but content updates require code changes.",
+        "Firebase avoided custom backend work, but introduced external platform configuration and auth-token handling.",
+        "Opening an online compiler kept compilation simple, but it depended on a third-party browser-based tool instead of an embedded compiler."
+      ],
+      learned: [
+        "Curriculum apps need clear information architecture before visual polish matters.",
+        "Auth persistence, quiz state, and navigation flows are where small learning apps become real products.",
+        "Flutter is effective for packaging educational content when the data model is simple and the UI has many repeated screens."
+      ],
+      proof: "Private project. Not deployed and not available on GitHub; details are based on the local `learn_c` Flutter codebase.",
+      links: []
+    },
+    barc: {
+      title: "Bhabha Atomic Research Centre (BARC)",
+      tech: ["Python", "PyQt", "QGIS", "PyQGIS"],
+      overview: "A spatial analysis pipeline and decision-support interface for emergency response planning.",
+      problem: "During emergency tabletop exercises, researchers needed a rapid way to configure environmental parameters, run spatial proximity buffering, and view intersections without manually processing raw QGIS layers.",
+      constraints: [
+        "Must run entirely offline within secure environments.",
+        "Must integrate directly with the existing QGIS software stack.",
+        "Must be usable by researchers without deep programming knowledge."
+      ],
+      architecture: "The application uses QGIS as its core spatial engine. I built a custom desktop interface using PyQt5, which interacts directly with QGIS layers via the PyQGIS API. The tool handles layer ingestion, dynamic proximity buffering based on user inputs, and automated demographic overlay calculations.",
+      archDiagram: "[QGIS Layers] <──────────> [PyQGIS Engine] <──────────> [PyQt UI]\n                                  │\n                          [Spatial Outputs]",
+      tradeoffs: [
+        "Building a PyQt plugin for QGIS avoided standalone GIS engine costs, but tied the solution strictly to the QGIS runtime environment.",
+        "Local execution ensures extreme data security, but makes collaborative tabletop planning slightly more rigid."
+      ],
+      learned: [
+        "Geospatial analysis fundamentally alters how quickly a team can model emergency scenarios.",
+        "Automating data ingestion with Python scripts reduced manual preprocessing time by approximately 50%, proving that removing friction is as important as building features."
+      ],
+      proof: "As this was developed for the Radiation Safety Systems Division at BARC Trombay, the source code and operational details are strictly confidential and not publicly available.",
+      links: []
+    }
+  };
 
-  // 4-Corner Resizing Logic
-  const resizers = wrapper.querySelectorAll(".resizer");
-  let isResizing = false;
-  let currentResizer;
-  let rStartX, rStartY, rStartWidth, rStartHeight, rStartTop, rStartLeft;
+  const cards = document.querySelectorAll('.proj-card, .btn-case-study');
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      const pId = card.dataset.project;
+      if (!pId || !projectData[pId]) return;
 
-  resizers.forEach((resizer) => {
-    resizer.addEventListener("mousedown", function (e) {
-      if (terminal.classList.contains("term-maximized")) return;
-      e.preventDefault();
-      isResizing = true;
-      currentResizer = resizer;
+      const data = projectData[pId];
 
-      const rect = wrapper.getBoundingClientRect();
-      wrapper.style.bottom = "auto";
-      wrapper.style.right = "auto";
-      wrapper.style.left = rect.left + "px";
-      wrapper.style.top = rect.top + "px";
+      titleEl.textContent = data.title;
+      descEl.textContent = data.overview;
+      probEl.textContent = data.problem;
+      renderList(constraintsEl, data.constraints);
+      archEl.textContent = data.architecture;
+      
+      if (data.archDiagram) {
+        archDiagramEl.style.display = 'block';
+        archDiagramEl.textContent = data.archDiagram;
+      } else {
+        archDiagramEl.style.display = 'none';
+      }
 
-      rStartX = e.clientX;
-      rStartY = e.clientY;
-      rStartWidth = rect.width;
-      rStartHeight = rect.height;
-      rStartLeft = rect.left;
-      rStartTop = rect.top;
+      renderList(tradeoffsEl, data.tradeoffs);
+      renderList(learnedEl, data.learned);
+      proofEl.textContent = data.proof;
 
-      document.addEventListener("mousemove", onResizeDrag);
-      document.addEventListener("mouseup", stopResizeDrag);
+      techEl.innerHTML = data.tech.map(t => `<span class="stag">${t}</span>`).join('');
+
+      linksEl.innerHTML = data.links.map(l => `<a href="${l.url}" target="_blank" rel="noopener noreferrer" class="plink">${l.text}</a>`).join('');
+
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden'; // Prevent background scrolling
+      try { window.AudioFX.playSwoosh(); } catch(err) {}
     });
   });
 
-  function onResizeDrag(e) {
-    if (!isResizing) return;
-    const dx = e.clientX - rStartX;
-    const dy = e.clientY - rStartY;
-
-    let newWidth = rStartWidth;
-    let newHeight = rStartHeight;
-    let newTop = rStartTop;
-    let newLeft = rStartLeft;
-
-    if (currentResizer.classList.contains("resizer-se")) {
-      newWidth = rStartWidth + dx;
-      newHeight = rStartHeight + dy;
-    } else if (currentResizer.classList.contains("resizer-sw")) {
-      newWidth = rStartWidth - dx;
-      newHeight = rStartHeight + dy;
-      newLeft = rStartLeft + dx;
-    } else if (currentResizer.classList.contains("resizer-ne")) {
-      newWidth = rStartWidth + dx;
-      newHeight = rStartHeight - dy;
-      newTop = rStartTop + dy;
-    } else if (currentResizer.classList.contains("resizer-nw")) {
-      newWidth = rStartWidth - dx;
-      newHeight = rStartHeight - dy;
-      newTop = rStartTop + dy;
-      newLeft = rStartLeft + dx;
-    }
-
-    // Constraints
-    const minWidth = 400,
-      minHeight = 250;
-    if (newWidth < minWidth) {
-      newWidth = minWidth;
-      if (
-        currentResizer.classList.contains("resizer-sw") ||
-        currentResizer.classList.contains("resizer-nw")
-      ) {
-        newLeft = rStartLeft + (rStartWidth - minWidth);
-      }
-    }
-    if (newHeight < minHeight) {
-      newHeight = minHeight;
-      if (
-        currentResizer.classList.contains("resizer-nw") ||
-        currentResizer.classList.contains("resizer-ne")
-      ) {
-        newTop = rStartTop + (rStartHeight - minHeight);
-      }
-    }
-
-    // Boundary constraints
-    const navHeight = 56;
-    const footerHeight = 40;
-    const maxW = window.innerWidth;
-    const maxH = window.innerHeight - footerHeight;
-
-    if (newTop < navHeight) {
-      if (
-        currentResizer.classList.contains("resizer-nw") ||
-        currentResizer.classList.contains("resizer-ne")
-      ) {
-        newHeight -= navHeight - newTop;
-      }
-      newTop = navHeight;
-    }
-    if (newLeft < 0) {
-      if (
-        currentResizer.classList.contains("resizer-nw") ||
-        currentResizer.classList.contains("resizer-sw")
-      ) {
-        newWidth -= 0 - newLeft;
-      }
-      newLeft = 0;
-    }
-    if (newLeft + newWidth > maxW) {
-      newWidth = maxW - newLeft;
-    }
-    if (newTop + newHeight > maxH) {
-      newHeight = maxH - newTop;
-    }
-
-    wrapper.style.width = newWidth + "px";
-    wrapper.style.height = newHeight + "px";
-    wrapper.style.top = newTop + "px";
-    wrapper.style.left = newLeft + "px";
+  function closeModal() {
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = 'auto';
   }
 
-  function stopResizeDrag() {
-    isResizing = false;
-    document.removeEventListener("mousemove", onResizeDrag);
-    document.removeEventListener("mouseup", stopResizeDrag);
-  }
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal(); // Click outside to close
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
+  });
 }
 
-/* ──────────────────────────────────────────────────────────────── */
-/*  BOOT → INIT                                                     */
-/* ──────────────────────────────────────────────────────────────── */
-
-startBootSequence().then((isSkipped) => {
-  const footerYearEl = document.getElementById("footer-year");
+/* ============================================================
+   13. Initialization
+   ============================================================ */
+(function init() {
+  const footerYearEl = document.getElementById('footer-year');
   if (footerYearEl) footerYearEl.textContent = new Date().getFullYear();
-  populateBlog();
-  initNeuralCanvas();
-  initUptimeCounter();
-  initCoffeeBar();
-  initCliTerminal();
-  initFloatingTerminal();
-  initChatbot();
-  initFooterMetrics();
-  initScrollProgress();
-  initNav();
-  initMobileMenu();
-  initActiveNav();
-  initSmoothScroll();
-  initBackToTop();
-  initObservers();
-  initContactForm();
-  scrollToHash(isSkipped);
-});
 
-// Also allow hash navigation via browser back/forward
-window.addEventListener("hashchange", scrollToHash);
+  initBootSequence();
+  initNeuralCanvas();
+  initCoffeeBar();
+  initTabs();
+  initTextScramble();
+  populateBlog();
+  initCliEasterEgg();
+  initClickFX();
+  updateLiveTime();
+  initHintonWidget();
+  initProjectModals();
+})();
