@@ -179,9 +179,15 @@ body {
   border-radius: 16px;
   border: 1px solid rgba(235, 219, 178, 0.15);
   object-fit: cover;
+  object-position: center;
   background: var(--bg1);
   padding: 4px;
   animation: avatarBreathe 4s ease-in-out infinite;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.hero-avatar:hover {
+  transform: scale(1.08);
 }
 
 .hero-name {
@@ -952,11 +958,11 @@ body {
 .connect-btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8rem;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
   color: var(--fg2);
   background: rgba(60, 56, 54, 0.4);
-  padding: 0.6rem 1.2rem;
   border-radius: 6px;
   text-decoration: none;
   border: 1px solid rgba(235, 219, 178, 0.05);
@@ -968,6 +974,7 @@ body {
   border-color: var(--yellow-b);
   color: var(--yellow-b);
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  animation: glitch-skew 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite both;
 }
 
 .connect-btn svg {
