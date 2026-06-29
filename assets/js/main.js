@@ -173,12 +173,13 @@ function populateBlog() {
       const cached = sessionStorage.getItem('github_contribs_data');
       let data;
       if (cached) { data = JSON.parse(cached); }
-      else { const res = await fetch(`https://github-contributions-api.deno.dev/${user}.json`); data = await res.json(); sessionStorage.setItem('github_contribs_data', JSON.stringify(data)); }
+      else { const res = await fetch(`https://github-contributions-api.deno.dev/${user}.json`); if (!res.ok) throw new Error('API failed'); data = await res.json(); if (data.error) throw new Error(data.error); sessionStorage.setItem('github_contribs_data', JSON.stringify(data)); }
       let total = 0; let weeks = [];
       if (data.totalContributions !== undefined) { total = data.totalContributions; weeks = data.contributions; }
       else if (data.contributions && Array.isArray(data.contributions)) { total = data.contributions.flat().reduce((s, d) => s + (d.contributionCount || 0), 0); }
       if (el) el.textContent = `${total.toLocaleString()} total contributions`;
-      if (calContainer && weeks && weeks.length > 0) {
+      if (!weeks || weeks.length === 0) throw new Error('No data');
+      if (calContainer) {
         calContainer.innerHTML = '';
         const calDiv = document.createElement('div'); calDiv.className = 'github-calendar';
         const colorMap = { NONE: '#161b22', FIRST_QUARTILE: '#0e4429', SECOND_QUARTILE: '#006d32', THIRD_QUARTILE: '#26a641', FOURTH_QUARTILE: '#39d353' };
@@ -815,31 +816,7 @@ function initProjectModals() {
         { text: "GitHub ↗", url: "https://github.com/jeetjawale/Course-Exit-Survey" }
       ]
     },
-    learnc: {
-      title: "C-Learning App",
-      tech: ["Flutter", "Dart", "Firebase Auth", "Firebase Realtime Database", "Provider", "SharedPreferences", "URL Launcher"],
-      overview: "A private Flutter learning app for C programming, built around structured theory modules, program examples, quizzes, login persistence, and an external compiler flow.",
-      problem: "Beginners learning C often switch between notes, example programs, quizzes, and online compilers. The app brought those learning steps into one mobile-first flow so students could read concepts, inspect examples, test understanding, and jump to compilation from the same interface.",
-      constraints: [
-        "Keep the project private, with no public deployment or GitHub repository.",
-        "Structure a large beginner-friendly C curriculum into navigable theory and program sections.",
-        "Persist authentication and quiz progress without building a custom backend service."
-      ],
-      architecture: "The app uses Flutter with Provider for state management. Firebase Authentication handles signup/login, SharedPreferences stores session data for auto-login, and Firebase Realtime Database stores quiz progress per user. The curriculum is organized as static Dart content models for theory topics and program examples, while the drawer navigation connects Learn, Programs, Compiler, About, and Logout flows.",
-      archDiagram: "[Flutter UI] <────────> [Provider State] <────────> [Firebase Auth / DB]\n      │\n[Static Dart Models] ──> [External C Compiler]",
-      tradeoffs: [
-        "Static Dart content made the curriculum fast to ship and easy to browse offline, but content updates require code changes.",
-        "Firebase avoided custom backend work, but introduced external platform configuration and auth-token handling.",
-        "Opening an online compiler kept compilation simple, but it depended on a third-party browser-based tool instead of an embedded compiler."
-      ],
-      learned: [
-        "Curriculum apps need clear information architecture before visual polish matters.",
-        "Auth persistence, quiz state, and navigation flows are where small learning apps become real products.",
-        "Flutter is effective for packaging educational content when the data model is simple and the UI has many repeated screens."
-      ],
-      proof: "Private project. Not deployed and not available on GitHub; details are based on the local `learn_c` Flutter codebase.",
-      links: []
-    },
+
     barc: {
       title: "Bhabha Atomic Research Centre (BARC)",
       tech: ["Python", "PyQt", "QGIS", "PyQGIS"],

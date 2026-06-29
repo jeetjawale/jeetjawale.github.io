@@ -8,7 +8,7 @@
   <meta property="og:title" content="My Daily Driver: Fedora KDE Plasma as a Computer Engineering Graduate">
   <meta property="og:description" content="As a Computer Engineering graduate, I don't see an operating system as just a tool — I see it as a learning environment. Why I chose Fedora KDE Plasma.">
   <meta property="og:type" content="article">
-  <meta property="article:published_time" content="2025-05-23">
+  <meta property="article:published_time" content="2026-02-27">
   <meta property="og:url" content="https://jeetjawale.dev/blog/001-fedora-kde-plasma.html">
   <link rel="canonical" href="https://jeetjawale.dev/blog/001-fedora-kde-plasma.html">
   <meta property="og:image" content="https://jeetjawale.dev/assets/images/og-image.png">
@@ -33,7 +33,7 @@
       "name": "Jeet Jawale",
       "url": "https://jeetjawale.dev/"
     },
-    "datePublished": "2025-05-23",
+    "datePublished": "2026-02-27",
     "image": "https://jeetjawale.dev/assets/images/og-image.png"
   }
   </script>
@@ -111,11 +111,15 @@
         <h2 id="why-docker">📦 Why I Use Docker</h2>
         <p>While Fedora has great support for alternatives, I stick to <strong>Docker</strong> for my containerization needs. It remains the industry standard, and using Docker ensures complete compatibility with the workflows, CI/CD pipelines, and Compose setups I use across all my development projects.</p>
 
-        <h2 id="what-fedora-taught">🧠 What Fedora Taught Me About Linux internals</h2>
-        <p>Using Fedora daily improved my understanding of systemd targets, boot sequence behavior, kernel updates, and network configuration. Linux became less of a GUI OS and more of a structured, controllable system.</p>
+        <h2 id="what-fedora-taught">🧠 What Fedora Taught Me About Linux Internals</h2>
+        <p>Running Fedora as a daily driver broke the illusion of the GUI. When a display manager fails or an audio server acts up, you can't just reboot and hope it fixes itself. You have to drop into a TTY and fix it.</p>
+        <p>Through troubleshooting and optimization, I gained a deep, practical understanding of <strong>systemd</strong> (creating custom service files, managing daemon lifecycles, and analyzing boot times via <code>systemd-analyze blame</code>). I learned how the Linux kernel interfaces with hardware via <strong>sysfs</strong> and <strong>procfs</strong>, how to manage GRUB boot parameters, and the intricacies of the Linux networking stack and firewall rules (<code>firewalld</code>).</p>
+        <p>More importantly, it forced me to master the terminal. Navigating file hierarchies, managing POSIX permissions, using <code>grep</code>/<code>awk</code>/<code>sed</code> for log analysis, and writing Bash scripts to automate my backup and dotfile synchronization became second nature.</p>
 
         <h2 id="career-impact">🚀 Career Impact</h2>
-        <p>Switching to Fedora KDE + Docker made me more confident with terminal workflows and better prepared for DevOps roles. It transformed Linux from a desktop environment into a professional engineering platform.</p>
+        <p>Switching to Fedora KDE was the inflection point where I stopped being just a "consumer" of computing and started being an engineer.</p>
+        <p>When I stepped into my internship at BARC and later began exploring cloud infrastructure, there was zero learning curve for the environment. The servers were running Linux, the containers were running Linux, and my laptop was running Linux. Knowing how to SSH into a headless server, diagnose a failing service, or write a quick shell script to parse a gigabyte of logs are skills I use every single day.</p>
+        <p>It transformed Linux from a desktop environment into a professional engineering platform, giving me the foundational DevOps knowledge required to confidently deploy and manage full-stack applications in production.</p>
 
         <p class="post-quote">
           It's not just my operating system. It's my engineering lab.
